@@ -5,12 +5,20 @@
  *			Game World Definition		 */
 #pragma once
 #include <vector>
-#include "Ray.h"
-#include "CollisionDetection.h"
-#include "QuadTree.h"
+#include <functional>
+#include "GameObject.h"
+#include "../../Common/Camera.h"
+#include <algorithm>
+#include <random>
+#include "Debug.h"
+#include "../CSC8503Common/GameObject.h"
+#include "../../Common/Camera.h"
+#include "../../Common/Vector2.h"
+#include "../../Common/Vector3.h"
+#include "../../Common/TextureLoader.h"
+#include "../../Common/Matrix4.h"
 namespace NCL {
 	class Camera;
-	using Maths::Ray;
 	namespace CSC8503 {
 		class GameObject;
 		class Constraint;
@@ -44,8 +52,6 @@ namespace NCL {
 				shuffleObjects = state;
 			}
 			void ShowFacing();
-
-			bool Raycast(Ray& r, RayCollision& closestCollision, GameObject* current, bool closestObject = false) const;
 
 			virtual void UpdateWorld(float dt);
 

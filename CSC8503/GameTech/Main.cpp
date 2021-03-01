@@ -31,11 +31,11 @@ int main(int argc, char** argv) {
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	//PushdownMachine machine(new IntroScreen);
 	TutorialGame* t = new TutorialGame();
-	snippetMain(1, NULL, t, w->GetTimer()->GetTimeDeltaSeconds());
+	//snippetMain(1, NULL, t, w->GetTimer()->GetTimeDeltaSeconds());
 
 	while (w->UpdateWindow()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
-		snippetMain(0, NULL, t, dt);
+		//snippetMain(0, NULL, t, dt);
 		t->Update(dt);
 		if (dt > 0.1f) {
 			std::cout << "Skipping large time delta" << std::endl;

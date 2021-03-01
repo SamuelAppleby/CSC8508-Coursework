@@ -4,15 +4,13 @@
  *                170348069
  *			Physics Object Implementation		 */
 #include "PhysicsObject.h"
-#include "PhysicsSystem.h"
 #include "../CSC8503Common/Transform.h"
 using namespace NCL;
 using namespace CSC8503;
 
-PhysicsObject::PhysicsObject(Transform* parentTransform, PxRigidActor* p, const CollisionVolume* parentVolume) {
+PhysicsObject::PhysicsObject(Transform* parentTransform, PxRigidActor* p) {
 	transform = parentTransform;
-	pxTrans = p;
-	volume = parentVolume;
+	pXActor = p;
 	inverseMass = 1.0f;
 	elasticity = 0.8f;
 	friction = 0.8f;

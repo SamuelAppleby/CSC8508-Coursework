@@ -24,7 +24,7 @@
     <ClCompile Include="TutorialGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SnippetsHelloWorld.cpp">
+    <ClCompile Include="WorldCreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +35,7 @@
     <ClInclude Include="TutorialGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SnippetPrint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SnippetPVD.h">
+    <ClInclude Include="WorldCreator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
