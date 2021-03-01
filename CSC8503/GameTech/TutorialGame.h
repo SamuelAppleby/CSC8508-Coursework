@@ -50,15 +50,11 @@ namespace NCL {
 			PxPhysicsSystem* pXPhysics;
 			GameWorld* world;
 
-			bool useGravity;
 			bool useBroadphase;
 			bool inSelectionMode;
 			float forceMagnitude;
-			float reloadTime;
-			float timeOut;
-			GameObject* selectionObject = nullptr;
 
-			//Coursework Additional functionality	
+			GameObject* selectionObject = nullptr;
 			GameObject* lockedObject	= nullptr;
 		
 			PlayerObject* player;
@@ -69,17 +65,7 @@ namespace NCL {
 
 			float textSize = 15.0f;
 
-			int avgFps;
-			int framesPerSecond;
-			float fpsTimer;
-
 			CameraState camState;
-			vector<GameObject*> projectiles;
-			FinishType finish;
-
-			vector<BehaviourTreeEnemy*> behaviourEnemies;
-
-			GameObject* currentEnemy = nullptr;
 		};
 	}
 }

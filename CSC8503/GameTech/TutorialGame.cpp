@@ -14,19 +14,12 @@ TutorialGame::TutorialGame() {
 	pXPhysics = new PxPhysicsSystem();
 	WorldCreator::Create(pXPhysics, world);
 	forceMagnitude = 10.0f;
-	useGravity = true;
 	useBroadphase = true;
 	inSelectionMode = false;
-	reloadTime = 0.0f;
-	timeOut = 0.0f;
 	Debug::SetRenderer(renderer);
 	player = nullptr;
 	lockedOrientation = true;
 	currentLevel = 1;
-	avgFps = 1.0f;
-	framesPerSecond = 0;
-	fpsTimer = 1.0f;
-	finish = FinishType::INGAME;
 	InitCamera();
 	InitWorld();
 }
@@ -65,8 +58,8 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 
 	/* Debug mode selection */
-	inSelectionMode ? renderer->DrawString("Change to play mode(Q)", Vector2(69, 10), Debug::WHITE, textSize) :
-		renderer->DrawString("Change to debug mode(Q)", Vector2(68, 10), Debug::WHITE, textSize);
+	string message = inSelectionMode ? "Change to play mode(Q)" : "Change to debug mode(Q)";
+	renderer->DrawString(message, Vector2(68, 10), Debug::WHITE, textSize);
 	if (inSelectionMode) {
 		UpdateKeys();
 		SelectObject();
@@ -121,26 +114,26 @@ void TutorialGame::UpdateLevel(float dt) {
 		world->GetMainCamera()->UpdateCamera(dt);
 
 	renderer->DrawString("Exit to Menu (ESC)", Vector2(75, 5), Debug::WHITE, textSize);
-	renderer->DrawString("Pause(P)", Vector2(88, 15), Debug::WHITE, textSize);
-
-	lockedObject ? LockedObjectMovement(dt) : DebugObjectMovement();
+	if (lockedObject)
+		LockedObjectMovement(dt);
+	else
+		DebugObjectMovement();
 }
 
 /* Draws debug information to screen, and will display selected object properties */
 void TutorialGame::DrawDebugInfo() {
-	world->GetShuffleObjects() ? renderer->DrawString("Shuffle Objects(F1):On", Vector2(0, 10), Debug::WHITE, textSize) :
-		renderer->DrawString("Shuffle Objects(F1):Off", Vector2(0, 10), Debug::WHITE, textSize);
-	world->GetShuffleConstraints() ? renderer->DrawString("Shuffle Constraints(F2):On", Vector2(0, 15), Debug::WHITE, textSize) :
-		renderer->DrawString("Shuffle Constraints(F2):Off", Vector2(0, 15), Debug::WHITE, textSize);
+	string message = world->GetShuffleObjects() ? "Shuffle Objects(F1):On" : "Shuffle Objects(F1):Off";
+	renderer->DrawString(message, Vector2(0, 10), Debug::WHITE, textSize);
 
-	useGravity ? renderer->DrawString("Gravity(G):On", Vector2(0, 20), Debug::WHITE, textSize) :
-		renderer->DrawString("Gravity(G):Off", Vector2(0, 20), Debug::WHITE, textSize);
+	message = world->GetShuffleConstraints() ? "Shuffle Constraints(F2):On" : "Shuffle Constraints(F2):Off";
+	renderer->DrawString(message, Vector2(0, 15), Debug::WHITE, textSize);
+
 	renderer->DrawString("Click Force(Scroll Wheel):" + std::to_string((int)forceMagnitude), Vector2(0, 25), Debug::WHITE, textSize);
 
 	if (lockedObject) {
 		renderer->DrawString("Unlock object(L)", Vector2(0, 35), Debug::WHITE, textSize);
-		lockedOrientation ? renderer->DrawString("Lock object orientation(K): On", Vector2(0, 40), Debug::WHITE, textSize) :
-			renderer->DrawString("Lock object orientation(K): Off", Vector2(0, 40), Debug::WHITE, textSize);
+		message = lockedOrientation ? "Lock object orientation(K): On" : "Lock object orientation(K): Off";
+		renderer->DrawString(message, Vector2(0, 40), Debug::WHITE, textSize);
 	}
 	else
 		renderer->DrawString("Lock selected object(L)", Vector2(0, 35), Debug::WHITE, textSize);
@@ -151,13 +144,15 @@ void TutorialGame::DrawDebugInfo() {
 		/* Display state machine information */
 		if (dynamic_cast<StateGameObject*>(selectionObject)) {
 			renderer->DrawString("State:" + ((StateGameObject*)selectionObject)->StateToString(), Vector2(0, 55), Debug::WHITE, textSize);
-			selectionObject->GetPowerUpTimer() > 0.0f ? renderer->DrawString("Powered Up: Yes", Vector2(0, 50), Debug::WHITE, textSize) :
-				renderer->DrawString("Powered Up: No", Vector2(0, 50), Debug::WHITE, textSize);
+			
+			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
+			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
 		}
 		else if (dynamic_cast<BehaviourTreeEnemy*>(selectionObject)) {
 			renderer->DrawString("Current Behaviour:" + ((BehaviourTreeEnemy*)selectionObject)->BehaviourToString(), Vector2(0, 55), Debug::WHITE, textSize);
-			selectionObject->GetPowerUpTimer() > 0.0f ? renderer->DrawString("Powered Up: Yes", Vector2(0, 50), Debug::WHITE, textSize) :
-				renderer->DrawString("Powered Up: No", Vector2(0, 50), Debug::WHITE, textSize);
+
+			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
+			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
 		}
 		
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
