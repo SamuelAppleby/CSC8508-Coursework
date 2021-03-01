@@ -4,11 +4,7 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
-#include "../CSC8503Common/GameObject.h"
-#include "../../Common/Camera.h"
-#include "../../Common/Vector2.h"
-#include "../../Common/Vector3.h"
-#include "../../Common/TextureLoader.h"
+
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;

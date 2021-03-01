@@ -8,7 +8,6 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
-
 #include "../CSC8503Common/GameWorld.h"
 
 namespace NCL {

@@ -16,14 +16,13 @@ using namespace physx;
 using namespace NCL::Maths;
 
 namespace NCL {
-	class CollisionVolume;
 
 	namespace CSC8503 {
 		class Transform;
 
 		class PhysicsObject {
 		public:
-			PhysicsObject(Transform* parentTransform, PxRigidActor* pxTrans, const CollisionVolume* parentVolume);
+			PhysicsObject(Transform* parentTransform, PxRigidActor* pxTrans);
 			~PhysicsObject();
 
 			void SetElasticity(float val) {
@@ -108,10 +107,11 @@ namespace NCL {
 			bool GetIsAsleep() const {
 				return isAsleep;
 			}
-			PxRigidActor* pxTrans;
-
+			PxRigidActor* GetPXActor() const {
+				return pXActor;
+			}
 		protected:
-			const CollisionVolume* volume;
+			PxRigidActor* pXActor;
 			Transform* transform;
 			float inverseMass;
 			float elasticity;

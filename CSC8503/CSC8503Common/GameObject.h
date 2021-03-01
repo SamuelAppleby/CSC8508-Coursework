@@ -6,7 +6,6 @@
 #pragma once
 #include <vector>
 #include "Transform.h"
-#include "CollisionVolume.h"
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 using std::vector;
@@ -23,21 +22,13 @@ namespace NCL {
 				return Vector3(pxVec.x, pxVec.y, pxVec.z);
 			}
 			void Update() {
-				if (physicsObject->pxTrans != nullptr) {
-					transform.SetOrientation(GetRegularQuaternion(physicsObject->pxTrans->getGlobalPose().q));
-					transform.SetPosition(GetRegularVector3(physicsObject->pxTrans->getGlobalPose().p));
+				if (physicsObject->GetPXActor() != nullptr) {
+					transform.SetOrientation(GetRegularQuaternion(physicsObject->GetPXActor()->getGlobalPose().q));
+					transform.SetPosition(GetRegularVector3(physicsObject->GetPXActor()->getGlobalPose().p));
 				}
 			}
 			void SetName(string val) {
 				name = val;
-			}
-
-			void SetBoundingVolume(CollisionVolume* vol) {
-				boundingVolume = vol;
-			}
-
-			const CollisionVolume* GetBoundingVolume() const {
-				return boundingVolume;
 			}
 
 			bool IsActive() const {
@@ -71,10 +62,6 @@ namespace NCL {
 			virtual void OnCollisionBegin(GameObject* otherObject) {}
 
 			virtual void OnCollisionEnd(GameObject* otherObject) {}
-
-			bool GetBroadphaseAABB(Vector3& outsize) const;
-
-			void UpdateBroadphaseAABB();
 
 			void SetWorldID(int newID) {
 				worldID = newID;
@@ -121,7 +108,6 @@ namespace NCL {
 		protected:
 			Transform			transform;
 
-			CollisionVolume* boundingVolume;
 			PhysicsObject* physicsObject;
 			RenderObject* renderObject;
 

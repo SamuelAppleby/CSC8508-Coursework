@@ -4,13 +4,7 @@
  *                170348069
  *			Game World Implementation		 */
 #include "GameWorld.h"
-#include "GameObject.h"
-#include "Constraint.h"
-#include "CollisionDetection.h"
-#include "../../Common/Camera.h"
-#include <algorithm>
-#include <random>
-#include "PlayerObject.h"
+
 
 using namespace NCL;
 using namespace NCL::CSC8503;
@@ -84,36 +78,6 @@ void GameWorld::ShowFacing() {
 		if(i->IsActive())
 			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects
 	}
-}
-
-bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, GameObject* current, bool closestObject) const {
-	//The simplest raycast just goes through each object and sees if there's a collision
-	RayCollision collision;
-	for (auto& i : gameObjects) {
-		if (!i->GetBoundingVolume()) { //objects might not be collideable etc...
-			continue;
-		}
-		RayCollision thisCollision;
-		if (CollisionDetection::RayIntersection(r, *i, thisCollision) && i != current) {
-			if (!closestObject) {	
-				closestCollision		= collision;
-				closestCollision.node = i;
-				return true;
-			}
-			else {
-				if (thisCollision.rayDistance < collision.rayDistance) {
-					thisCollision.node = i;
-					collision = thisCollision;
-				}
-			}
-		}
-	}
-	if (collision.node) {
-		closestCollision		= collision;
-		closestCollision.node	= collision.node;
-		return true;
-	}
-	return false;
 }
 
 /* Constraint Tutorial Stuff */
