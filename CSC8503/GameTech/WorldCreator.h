@@ -5,8 +5,6 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
-#include <ctype.h>
-#include "PxPhysicsAPI.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 
 using namespace NCL;
@@ -25,6 +23,7 @@ public:
 	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
+private:
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
 	static OGLMesh* capsuleMesh;

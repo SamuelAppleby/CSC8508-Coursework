@@ -15,10 +15,10 @@ namespace NCL {
 		public:
 			GameObject(string name = "");
 			~GameObject();
-			Quaternion GetRegularQuaternion(PxQuat q) {
+			static Quaternion GetRegularQuaternion(PxQuat q) {
 				return Quaternion(q.x, q.y, q.z, q.w);
 			}
-			Vector3 GetRegularVector3(PxVec3 pxVec) {
+			static Vector3 GetRegularVector3(PxVec3 pxVec) {
 				return Vector3(pxVec.x, pxVec.y, pxVec.z);
 			}
 			void Update() {

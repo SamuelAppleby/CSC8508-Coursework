@@ -34,14 +34,17 @@
 // user to create new stacks and fire a ball from the camera position
 // ****************************************************************************
 #pragma once
+#include "../../Common/GameTimer.h"
 #include <ctype.h>
 #include "PxPhysicsAPI.h"
 #include "PxPrint.h"
 #include "PxPVD.h"
-#include <iostream>
-
+const int GRAVITY_SCALE = 4;
+const int IDEAL_FRAMES = 120;
+const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 using namespace physx;
 class PxPhysicsSystem {
+
 public:
 	PxPhysicsSystem();
 	void StepPhysics(float dt);
@@ -59,6 +62,10 @@ public:
 		return gScene;
 	}
 private:
+	float	dTOffset;
+	int realFrames;
+	float fixedDeltaTime;
+
 	PxDefaultAllocator		gAllocator;
 	PxDefaultErrorCallback	gErrorCallback;
 

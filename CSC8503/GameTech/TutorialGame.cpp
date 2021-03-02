@@ -168,24 +168,18 @@ void TutorialGame::DrawDebugInfo() {
 
 /* In debug mode we can change some of the backend physics engine with some key presses */
 void TutorialGame::UpdateKeys() {
-	/*Running certain physics updates in a consistent order might cause some
-	bias in the calculations - the same objects might keep 'winning' the constraint
-	allowing the other one to stretch too much etc. Shuffling the order so that it
-	is random every frame can help reduce such bias. */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1))
 		world->ShuffleObjects(!world->GetShuffleObjects());
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2))
 		world->ShuffleConstraints(!world->GetShuffleConstraints());
 
-	/* If an object has been clicked, it can be pushed with the right mouse button, by an amount
-	determined by the scroll wheel. */
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 10.0f;
 }
 
 /* Initialise camera to default location */
 void TutorialGame::InitCamera() {
 	world->GetMainCamera()->SetNearPlane(0.5f);
-	world->GetMainCamera()->SetFarPlane(1600.0f);
+	world->GetMainCamera()->SetFarPlane(1000.0f);
 	world->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
 	world->GetMainCamera()->SetYaw(0);
 	world->GetMainCamera()->SetPitch(0);
@@ -207,7 +201,7 @@ void TutorialGame::InitFloors(int level) {
 	case 0:
 		break;
 	case 1:		
-		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), Vector3(1000.0f, 1, 1000));
+		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), Vector3(500, 1, 500));
 		break;
 	case 2:
 		break;
@@ -233,9 +227,9 @@ void TutorialGame::InitGameExamples(int level) {
 void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 50, -50)), Vector3(20, 20, 20));
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 50, -50)), 10);
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 8.0f, 10.0f);
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 200, -50)), Vector3(20, 20, 20));
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 200, -50)), 10);
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 200, -50)), 8.0f, 10.0f);
 		break;
 	}
 }
