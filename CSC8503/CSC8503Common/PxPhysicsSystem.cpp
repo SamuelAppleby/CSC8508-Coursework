@@ -1,6 +1,10 @@
 #include "PxPhysicsSystem.h"
 
 PxPhysicsSystem::PxPhysicsSystem() {
+	realFrames = IDEAL_FRAMES;
+	fixedDeltaTime = IDEAL_DT;
+	dTOffset = 0.0f;
+
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
 	gPvd = PxCreatePvd(*gFoundation);
@@ -10,7 +14,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITY_SCALE, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
@@ -27,8 +31,30 @@ PxPhysicsSystem::PxPhysicsSystem() {
 }
 
 void PxPhysicsSystem::StepPhysics(float dt) {
-	gScene->simulate(dt);
-	gScene->fetchResults(true);
+	dTOffset += dt;
+
+	while (dTOffset >= fixedDeltaTime) {
+		gScene->simulate(fixedDeltaTime);
+		gScene->fetchResults(true);
+		dTOffset -= fixedDeltaTime;
+	}
+
+	NCL::GameTimer t;
+	t.Tick();
+	float updateTime = t.GetTimeDeltaSeconds();
+	if (updateTime > fixedDeltaTime) {
+		realFrames /= 2;
+		fixedDeltaTime *= 2;
+	}
+	else if (dt * 2 < fixedDeltaTime) {
+		realFrames *= 2;
+		fixedDeltaTime /= 2;
+
+		if (realFrames > IDEAL_FRAMES) {
+			realFrames = IDEAL_FRAMES;
+			fixedDeltaTime = IDEAL_DT;
+		}
+	}
 }
 
 void PxPhysicsSystem::CleanupPhysics() {

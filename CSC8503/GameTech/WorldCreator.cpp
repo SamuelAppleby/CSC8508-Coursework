@@ -96,6 +96,7 @@ void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius
 	PxTransform localTm(t.p);
 	body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(localTm));
 	body->attachShape(*shape);
+
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 	pXPhysics->GetGScene()->addActor(*body);
 
@@ -112,6 +113,7 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	PxTransform localTm(t.p);
 	body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(localTm));
 	body->attachShape(*shape);
+
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 	pXPhysics->GetGScene()->addActor(*body);
 
@@ -131,7 +133,7 @@ void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const Vector3 dimensi
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* floor = new GameObject;
-	floor->GetTransform().SetScale(dimensions * 2);
+	floor->GetTransform().SetScale(dimensions);
 	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, basicShader));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), body));
 	world->AddGameObject(floor);

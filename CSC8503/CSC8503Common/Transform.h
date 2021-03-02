@@ -22,7 +22,6 @@ namespace NCL {
 		public:
 			Transform();
 			~Transform();
-
 			Transform& SetPosition(const Vector3& worldPos);
 			Transform& SetScale(const Vector3& worldScale);
 			Transform& SetOrientation(const Quaternion& newOr);
