@@ -215,8 +215,8 @@ void TutorialGame::InitGameExamples(int level) {
 		break;
 	case 1:
 		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 50, 0)), 3);
-		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 5);
-		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 5);
+		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 3);
+		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 3);
 		break;
 	case 2:
 		break;
@@ -227,9 +227,9 @@ void TutorialGame::InitGameExamples(int level) {
 void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 200, -50)), Vector3(20, 20, 20));
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 200, -50)), 10);
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 200, -50)), 8.0f, 10.0f);
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -50)), 10);
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -50)), Vector3(10, 10, 10));
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 10.0f, 10.0f);
 		break;
 	}
 }
