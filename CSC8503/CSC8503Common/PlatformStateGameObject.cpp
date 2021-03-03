@@ -55,5 +55,5 @@ void PlatformStateGameObject::MoveToLocation(float dt) {
 		if (abs(GetTransform().GetPosition().z - end.z) < 0.5)
 			speed.z = (start.z - end.z > 0) ? 5 : -5;
 	}
-	GetPhysicsObject()->SetLinearVelocity(speed);
+	//GetPhysicsObject()->SetLinearVelocity(speed);
 }

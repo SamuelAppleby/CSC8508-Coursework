@@ -78,7 +78,7 @@ void PathFindingEnemyStateGameObject::FollowPath(float dt) {
 		travelDir = path[0] - GetTransform().GetPosition();
 		travelDir.y = 0;
 		if (travelDir.Length() < 10.0f) {
-			GetPhysicsObject()->ClearForces();
+			//GetPhysicsObject()->ClearForces();
 			pathTimeout = 0.0f;
 			path.erase(path.begin());
 			if (path.size() == 0)		// Path completed

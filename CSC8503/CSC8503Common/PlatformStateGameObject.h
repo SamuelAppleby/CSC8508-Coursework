@@ -9,11 +9,11 @@ namespace NCL {
 		class PlatformStateGameObject : public StateGameObject {
 		public:
 			PlatformStateGameObject(Vector3 start, Vector3 end);
-			void SetPhysicsObject(PhysicsObject* newObject) override {
+			void SetPhysicsObject(PhysXObject* newObject) override {
 				physicsObject = newObject;
-				physicsObject->SetInverseMass(0.0f);
-				physicsObject->SetElasticity(0.2f);
-				physicsObject->SetFriction(0.8f);
+				//physicsObject->SetInverseMass(0.0f);
+				//physicsObject->SetElasticity(0.2f);
+				//physicsObject->SetFriction(0.8f);
 			}
 			void MoveToLocation(float dt);
 		protected:

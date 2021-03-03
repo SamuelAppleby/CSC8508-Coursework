@@ -41,11 +41,11 @@ namespace NCL {
 			void SetDisplayDirection(float val) {
 				displayPath = val;
 			}
-			void SetPhysicsObject(PhysicsObject* newObject) override {
+			void SetPhysicsObject(PhysXObject* newObject) override {
 				physicsObject = newObject;
-				physicsObject->SetInverseMass(invMass);
-				physicsObject->SetElasticity(elasticity);
-				physicsObject->SetFriction(friction);
+				//physicsObject->SetInverseMass(invMass);
+				//physicsObject->SetElasticity(elasticity);
+				//physicsObject->SetFriction(friction);
 			}
 			void Update(float dt) override;
 			void FollowObject(float dt);

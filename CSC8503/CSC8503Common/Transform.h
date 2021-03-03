@@ -8,17 +8,12 @@
 #include "../../Common/Matrix3.h"
 #include "../../Common/Vector3.h"
 #include "../../Common/Quaternion.h"
-
 #include <vector>
-
 using std::vector;
-
 using namespace NCL::Maths;
-
 namespace NCL {
 	namespace CSC8503 {
-		class Transform
-		{
+		class Transform {
 		public:
 			Transform();
 			~Transform();

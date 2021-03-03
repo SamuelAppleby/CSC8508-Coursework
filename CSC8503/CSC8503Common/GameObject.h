@@ -6,8 +6,8 @@
 #pragma once
 #include <vector>
 #include "Transform.h"
-#include "PhysicsObject.h"
 #include "RenderObject.h"
+#include "PhysXObject.h"
 using std::vector;
 namespace NCL {
 	namespace CSC8503 {
@@ -43,7 +43,7 @@ namespace NCL {
 				return renderObject;
 			}
 
-			PhysicsObject* GetPhysicsObject() const {
+			PhysXObject* GetPhysicsObject() const {
 				return physicsObject;
 			}
 
@@ -51,7 +51,7 @@ namespace NCL {
 				renderObject = newObject;
 			}
 
-			virtual void SetPhysicsObject(PhysicsObject* newObject) {
+			virtual void SetPhysicsObject(PhysXObject* newObject) {
 				physicsObject = newObject;
 			}
 
@@ -108,7 +108,7 @@ namespace NCL {
 		protected:
 			Transform			transform;
 
-			PhysicsObject* physicsObject;
+			PhysXObject* physicsObject;
 			RenderObject* renderObject;
 
 			bool isActive;

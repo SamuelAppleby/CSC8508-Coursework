@@ -155,6 +155,7 @@
     <ClInclude Include="PathfindingEnemyStateGameObject.h" />
     <ClInclude Include="PatrolEnemyStateGameObject.h" />
     <ClInclude Include="PauseScreen.h" />
+    <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="PlatformStateGameObject.h" />
     <ClInclude Include="PushdownMachine.h" />
     <ClInclude Include="PushdownState.h" />
@@ -163,7 +164,6 @@
     <ClInclude Include="PxPVD.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameWorld.h" />
-    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateGameObject.h" />
     <ClInclude Include="StateMachine.h" />
@@ -179,7 +179,7 @@
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="PathfindingEnemyStateGameObject.cpp" />
     <ClCompile Include="PatrolEnemyStateGameObject.cpp" />
-    <ClCompile Include="PhysicsObject.cpp" />
+    <ClCompile Include="PhysXObject.cpp" />
     <ClCompile Include="PlatformStateGameObject.cpp" />
     <ClCompile Include="PushdownMachine.cpp" />
     <ClCompile Include="PxPhysicsSystem.cpp" />
