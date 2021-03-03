@@ -8,8 +8,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-PhysicsObject::PhysicsObject(Transform* parentTransform, PxRigidActor* p) {
-	transform = parentTransform;
+PhysicsObject::PhysicsObject(PxRigidActor* p) {
 	pXActor = p;
 	inverseMass = 1.0f;
 	elasticity = 0.8f;

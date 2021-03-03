@@ -22,7 +22,7 @@ namespace NCL {
 
 		class PhysicsObject {
 		public:
-			PhysicsObject(Transform* parentTransform, PxRigidActor* pxTrans);
+			PhysicsObject(PxRigidActor* pxTrans);
 			~PhysicsObject();
 
 			void SetElasticity(float val) {
