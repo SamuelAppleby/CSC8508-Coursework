@@ -125,7 +125,6 @@ void TutorialGame::DrawDebugInfo() {
 	string message = world->GetShuffleObjects() ? "Shuffle Objects(F1):On" : "Shuffle Objects(F1):Off";
 	renderer->DrawString(message, Vector2(0, 10), Debug::WHITE, textSize);
 
-	message = world->GetShuffleConstraints() ? "Shuffle Constraints(F2):On" : "Shuffle Constraints(F2):Off";
 	renderer->DrawString(message, Vector2(0, 15), Debug::WHITE, textSize);
 
 	renderer->DrawString("Click Force(Scroll Wheel):" + std::to_string((int)forceMagnitude), Vector2(0, 25), Debug::WHITE, textSize);
@@ -158,11 +157,11 @@ void TutorialGame::DrawDebugInfo() {
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
 		renderer->DrawString("Position:" + selectionObject->GetTransform().GetPosition().ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + selectionObject->GetTransform().GetOrientation().ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
-		renderer->DrawString("Linear Velocity:" + selectionObject->GetPhysicsObject()->GetLinearVelocity().ToString(), Vector2(0, 75), Debug::WHITE, textSize);
-		renderer->DrawString("Angular Veclocity:" + selectionObject->GetPhysicsObject()->GetAngularVelocity().ToString(), Vector2(0, 80), Debug::WHITE, textSize);
-		renderer->DrawString("Inverse Mass:" + std::to_string(selectionObject->GetPhysicsObject()->GetInverseMass()), Vector2(0, 85), Debug::WHITE, textSize);
-		renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetFriction()), Vector2(0, 90), Debug::WHITE, textSize);
-		renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetElasticity()), Vector2(0, 95), Debug::WHITE, textSize);
+		//renderer->DrawString("Linear Velocity:" + selectionObject->GetPhysicsObject()->GetLinearVelocity().ToString(), Vector2(0, 75), Debug::WHITE, textSize);
+		//renderer->DrawString("Angular Veclocity:" + selectionObject->GetPhysicsObject()->GetAngularVelocity().ToString(), Vector2(0, 80), Debug::WHITE, textSize);
+		//renderer->DrawString("Inverse Mass:" + std::to_string(selectionObject->GetPhysicsObject()->GetInverseMass()), Vector2(0, 85), Debug::WHITE, textSize);
+		//renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetFriction()), Vector2(0, 90), Debug::WHITE, textSize);
+		//renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetElasticity()), Vector2(0, 95), Debug::WHITE, textSize);
 	}
 }
 
@@ -170,9 +169,6 @@ void TutorialGame::DrawDebugInfo() {
 void TutorialGame::UpdateKeys() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1))
 		world->ShuffleObjects(!world->GetShuffleObjects());
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2))
-		world->ShuffleConstraints(!world->GetShuffleConstraints());
-
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 10.0f;
 }
 
@@ -215,8 +211,8 @@ void TutorialGame::InitGameExamples(int level) {
 		break;
 	case 1:
 		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 50, 0)), 3);
-		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 5);
-		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 5);
+		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 3);
+		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 3);
 		break;
 	case 2:
 		break;
@@ -227,9 +223,9 @@ void TutorialGame::InitGameExamples(int level) {
 void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 200, -50)), Vector3(20, 20, 20));
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 200, -50)), 10);
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 200, -50)), 8.0f, 10.0f);
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -50)), 10);
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -50)), Vector3(10, 10, 10));
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 10.0f, 10.0f);
 		break;
 	}
 }
@@ -258,22 +254,22 @@ bool TutorialGame::SelectObject() {
 
 /* If we've selected an object, we can manipulate it with some key presses */
 void TutorialGame::DebugObjectMovement() {
-	if (inSelectionMode && selectionObject) {
-		/* Using the arrow keys and numpad we can twist the object with torque*/
-		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(10, 0, 0));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, 10));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM2))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -10, 0));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 10, 0));		
-	}
+	//if (inSelectionMode && selectionObject) {
+	//	/* Using the arrow keys and numpad we can twist the object with torque*/
+	//	selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(10, 0, 0));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, -10));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 0, 10));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM2))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -10, 0));
+	//	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
+	//		selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 10, 0));		
+	//}
 }
 
 /* If we have control of an object we can move it around and perform certain actions */
@@ -293,13 +289,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	float force = 3.0f * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-		lockedObject->GetPhysicsObject()->ApplyLinearImpulse(fwdAxis * force);
+		//lockedObject->GetPhysicsObject()->ApplyLinearImpulse(fwdAxis * force);
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-		lockedObject->GetPhysicsObject()->ApplyLinearImpulse(-rightAxis * force);
+		//lockedObject->GetPhysicsObject()->ApplyLinearImpulse(-rightAxis * force);
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-		lockedObject->GetPhysicsObject()->ApplyLinearImpulse(-fwdAxis * force);
+		//lockedObject->GetPhysicsObject()->ApplyLinearImpulse(-fwdAxis * force);
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-		lockedObject->GetPhysicsObject()->ApplyLinearImpulse(rightAxis * force);
+		//lockedObject->GetPhysicsObject()->ApplyLinearImpulse(rightAxis * force);
 
 	/* We can lock the objects orientation with K or swap between camera positons with 1 */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))

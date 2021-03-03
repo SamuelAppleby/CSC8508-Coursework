@@ -53,7 +53,7 @@ void EnemyStateGameObject::Update(float dt) {
 		}
 		o->IncreaseTimeInSet(dt);
 		/* Erase any objects that have existed too long, no longer exist, or are too far away */
-		if (o->GetTimeInSet() > 10.0f || !o->IsActive() || dir.Length() > 80.0f) {
+		if (o->GetTimeInSet() > 10.0f || dir.Length() > 80.0f) {
 			itr = interestObjects.erase(itr);
 			if (interestObjects.size() == 0) {
 				followTimeout = 0.0f;
@@ -85,7 +85,7 @@ void EnemyStateGameObject::Update(float dt) {
 			rotMatrix.SetColumn(2, -travelDir.Normalised());
 			GetTransform().SetOrientation(rotMatrix);
 		}
-		GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
+		//GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
 		stateMachine->Update(dt);
 	}
 }

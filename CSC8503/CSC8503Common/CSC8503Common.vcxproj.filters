@@ -34,9 +34,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsObject.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -115,11 +112,11 @@
     <ClInclude Include="GameWorld.h">
       <Filter>Other</Filter>
     </ClInclude>
+    <ClInclude Include="PhysXObject.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PhysicsObject.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -160,6 +157,9 @@
       <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="PxPhysicsSystem.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXObject.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

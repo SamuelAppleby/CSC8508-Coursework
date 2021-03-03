@@ -8,9 +8,9 @@ using namespace CSC8503;
 BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 	BehaviourAction* idling = new BehaviourAction("Idling", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == Initialise) {
-			GetPhysicsObject()->ClearForces();
+			/*GetPhysicsObject()->ClearForces();
 			GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
-			GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
+			GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));*/
 			idleTimer = rand() % 3 + 2;		// How long will we wait until we do something 
 			currentBehaviour = behaviour::IDLE;
 			state = Ongoing;
@@ -35,11 +35,11 @@ BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 			travelDir = (randomLocation - GetTransform().GetPosition());
 			travelDir.y = 0;
 			if (travelDir.Length() <= 5.0f) {		// If we're close enough (y axis is ignored because we can't fly)
-				GetPhysicsObject()->ClearForces();
+				//GetPhysicsObject()->ClearForces();
 				return Success;
 			}
-			else
-				GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
+			//else
+				//GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
 		}
 		return state;
 		});
@@ -50,7 +50,7 @@ BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 			rayCast = true;
 			searchTime = rand() % 10 + 5;		// How long do we spend scanning the environment
 			halfTime = searchTime / 3;
-			GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
+			//GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
 			currentBehaviour = behaviour::SCANNING;
 			return Ongoing;
 		}
@@ -58,14 +58,14 @@ BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 			searchTime -= dt;
 			rayTime -= dt;
 			if (searchTime < 0.0f || foundObject) {		// If we run out of time or find something 
-				GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
+				//GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
 				turning = false;
 				rayCast = false;
 				return Success;
 			}
-			else 
+			/*else 
 				searchTime > 2 * halfTime ? GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0.5f, 0)) :
-					GetPhysicsObject()->SetAngularVelocity(Vector3(0, -0.5f, 0));
+					GetPhysicsObject()->SetAngularVelocity(Vector3(0, -0.5f, 0));*/
 		}
 		return state;
 		});
@@ -87,8 +87,8 @@ BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 				return Success;
 			else if (travelDir.Length() > 50.0f)		// If object gets too far away, return 
 				return Failure;
-			else
-				GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
+		/*	else
+				GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));*/
 		}
 		return state;
 		});
@@ -107,8 +107,8 @@ BehaviourTreeEnemy::BehaviourTreeEnemy(Vector3 val) {
 				return Success;
 			else if (searchTime < 0.0f)
 				return Failure;
-			else
-				GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
+			/*else
+				GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));*/
 		}
 		return state;
 		});
