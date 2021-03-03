@@ -9,7 +9,6 @@
 #include "../../include/foundation/Px.h"
 #include "../../include/foundation/PxTransform.h"
 using namespace physx;
-
 namespace NCL {
 	namespace CSC8503 {
 		class PhysXObject {

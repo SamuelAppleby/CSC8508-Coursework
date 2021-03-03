@@ -43,7 +43,7 @@ void Camera::UpdateCamera(float dt) {
 	}
 	/* Otherwise set the global positions */
 	else if (currentState == CameraState::GLOBAL1) {
-		position = Vector3(0, 1400, -500);
+		position = Vector3(0, 800, 0);
 		yaw = 0;
 		pitch = -90;
 	}

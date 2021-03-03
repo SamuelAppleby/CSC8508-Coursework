@@ -4,15 +4,11 @@
  *                170348069
  *			Game World Implementation		 */
 #include "GameWorld.h"
-
-
 using namespace NCL;
 using namespace NCL::CSC8503;
 
 GameWorld::GameWorld()	{
 	mainCamera = new Camera();
-
-	shuffleConstraints	= false;
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
 }
@@ -22,14 +18,10 @@ GameWorld::~GameWorld()	{
 
 void GameWorld::Clear() {
 	gameObjects.clear();
-	constraints.clear();
 }
 
 void GameWorld::ClearAndErase() {
 	for (auto& i : gameObjects) {
-		delete i;
-	}
-	for (auto& i : constraints) {
 		delete i;
 	}
 	Clear();
@@ -62,39 +54,15 @@ void GameWorld::UpdateWorld(float dt) {
 	std::mt19937 g(rd());
 	if (shuffleObjects) 
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
-	if (shuffleConstraints) 
-		std::shuffle(constraints.begin(), constraints.end(), g);
 	for (auto& i : gameObjects) {
 		i->Update();
-		if (i->GetTimeAlive() > 40.0f)		// Objects living longer than 40s are destroyed
-			i->SetIsActive(false);
-		if (i->GetIsSafeForDeletion())		// Only when objects have been removed from any associated collision list, can we delete them
-			RemoveGameObject(i, true);
 	}
 }
 
 void GameWorld::ShowFacing() {
 	for (auto& i : gameObjects) {
-		if(i->IsActive())
-			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects
+		Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects
 	}
-}
-
-/* Constraint Tutorial Stuff */
-void GameWorld::AddConstraint(Constraint* c) {
-	constraints.emplace_back(c);
-}
-
-void GameWorld::RemoveConstraint(Constraint* c, bool andDelete) {
-	constraints.erase(std::remove(constraints.begin(), constraints.end(), c), constraints.end());
-	if (andDelete) {
-		delete c;
-	}
-}
-
-void GameWorld::GetConstraintIterators(std::vector<Constraint*>::const_iterator& first, std::vector<Constraint*>::const_iterator& last) const {
-	first	= constraints.begin();
-	last	= constraints.end();
 }
 
 

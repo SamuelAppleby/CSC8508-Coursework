@@ -10,14 +10,12 @@ using namespace NCL::CSC8503;
 GameObject::GameObject(string objectName) {
 	name = objectName;
 	worldID = -1;
-	isActive = true;
 	physicsObject = nullptr;
 	renderObject = nullptr;
 	selectedObject = false;
+	timeAlive = 0.0f;
 	timeInSet = 0.0f;
 	powerUpTimer = 0.0f;
-	timeAlive = 0.0f;
-	safeForDeletion = false;
 }
 
 GameObject::~GameObject() {

@@ -102,7 +102,7 @@ void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius
 
 void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight) {
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight), 
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight),
 		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10);
 	pXPhysics->GetGScene()->addActor(*body);
