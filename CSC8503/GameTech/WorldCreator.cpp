@@ -136,7 +136,6 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, basicShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	p->SetPhysicsObject(new PhysicsObject(&p->GetTransform(), body));
-	p->GetPhysicsObject()->InitSphereInertia(false);
 	world->AddGameObject(p);
 }
 

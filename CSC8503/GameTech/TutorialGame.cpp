@@ -227,9 +227,9 @@ void TutorialGame::InitGameExamples(int level) {
 void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-40, 0, -50)), 10);
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -50)), 10);
 		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -50)), Vector3(10, 10, 10));
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(40, 50, -50)), 10.0f, 10.0f);
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 10.0f, 10.0f);
 		break;
 	}
 }
