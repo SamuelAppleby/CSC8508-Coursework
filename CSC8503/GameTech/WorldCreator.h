@@ -6,7 +6,6 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
-
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;

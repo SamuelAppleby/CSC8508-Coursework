@@ -15,24 +15,24 @@ namespace NCL {
 		public:
 			GameObject(string name = "");
 			~GameObject();
+
 			static Quaternion GetRegularQuaternion(PxQuat q) {
 				return Quaternion(q.x, q.y, q.z, q.w);
 			}
+
 			static Vector3 GetRegularVector3(PxVec3 pxVec) {
 				return Vector3(pxVec.x, pxVec.y, pxVec.z);
 			}
+
 			void Update() {
 				if (physicsObject->GetPXActor() != nullptr) {
 					transform.SetOrientation(GetRegularQuaternion(physicsObject->GetPXActor()->getGlobalPose().q));
 					transform.SetPosition(GetRegularVector3(physicsObject->GetPXActor()->getGlobalPose().p));
 				}
 			}
+
 			void SetName(string val) {
 				name = val;
-			}
-
-			bool IsActive() const {
-				return isActive;
 			}
 
 			Transform& GetTransform() {
@@ -66,61 +66,59 @@ namespace NCL {
 			void SetWorldID(int newID) {
 				worldID = newID;
 			}
+
 			int GetWorldID() const {
 				return worldID;
 			}
-			void SetIsActive(bool val) {
-				isActive = val;
-			}
+
 			int GetSelected() const {
 				return selectedObject;
 			}
+
 			void SetSelected(bool val) {
 				selectedObject = val;
 			}
+
 			void IncreaseTimeInSet(float dt) {
 				timeInSet += dt;
 			}
+
 			void SetTimeInSet(float val) {
 				timeInSet = val;
 			}
+
 			float GetTimeInSet() const {
 				return timeInSet;
 			}
+
 			void SetPowerUpTimer(float val) {
 				powerUpTimer = val;
 			}
+
 			float GetPowerUpTimer() const {
 				return powerUpTimer;
 			}
+
 			float GetTimeAlive() const {
 				return timeAlive;
 			}
+
 			void StepTimeAlive(float dt) {
 				timeAlive += dt;
 			}
-			bool GetIsSafeForDeletion() const {
-				return safeForDeletion;
-			}
-			void SetIsSafeForDeletion(bool val) {
-				safeForDeletion = val;
-			}
+
 		protected:
 			Transform			transform;
 
 			PhysXObject* physicsObject;
 			RenderObject* renderObject;
 
-			bool isActive;
 			int	worldID;
 			string	name;
 			bool selectedObject;
-			Vector3 broadphaseAABB;
 			float timeInSet;
 			float timeAlive;
 			float powerUpTimer;
-
-			bool safeForDeletion;		// We can't just delete an object whenever we want, so we need this
 		};
 	}
 }

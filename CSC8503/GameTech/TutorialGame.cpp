@@ -125,7 +125,6 @@ void TutorialGame::DrawDebugInfo() {
 	string message = world->GetShuffleObjects() ? "Shuffle Objects(F1):On" : "Shuffle Objects(F1):Off";
 	renderer->DrawString(message, Vector2(0, 10), Debug::WHITE, textSize);
 
-	message = world->GetShuffleConstraints() ? "Shuffle Constraints(F2):On" : "Shuffle Constraints(F2):Off";
 	renderer->DrawString(message, Vector2(0, 15), Debug::WHITE, textSize);
 
 	renderer->DrawString("Click Force(Scroll Wheel):" + std::to_string((int)forceMagnitude), Vector2(0, 25), Debug::WHITE, textSize);
@@ -170,9 +169,6 @@ void TutorialGame::DrawDebugInfo() {
 void TutorialGame::UpdateKeys() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1))
 		world->ShuffleObjects(!world->GetShuffleObjects());
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2))
-		world->ShuffleConstraints(!world->GetShuffleConstraints());
-
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 10.0f;
 }
 
