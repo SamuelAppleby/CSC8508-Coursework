@@ -58,7 +58,7 @@ void PatrolEnemyStateGameObject::Patrol(float dt) {
 	travelDir = route[currentDest] - GetTransform().GetPosition();
 	travelDir.y = 0;
 	if (travelDir.Length() < 10.0f) {
-		GetPhysicsObject()->ClearForces();
+		//GetPhysicsObject()->ClearForces();
 		routeTimeout = 0.0f;
 		if (!backwards) {
 			if (currentDest == route.size() - 1) {// Path completed, so go back to start

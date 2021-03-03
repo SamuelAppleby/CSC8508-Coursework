@@ -85,7 +85,7 @@ void EnemyStateGameObject::Update(float dt) {
 			rotMatrix.SetColumn(2, -travelDir.Normalised());
 			GetTransform().SetOrientation(rotMatrix);
 		}
-		GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
+		//GetPhysicsObject()->ApplyLinearImpulse(Vector3(std::clamp(travelDir.x, -speed, speed), 0, std::clamp(travelDir.z, -speed, speed)));
 		stateMachine->Update(dt);
 	}
 }
