@@ -21,12 +21,7 @@ namespace NCL {
 			static Vector3 GetRegularVector3(PxVec3 pxVec) {
 				return Vector3(pxVec.x, pxVec.y, pxVec.z);
 			}
-			void Update() {
-				if (physicsObject->GetPXActor() != nullptr) {
-					transform.SetOrientation(GetRegularQuaternion(physicsObject->GetPXActor()->getGlobalPose().q));
-					transform.SetPosition(GetRegularVector3(physicsObject->GetPXActor()->getGlobalPose().p));
-				}
-			}
+			virtual void Update(float dt) {}
 			void SetName(string val) {
 				name = val;
 			}
@@ -105,6 +100,9 @@ namespace NCL {
 			void SetIsSafeForDeletion(bool val) {
 				safeForDeletion = val;
 			}
+
+
+	
 		protected:
 			Transform			transform;
 

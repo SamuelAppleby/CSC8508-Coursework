@@ -206,5 +206,8 @@
     <ClInclude Include="..\CSC8503\CSC8503Common\Debug.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="PhyxConversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

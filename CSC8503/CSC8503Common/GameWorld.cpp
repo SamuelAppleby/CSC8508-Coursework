@@ -9,63 +9,80 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-GameWorld::GameWorld()	{
+GameWorld::GameWorld()
+{
 	mainCamera = new Camera();
 
-	shuffleConstraints	= false;
-	shuffleObjects		= false;
-	worldIDCounter		= 0;
+	shuffleConstraints = false;
+	shuffleObjects = false;
+	worldIDCounter = 0;
 }
 
-GameWorld::~GameWorld()	{
+GameWorld::~GameWorld()
+{
 }
 
-void GameWorld::Clear() {
+void GameWorld::Clear()
+{
 	gameObjects.clear();
 	constraints.clear();
 }
 
-void GameWorld::ClearAndErase() {
-	for (auto& i : gameObjects) {
+void GameWorld::ClearAndErase()
+{
+	for (auto& i : gameObjects)
+	{
 		delete i;
 	}
-	for (auto& i : constraints) {
+	for (auto& i : constraints)
+	{
 		delete i;
 	}
 	Clear();
 }
 
-void GameWorld::AddGameObject(GameObject* o) {
+void GameWorld::AddGameObject(GameObject* o)
+{
 	gameObjects.emplace_back(o);
 	o->SetWorldID(worldIDCounter++);
 }
 
-void GameWorld::RemoveGameObject(GameObject* o, bool andDelete) {
+void GameWorld::RemoveGameObject(GameObject* o, bool andDelete)
+{
 	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), o), gameObjects.end());
 	if (andDelete)
 		delete o;
 }
 
-void GameWorld::GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const {
-	first	= gameObjects.begin();
-	last	= gameObjects.end();
+void GameWorld::GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const
+{
+	first = gameObjects.begin();
+	last = gameObjects.end();
 }
 
-void GameWorld::OperateOnContents(GameObjectFunc f) {
-	for (GameObject* g : gameObjects) {
+void GameWorld::OperateOnContents(GameObjectFunc f)
+{
+	for (GameObject* g : gameObjects)
+	{
 		f(g);
 	}
 }
 
-void GameWorld::UpdateWorld(float dt) {
+void GameWorld::UpdateWorld(float dt)
+{
 	std::random_device rd;
 	std::mt19937 g(rd());
-	if (shuffleObjects) 
+	if (shuffleObjects)
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
-	if (shuffleConstraints) 
+	if (shuffleConstraints)
 		std::shuffle(constraints.begin(), constraints.end(), g);
-	for (auto& i : gameObjects) {
-		i->Update();
+	for (auto& i : gameObjects)
+	{
+
+		i->GetTransform().SetOrientation(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().q);
+		i->GetTransform().SetPosition(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().p);
+
+		i->Update(dt);
 		if (i->GetTimeAlive() > 40.0f)		// Objects living longer than 40s are destroyed
 			i->SetIsActive(false);
 		if (i->GetIsSafeForDeletion())		// Only when objects have been removed from any associated collision list, can we delete them
@@ -73,28 +90,34 @@ void GameWorld::UpdateWorld(float dt) {
 	}
 }
 
-void GameWorld::ShowFacing() {
-	for (auto& i : gameObjects) {
-		if(i->IsActive())
+void GameWorld::ShowFacing()
+{
+	for (auto& i : gameObjects)
+	{
+		if (i->IsActive())
 			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects
 	}
 }
 
 /* Constraint Tutorial Stuff */
-void GameWorld::AddConstraint(Constraint* c) {
+void GameWorld::AddConstraint(Constraint* c)
+{
 	constraints.emplace_back(c);
 }
 
-void GameWorld::RemoveConstraint(Constraint* c, bool andDelete) {
+void GameWorld::RemoveConstraint(Constraint* c, bool andDelete)
+{
 	constraints.erase(std::remove(constraints.begin(), constraints.end(), c), constraints.end());
-	if (andDelete) {
+	if (andDelete)
+	{
 		delete c;
 	}
 }
 
-void GameWorld::GetConstraintIterators(std::vector<Constraint*>::const_iterator& first, std::vector<Constraint*>::const_iterator& last) const {
-	first	= constraints.begin();
-	last	= constraints.end();
+void GameWorld::GetConstraintIterators(std::vector<Constraint*>::const_iterator& first, std::vector<Constraint*>::const_iterator& last) const
+{
+	first = constraints.begin();
+	last = constraints.end();
 }
 
 

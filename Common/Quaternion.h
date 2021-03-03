@@ -8,6 +8,8 @@ https://research.ncl.ac.uk/game/
 */
 #pragma once
 #include <iostream>
+#include "../../include/PxPhysicsAPI.h"
+using namespace physx;
 
 namespace NCL {
 	namespace Maths {
@@ -30,6 +32,7 @@ namespace NCL {
 			Quaternion(void);
 			Quaternion(float x, float y, float z, float w);
 			Quaternion(const Vector3& vector, float w);
+			Quaternion(const PxQuat& q);
 
 			Quaternion(const Matrix3 &m);
 			Quaternion(const Matrix4 &m);
