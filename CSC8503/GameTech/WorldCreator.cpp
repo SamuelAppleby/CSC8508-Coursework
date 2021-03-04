@@ -74,7 +74,7 @@ WorldCreator::~WorldCreator() {
 	delete basicShader;
 }
 
-void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const Vector3 halfSizes) {
+void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes) {
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *pXPhysics->GetGMaterial());
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -94,7 +94,7 @@ void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* sphere = new GameObject;
-	sphere->GetTransform().SetScale(Vector3(radius, radius, radius));
+	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
 	sphere->SetPhysicsObject(new PhysXObject(body));
 	world->AddGameObject(sphere);
@@ -108,13 +108,13 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* capsule = new GameObject;
-	capsule->GetTransform().SetScale(Vector3(radius * 2, halfHeight * 2, radius * 2));
+	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
 	capsule->SetPhysicsObject(new PhysXObject(body));
 	world->AddGameObject(capsule);
 }
 
-void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const Vector3 halfSizes) {
+void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes) {
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *pXPhysics->GetGMaterial());
 	pXPhysics->GetGScene()->addActor(*body);
@@ -132,7 +132,7 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* p = new GameObject;
-	p->GetTransform().SetScale(Vector3(radius, radius, radius));
+	p->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, basicShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	p->SetPhysicsObject(new PhysXObject(body));
@@ -148,7 +148,7 @@ void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) 
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* p = new GameObject;
-	p->GetTransform().SetScale(Vector3(meshSize * 2, meshSize * 2, meshSize * 2));
+	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, basicShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	p->SetPhysicsObject(new PhysXObject(body));
@@ -164,7 +164,7 @@ void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale) {
 	pXPhysics->GetGScene()->addActor(*body);
 
 	GameObject* e = new GameObject;
-	e->GetTransform().SetScale(Vector3(meshSize * 2, meshSize * 2, meshSize * 2));
+	e->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
 	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, basicTex, basicShader));
 	e->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
 	e->SetPhysicsObject(new PhysXObject(body));

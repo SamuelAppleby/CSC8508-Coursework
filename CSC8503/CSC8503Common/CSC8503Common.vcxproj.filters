@@ -37,18 +37,6 @@
     <ClInclude Include="Transform.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyStateGameObject.h">
-      <Filter>AI\State Machines</Filter>
-    </ClInclude>
-    <ClInclude Include="PathfindingEnemyStateGameObject.h">
-      <Filter>AI\State Machines</Filter>
-    </ClInclude>
-    <ClInclude Include="PatrolEnemyStateGameObject.h">
-      <Filter>AI\State Machines</Filter>
-    </ClInclude>
-    <ClInclude Include="PlatformStateGameObject.h">
-      <Filter>AI\State Machines</Filter>
-    </ClInclude>
     <ClInclude Include="State.h">
       <Filter>AI\State Machines</Filter>
     </ClInclude>
@@ -74,9 +62,6 @@
       <Filter>AI\Behaviour Trees</Filter>
     </ClInclude>
     <ClInclude Include="BehaviourSequence.h">
-      <Filter>AI\Behaviour Trees</Filter>
-    </ClInclude>
-    <ClInclude Include="BehaviourTreeEnemy.h">
       <Filter>AI\Behaviour Trees</Filter>
     </ClInclude>
     <ClInclude Include="PauseScreen.h">
@@ -120,26 +105,11 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="PathfindingEnemyStateGameObject.cpp">
-      <Filter>AI\State Machines</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyStateGameObject.cpp">
-      <Filter>AI\State Machines</Filter>
-    </ClCompile>
-    <ClCompile Include="PatrolEnemyStateGameObject.cpp">
-      <Filter>AI\State Machines</Filter>
-    </ClCompile>
-    <ClCompile Include="PlatformStateGameObject.cpp">
-      <Filter>AI\State Machines</Filter>
-    </ClCompile>
     <ClCompile Include="StateGameObject.cpp">
       <Filter>AI\State Machines</Filter>
     </ClCompile>
     <ClCompile Include="StateMachine.cpp">
       <Filter>AI\State Machines</Filter>
-    </ClCompile>
-    <ClCompile Include="BehaviourTreeEnemy.cpp">
-      <Filter>AI\Behaviour Trees</Filter>
     </ClCompile>
     <ClCompile Include="PushdownMachine.cpp">
       <Filter>AI\Pushdown Automata</Filter>
