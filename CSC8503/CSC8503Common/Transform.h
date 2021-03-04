@@ -8,41 +8,62 @@
 #include "../../Common/Matrix3.h"
 #include "../../Common/Vector3.h"
 #include "../../Common/Quaternion.h"
+ //#include "../CSC8503Common/PxPhysicsSystem.h"
+#include "../../include/PxPhysicsAPI.h"
+
 #include <vector>
+
 using std::vector;
+
 using namespace NCL::Maths;
-namespace NCL {
-	namespace CSC8503 {
-		class Transform {
+using namespace physx;
+
+namespace NCL
+{
+	namespace CSC8503
+	{
+		class Transform
+		{
 		public:
 			Transform();
 			~Transform();
+
 			Transform& SetPosition(const Vector3& worldPos);
 			Transform& SetScale(const Vector3& worldScale);
+			Transform& SetOrientation(const PxQuat& newOr);
+
+
+			Transform& SetPosition(const PxVec3& worldPos);
+			Transform& SetScale(const PxVec3& worldScale);
 			Transform& SetOrientation(const Quaternion& newOr);
 
-			Vector3 GetPosition() const {
-				return position;
+			Vector3 GetPosition() const
+			{
+				return Vector3(pxPos);
 			}
 
-			Vector3 GetScale() const {
-				return scale;
+			Vector3 GetScale() const
+			{
+				return Vector3(pxScale);
 			}
 
-			Quaternion GetOrientation() const {
-				return orientation;
+			Quaternion GetOrientation() const
+			{				
+				return Quaternion(pxOrientation);
 			}
 
-			Matrix4 GetMatrix() const {
+			Matrix4 GetMatrix() const
+			{
 				return matrix;
 			}
 			void UpdateMatrix();
 		protected:
-			Matrix4		matrix;
-			Quaternion	orientation;
-			Vector3		position;
+			Matrix4		matrix;		
 
-			Vector3		scale;
+
+			PxVec3    pxPos;
+			PxVec3    pxScale;
+			PxQuat    pxOrientation;
 		};
 	}
 }

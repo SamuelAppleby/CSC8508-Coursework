@@ -24,12 +24,7 @@ namespace NCL {
 				return Vector3(pxVec.x, pxVec.y, pxVec.z);
 			}
 
-			void Update() {
-				if (physicsObject->GetPXActor() != nullptr) {
-					transform.SetOrientation(GetRegularQuaternion(physicsObject->GetPXActor()->getGlobalPose().q));
-					transform.SetPosition(GetRegularVector3(physicsObject->GetPXActor()->getGlobalPose().p));
-				}
-			}
+			virtual void Update(float dt) {}
 
 			void SetName(string val) {
 				name = val;
