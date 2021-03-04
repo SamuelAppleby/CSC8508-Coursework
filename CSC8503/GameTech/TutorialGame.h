@@ -7,14 +7,10 @@
 #include "../GameTech/GameTechRenderer.h"
 #include "../CSC8503Common/StateGameObject.h"
 #include "../CSC8503Common/NavigationGrid.h"
-#include "../CSC8503Common/PathFindingEnemyStateGameObject.h"
-#include "../CSC8503Common/PatrolEnemyStateGameObject.h"
-#include "../CSC8503Common/PlatformStateGameObject.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../../Common/Camera.h"
 #include "../CSC8503Common/Pushdownstate.h"
 #include "../CSC8503Common/PauseScreen.h"
-#include "../CSC8503Common/BehaviourTreeEnemy.h"
 #include <ctype.h>
 #include "PxPhysicsAPI.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
@@ -58,8 +54,6 @@ namespace NCL {
 			GameObject* lockedObject	= nullptr;
 		
 			PlayerObject* player;
-			vector<EnemyStateGameObject*> enemies;
-			vector<PlatformStateGameObject*> platforms;
 			int currentLevel;
 			bool lockedOrientation;
 

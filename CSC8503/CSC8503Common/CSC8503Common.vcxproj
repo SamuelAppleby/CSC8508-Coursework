@@ -146,17 +146,12 @@
     <ClInclude Include="BehaviourNodeWithChildren.h" />
     <ClInclude Include="BehaviourSelector.h" />
     <ClInclude Include="BehaviourSequence.h" />
-    <ClInclude Include="BehaviourTreeEnemy.h" />
-    <ClInclude Include="EnemyStateGameObject.h" />
     <ClInclude Include="NavigationGrid.h" />
     <ClInclude Include="NavigationMap.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NavigationPath.h" />
-    <ClInclude Include="PathfindingEnemyStateGameObject.h" />
-    <ClInclude Include="PatrolEnemyStateGameObject.h" />
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="PhysXObject.h" />
-    <ClInclude Include="PlatformStateGameObject.h" />
     <ClInclude Include="PushdownMachine.h" />
     <ClInclude Include="PushdownState.h" />
     <ClInclude Include="PxPhysicsSystem.h" />
@@ -171,16 +166,11 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BehaviourTreeEnemy.cpp" />
-    <ClCompile Include="EnemyStateGameObject.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
-    <ClCompile Include="PathfindingEnemyStateGameObject.cpp" />
-    <ClCompile Include="PatrolEnemyStateGameObject.cpp" />
     <ClCompile Include="PhysXObject.cpp" />
-    <ClCompile Include="PlatformStateGameObject.cpp" />
     <ClCompile Include="PushdownMachine.cpp" />
     <ClCompile Include="PxPhysicsSystem.cpp" />
     <ClCompile Include="StateGameObject.cpp" />

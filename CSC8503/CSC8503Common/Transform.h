@@ -8,7 +8,6 @@
 #include "../../Common/Matrix3.h"
 #include "../../Common/Vector3.h"
 #include "../../Common/Quaternion.h"
- //#include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../../include/PxPhysicsAPI.h"
 
 #include <vector>
@@ -28,28 +27,23 @@ namespace NCL
 			Transform();
 			~Transform();
 
-			Transform& SetPosition(const Vector3& worldPos);
-			Transform& SetScale(const Vector3& worldScale);
-			Transform& SetOrientation(const PxQuat& newOr);
+			void SetPosition(const PxVec3& worldPos);
+			void SetScale(const PxVec3& worldScale);
+			void SetOrientation(const PxQuat& newOr);
 
-
-			Transform& SetPosition(const PxVec3& worldPos);
-			Transform& SetScale(const PxVec3& worldScale);
-			Transform& SetOrientation(const Quaternion& newOr);
-
-			Vector3 GetPosition() const
+			PxVec3 GetPosition() const
 			{
-				return Vector3(pxPos);
+				return pxPos;
 			}
 
-			Vector3 GetScale() const
+			PxVec3 GetScale() const
 			{
-				return Vector3(pxScale);
+				return pxScale;
 			}
 
-			Quaternion GetOrientation() const
+			PxQuat GetOrientation() const
 			{				
-				return Quaternion(pxOrientation);
+				return pxOrientation;
 			}
 
 			Matrix4 GetMatrix() const
@@ -58,12 +52,10 @@ namespace NCL
 			}
 			void UpdateMatrix();
 		protected:
-			Matrix4		matrix;		
-
-
-			PxVec3    pxPos;
-			PxVec3    pxScale;
-			PxQuat    pxOrientation;
+			Matrix4	matrix;	
+			PxVec3 pxPos;
+			PxVec3 pxScale;
+			PxQuat pxOrientation;
 		};
 	}
 }

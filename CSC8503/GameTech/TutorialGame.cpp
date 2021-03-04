@@ -43,10 +43,6 @@ void TutorialGame::UpdateLevel(float dt) {
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q)) {
 		inSelectionMode = !inSelectionMode;
-		if (dynamic_cast<EnemyStateGameObject*>(selectionObject))
-			((EnemyStateGameObject*)selectionObject)->SetDisplayDirection(inSelectionMode);
-		if (dynamic_cast<BehaviourTreeEnemy*>(selectionObject))
-			((BehaviourTreeEnemy*)selectionObject)->SetDisplayRoute(inSelectionMode);
 		if (inSelectionMode) {
 			Window::GetWindow()->ShowOSPointer(true);
 			Window::GetWindow()->LockMouseToWindow(false);
@@ -108,7 +104,7 @@ void TutorialGame::UpdateLevel(float dt) {
 	if (lockedObject) {
 		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
 		if (lockedOrientation)
-			lockedObject->GetTransform().SetOrientation(Matrix4::Rotation(world->GetMainCamera()->GetYaw(), { 0, 1, 0 }));
+			lockedObject->GetTransform().SetOrientation(PxQuat(world->GetMainCamera()->GetYaw(), { 0, 1, 0 }));
 	}
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
 		world->GetMainCamera()->UpdateCamera(dt);
@@ -147,16 +143,10 @@ void TutorialGame::DrawDebugInfo() {
 			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
 			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
 		}
-		else if (dynamic_cast<BehaviourTreeEnemy*>(selectionObject)) {
-			renderer->DrawString("Current Behaviour:" + ((BehaviourTreeEnemy*)selectionObject)->BehaviourToString(), Vector2(0, 55), Debug::WHITE, textSize);
-
-			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
-			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
-		}
 		
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
-		renderer->DrawString("Position:" + selectionObject->GetTransform().GetPosition().ToString(), Vector2(0, 65), Debug::WHITE, textSize);
-		renderer->DrawString("Orientation:" + selectionObject->GetTransform().GetOrientation().ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
+		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
+		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
 		//renderer->DrawString("Linear Velocity:" + selectionObject->GetPhysicsObject()->GetLinearVelocity().ToString(), Vector2(0, 75), Debug::WHITE, textSize);
 		//renderer->DrawString("Angular Veclocity:" + selectionObject->GetPhysicsObject()->GetAngularVelocity().ToString(), Vector2(0, 80), Debug::WHITE, textSize);
 		//renderer->DrawString("Inverse Mass:" + std::to_string(selectionObject->GetPhysicsObject()->GetInverseMass()), Vector2(0, 85), Debug::WHITE, textSize);
@@ -197,7 +187,7 @@ void TutorialGame::InitFloors(int level) {
 	case 0:
 		break;
 	case 1:		
-		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), Vector3(500, 1, 500));
+		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(500, 1, 500));
 		break;
 	case 2:
 		break;
@@ -224,7 +214,7 @@ void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
 		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -50)), 10);
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -50)), Vector3(10, 10, 10));
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -50)), PxVec3(10, 10, 10));
 		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 10.0f, 10.0f);
 		break;
 	}
@@ -285,7 +275,7 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
-	Vector3 charForward = lockedObject->GetTransform().GetOrientation() * Vector3(0, 0, 1);
+	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 	float force = 3.0f * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
