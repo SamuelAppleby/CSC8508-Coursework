@@ -13,7 +13,7 @@ namespace NCL {
 	namespace CSC8503 {
 		class PhysXObject {
 		public:
-			PhysXObject(PxRigidActor* pxTrans);
+			PhysXObject(PxRigidActor* pxActor);
 			~PhysXObject();
 
 			PxRigidActor* GetPXActor() const {

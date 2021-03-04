@@ -13,10 +13,10 @@ class WorldCreator {
 public:
 	static void Create(PxPhysicsSystem* p, GameWorld* w);
 	~WorldCreator();
-	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 dimensions);
+	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes);
 	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius);
 	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight);
-	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 dimensions);
+	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes);
 
 	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
 	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
