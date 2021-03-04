@@ -147,11 +147,15 @@ void TutorialGame::DrawDebugInfo() {
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
-		//renderer->DrawString("Linear Velocity:" + selectionObject->GetPhysicsObject()->GetLinearVelocity().ToString(), Vector2(0, 75), Debug::WHITE, textSize);
-		//renderer->DrawString("Angular Veclocity:" + selectionObject->GetPhysicsObject()->GetAngularVelocity().ToString(), Vector2(0, 80), Debug::WHITE, textSize);
-		//renderer->DrawString("Inverse Mass:" + std::to_string(selectionObject->GetPhysicsObject()->GetInverseMass()), Vector2(0, 85), Debug::WHITE, textSize);
-		//renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetFriction()), Vector2(0, 90), Debug::WHITE, textSize);
-		//renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetElasticity()), Vector2(0, 95), Debug::WHITE, textSize);
+
+		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+			PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
+			renderer->DrawString("Linear Velocity:" + Vector3(body->getLinearVelocity()).ToString(), Vector2(0, 75), Debug::WHITE, textSize);
+			renderer->DrawString("Angular Veclocity:" + Vector3(body->getAngularVelocity()).ToString(), Vector2(0, 80), Debug::WHITE, textSize);
+			renderer->DrawString("Mass:" + std::to_string(body->getMass()), Vector2(0, 85), Debug::WHITE, textSize);
+			//renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetFriction()), Vector2(0, 90), Debug::WHITE, textSize);
+			//renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetElasticity()), Vector2(0, 95), Debug::WHITE, textSize);
+		}				
 	}
 }
 
@@ -262,29 +266,30 @@ bool TutorialGame::SelectObject() {
 /* If we've selected an object, we can manipulate it with some key presses */
 void TutorialGame::DebugObjectMovement() {
 	if (inSelectionMode && selectionObject) {
-		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
-
 		/* Using the arrow keys and numpad we can twist the object with torque*/
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
-			body->addTorque(PxVec3(-10, 0, 0), PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT))
-			body->addTorque(PxVec3(10, 0, 0), PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP))
-			body->addTorque(PxVec3(0, 0, -10), PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN))
-			body->addTorque(PxVec3(0, 0, 10), PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM2))
-			body->addTorque(PxVec3(0, -10, 0), PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
-			body->addTorque(PxVec3(0, 10, 0), PxForceMode::eIMPULSE);
+
+		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+			PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
+
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
+				body->addTorque(PxVec3(-10, 0, 0), PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT))
+				body->addTorque(PxVec3(10, 0, 0), PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP))
+				body->addTorque(PxVec3(0, 0, -10), PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN))
+				body->addTorque(PxVec3(0, 0, 10), PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM2))
+				body->addTorque(PxVec3(0, -10, 0), PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
+				body->addTorque(PxVec3(0, 10, 0), PxForceMode::eIMPULSE);
+		}	
 	}
 }
 
 /* If we have control of an object we can move it around and perform certain actions */
 void TutorialGame::LockedObjectMovement(float dt) {
-	PxRigidDynamic* body = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
-
 	if (inSelectionMode && selectionObject)
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 	Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
@@ -297,19 +302,25 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 	float force = 5000.0f * dt;
 
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-		body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-		body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-		body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-		body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
+	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
+
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+			body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+			body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+			body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+			body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
+
+		body->setLinearVelocity(PhyxConversions::GetVector3(Maths::Clamp(Vector3(body->getLinearVelocity()), Vector3(-15, -50, -15), Vector3(15, 50, 15))));
+
+		/* We can lock the objects orientation with K or swap between camera positons with 1 */
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))
+			lockedOrientation = !lockedOrientation;
+	}
 	
-	body->setLinearVelocity(PhyxConversions::GetVector3(Maths::Clamp(Vector3(body->getLinearVelocity()), Vector3(-15, -50, -15), Vector3(15, 50, 15))));
-	/* We can lock the objects orientation with K or swap between camera positons with 1 */
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))
-		lockedOrientation = !lockedOrientation;
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1)) {
 		switch (camState) {
 		case CameraState::THIRDPERSON:
