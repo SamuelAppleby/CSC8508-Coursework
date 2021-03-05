@@ -19,6 +19,9 @@ public:
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes);
 
+	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+
 	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
 	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
