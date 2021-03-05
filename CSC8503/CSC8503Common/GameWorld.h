@@ -34,7 +34,6 @@ namespace NCL {
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
-
 			Camera* GetMainCamera() const {
 				return mainCamera;
 			}
@@ -46,6 +45,8 @@ namespace NCL {
 			void ShowFacing();
 
 			virtual void UpdateWorld(float dt);
+
+			GameObject* FindObjectFromPhysicsBody(PxRigidActor* actor);
 
 			void OperateOnContents(GameObjectFunc f);
 

@@ -7,8 +7,9 @@
 using namespace NCL;
 using namespace CSC8503;
 
-PhysXObject::PhysXObject(PxRigidActor* p) {
-	pXActor = p;
+PhysXObject::PhysXObject(PxRigidActor* actor, PxMaterial* m) {
+	pXActor = actor;
+	material = m;
 }
 
 PhysXObject::~PhysXObject() {

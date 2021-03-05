@@ -13,14 +13,19 @@ namespace NCL {
 	namespace CSC8503 {
 		class PhysXObject {
 		public:
-			PhysXObject(PxRigidActor* pxTrans);
+			PhysXObject(PxRigidActor* actor, PxMaterial* m);
 			~PhysXObject();
+
+			PxMaterial* GetMaterial() const {
+				return material;
+			}
 
 			PxRigidActor* GetPXActor() const {
 				return pXActor;
 			}
 		protected:
 			PxRigidActor* pXActor;
+			PxMaterial* material;
 		};
 	}
 }

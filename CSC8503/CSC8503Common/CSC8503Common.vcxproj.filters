@@ -100,6 +100,9 @@
     <ClInclude Include="PhysXObject.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionDetection.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -130,6 +133,9 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="PhysXObject.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionDetection.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

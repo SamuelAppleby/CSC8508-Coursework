@@ -40,7 +40,7 @@
 #include "PxPrint.h"
 #include "PxPVD.h"
 const int GRAVITY_SCALE = 4;
-const int IDEAL_FRAMES = 120;
+const int IDEAL_FRAMES = 240;
 const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 using namespace physx;
 class PxPhysicsSystem {
