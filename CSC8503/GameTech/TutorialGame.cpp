@@ -153,9 +153,14 @@ void TutorialGame::DrawDebugInfo() {
 			renderer->DrawString("Linear Velocity:" + Vector3(body->getLinearVelocity()).ToString(), Vector2(0, 75), Debug::WHITE, textSize);
 			renderer->DrawString("Angular Veclocity:" + Vector3(body->getAngularVelocity()).ToString(), Vector2(0, 80), Debug::WHITE, textSize);
 			renderer->DrawString("Mass:" + std::to_string(body->getMass()), Vector2(0, 85), Debug::WHITE, textSize);
-			//renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetFriction()), Vector2(0, 90), Debug::WHITE, textSize);
-			//renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetElasticity()), Vector2(0, 95), Debug::WHITE, textSize);
-		}				
+		}	
+		else {
+			renderer->DrawString("Linear Velocity:" + Vector3(0, 0, 0).ToString(), Vector2(0, 75), Debug::WHITE, textSize);
+			renderer->DrawString("Angular Veclocity:" + Vector3(0, 0, 0).ToString(), Vector2(0, 80), Debug::WHITE, textSize);
+			renderer->DrawString("Mass: N/A", Vector2(0, 85), Debug::WHITE, textSize);
+		}
+		renderer->DrawString("Friction:" + std::to_string(selectionObject->GetPhysicsObject()->GetMaterial()->getDynamicFriction()), Vector2(0, 90), Debug::WHITE, textSize);
+		renderer->DrawString("Elasticity:" + std::to_string(selectionObject->GetPhysicsObject()->GetMaterial()->getRestitution()), Vector2(0, 95), Debug::WHITE, textSize);
 	}
 }
 

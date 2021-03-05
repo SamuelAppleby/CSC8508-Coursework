@@ -13,9 +13,10 @@ class WorldCreator {
 public:
 	static void Create(PxPhysicsSystem* p, GameWorld* w);
 	~WorldCreator();
-	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes);
-	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius);
-	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight);
+	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
+		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes);
 
 	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
@@ -24,6 +25,7 @@ public:
 
 private:
 	static PxPhysicsSystem* pXPhysics;
+	static PxMaterial* normalMat;
 	static GameWorld* world;
 	static OGLMesh* capsuleMesh;
 	static OGLMesh* cubeMesh;
