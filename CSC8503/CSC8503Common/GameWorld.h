@@ -12,18 +12,25 @@
 #include <random>
 #include "Debug.h"
 #include "../CSC8503Common/GameObject.h"
-#include "../../Common/Camera.h"
-#include "../../Common/Vector2.h"
-#include "../../Common/Vector3.h"
-#include "../../Common/TextureLoader.h"
-#include "../../Common/Matrix4.h"
-namespace NCL {
+#include "../Common/Camera.h"
+#include "../Common/Vector2.h"
+#include "../Common/Vector3.h"
+#include "../Common/TextureLoader.h"
+#include "../Common/Matrix4.h"
+#include "../Common/Light.h"
+
+constexpr auto NUM_OF_LIGHTS = 32;
+
+namespace NCL
+{
 	class Camera;
-	namespace CSC8503 {
+	namespace CSC8503
+	{
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
-		class GameWorld {
+		class GameWorld
+		{
 		public:
 			GameWorld();
 			~GameWorld();
@@ -35,11 +42,13 @@ namespace NCL {
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
 
-			Camera* GetMainCamera() const {
+			Camera* GetMainCamera() const
+			{
 				return mainCamera;
 			}
 
-			void ShuffleObjects(bool state) {
+			void ShuffleObjects(bool state)
+			{
 				shuffleObjects = state;
 			}
 
@@ -51,18 +60,37 @@ namespace NCL {
 
 			void GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const;
 
-			int GetTotalWorldObjects() const {
+			int GetTotalWorldObjects() const
+			{
 				return gameObjects.size();
 			}
 
-			bool GetShuffleObjects() const {
+			bool GetShuffleObjects() const
+			{
 				return shuffleObjects;
 			}
+
+			void IncreamentLightCount()
+			{
+				++lightCount;
+			}
+			int GetLightCount()
+			{
+				return lightCount;
+			}
+
+			void AddLight(Light& l)
+			{
+				lights[lightCount] = l;
+			}
+
 		protected:
 			std::vector<GameObject*> gameObjects;
+			Light lights[NUM_OF_LIGHTS];
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;
+			int     lightCount;
 		};
 	}
 }

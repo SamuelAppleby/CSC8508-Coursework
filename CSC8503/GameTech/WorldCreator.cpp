@@ -24,10 +24,12 @@ OGLTexture* WorldCreator::wallTex = nullptr;
 
 OGLShader* WorldCreator::basicShader = nullptr;
 
-void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
+void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w)
+{
 	pXPhysics = p;
 	world = w;
-	auto loadFunc = [](const string& name, OGLMesh** into) {
+	auto loadFunc = [](const string& name, OGLMesh** into)
+	{
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
 		(*into)->UploadToGPU();
@@ -55,7 +57,8 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 }
 
-WorldCreator::~WorldCreator() {
+WorldCreator::~WorldCreator()
+{
 	delete cubeMesh;
 	delete sphereMesh;
 	delete charMeshA;
@@ -74,7 +77,8 @@ WorldCreator::~WorldCreator() {
 	delete basicShader;
 }
 
-void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const Vector3 halfSizes) {
+void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const Vector3 halfSizes)
+{
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *pXPhysics->GetGMaterial());
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -87,7 +91,8 @@ void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const Vector3 halfSize
 	world->AddGameObject(cube);
 }
 
-void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius) {
+void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius)
+{
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -100,7 +105,8 @@ void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius
 	world->AddGameObject(sphere);
 }
 
-void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight) {
+void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight)
+{
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight),
 		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
@@ -114,7 +120,8 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	world->AddGameObject(capsule);
 }
 
-void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const Vector3 halfSizes) {
+void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const Vector3 halfSizes)
+{
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *pXPhysics->GetGMaterial());
 	pXPhysics->GetGScene()->addActor(*body);
@@ -126,7 +133,8 @@ void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const Vector3 halfSiz
 	world->AddGameObject(floor);
 }
 
-void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius) {
+void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
+{
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));;
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
 	pXPhysics->GetGScene()->addActor(*body);
@@ -139,7 +147,8 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	world->AddGameObject(p);
 }
 
-void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) {
+void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
+{
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
@@ -155,7 +164,8 @@ void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) 
 	world->AddGameObject(p);
 }
 
-void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale) {
+void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale)
+{
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
@@ -169,4 +179,16 @@ void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale) {
 	e->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
 	e->SetPhysicsObject(new PhysXObject(body));
 	world->AddGameObject(e);
+}
+
+void WorldCreator::AddLightToWorld(Vector3 position, Vector3 color, float radius)
+{
+	if (world->GetLightCount() < NUM_OF_LIGHTS)
+	{
+		world->IncreamentLightCount();
+		Light l = Light(position, color, radius);
+		world->AddLight(&l);
+	}
+
+
 }
