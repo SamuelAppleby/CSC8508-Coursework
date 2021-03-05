@@ -151,7 +151,6 @@
     <ClInclude Include="NavigationMap.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NavigationPath.h" />
-    <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="PushdownMachine.h" />
     <ClInclude Include="PushdownState.h" />
