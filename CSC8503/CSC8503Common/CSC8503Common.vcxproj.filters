@@ -64,9 +64,6 @@
     <ClInclude Include="BehaviourSequence.h">
       <Filter>AI\Behaviour Trees</Filter>
     </ClInclude>
-    <ClInclude Include="PauseScreen.h">
-      <Filter>AI\Pushdown Automata</Filter>
-    </ClInclude>
     <ClInclude Include="PushdownMachine.h">
       <Filter>AI\Pushdown Automata</Filter>
     </ClInclude>
