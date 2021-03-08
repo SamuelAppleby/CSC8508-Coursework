@@ -64,6 +64,8 @@ void TutorialGame::InitialiseAssets() {
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
+	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
+
 	InitCamera();
 	InitWorld();
 }
@@ -86,6 +88,8 @@ TutorialGame::~TutorialGame() {
 	delete finishTex;
 	delete menuTex;
 	delete basicShader;
+
+	delete toonShader;
 
 	delete physics;
 	//delete renderer;
@@ -684,7 +688,7 @@ GameObject* TutorialGame::AddPxSphereToWorld(GameObject* sphere, PxRigidActor* b
 	SphereVolume* volume = new SphereVolume(radius);
 	sphere->SetBoundingVolume((CollisionVolume*)volume);
 	sphere->GetTransform().SetScale(Vector3(radius, radius, radius));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, obstacleTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, obstacleTex, toonShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), body, sphere->GetBoundingVolume()));
 	world->AddGameObject(sphere);
 	return sphere;
@@ -728,8 +732,8 @@ GameObject* TutorialGame::AddPxPlayerToWorld(GameObject* p, PxRigidActor* body, 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize * 0.85, meshSize * 0.66);
 	p->SetBoundingVolume((CollisionVolume*)volume);
 	p->GetTransform().SetScale(Vector3(meshSize, meshSize * 0.85, meshSize));
-	(rand() % 2) ? p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, plainTex, basicShader)) :
-		p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshB, plainTex, basicShader));
+	(rand() % 2) ? p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, plainTex, toonShader)) :
+		p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshB, plainTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	p->SetPhysicsObject(new PhysicsObject(&p->GetTransform(), body, p->GetBoundingVolume()));
 	world->AddGameObject(p);

@@ -347,3 +347,6 @@ CSC8503/GameTech/x64/Debug/GameTech.tlog/link.write.1.tlog
 CSC8503/GameTech/x64/Debug/vc142.idb
 x64/Debug/CSC8503Common.lib
 x64/Debug/GameTech.exe
+*.tlog
+*.lastbuildstate
+*.idb
