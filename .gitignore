@@ -336,3 +336,14 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.idb
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.command.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.read.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.write.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/CL.read.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/CL.write.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/link.read.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/link.write.1.tlog
+CSC8503/GameTech/x64/Debug/vc142.idb
+x64/Debug/CSC8503Common.lib
+x64/Debug/GameTech.exe
