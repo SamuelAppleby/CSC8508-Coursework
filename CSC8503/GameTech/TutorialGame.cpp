@@ -132,7 +132,7 @@ void TutorialGame::DrawDebugInfo() {
 	}
 	else
 		renderer->DrawString("Lock selected object(L)", Vector2(0, 35), Debug::WHITE, textSize);
-	renderer->DrawString("Total Objects:" + std::to_string(world->GetTotalWorldObjects()), Vector2(75, 85), Debug::WHITE, textSize);
+	renderer->DrawString("Total Objects:" + std::to_string(world->gameObjects.size()), Vector2(75, 85), Debug::WHITE, textSize);
 
 	/* If selected an object display all its physical properties */
 	if (selectionObject) {
@@ -209,9 +209,9 @@ void TutorialGame::InitGameExamples(int level) {
 	case 0:
 		break;
 	case 1:
-		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 50, 0)), 1);
-		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 1);
-		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 1);
+		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
+		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
+		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case 2:
 		break;
@@ -222,9 +222,9 @@ void TutorialGame::InitGameExamples(int level) {
 void TutorialGame::InitGameObstacles(int level) {
 	switch (level) {
 	case 1:
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -20)), 2);
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -20)), PxVec3(2, 2, 2));
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -20)), 2, 2);
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
 		break;
 	}
 }

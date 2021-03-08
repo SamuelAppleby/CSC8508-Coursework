@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "RenderObject.h"
 #include "PhysXObject.h"
+
 using std::vector;
 namespace NCL {
 	namespace CSC8503 {
@@ -16,7 +17,9 @@ namespace NCL {
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt) {}
+			virtual void Update(float dt) {
+				
+			}
 
 			void SetName(string val) {
 				name = val;
@@ -46,7 +49,9 @@ namespace NCL {
 				return name;
 			}
 
-			virtual void OnCollisionBegin(GameObject* otherObject) {}
+			virtual void OnCollisionBegin(GameObject* otherObject) {
+				std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
+			}
 
 			virtual void OnCollisionEnd(GameObject* otherObject) {}
 

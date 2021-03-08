@@ -1,6 +1,24 @@
 #include "PxPhysicsSystem.h"
 #include <iostream>
 
+PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize) {
+	PX_UNUSED(attributes0);
+	PX_UNUSED(attributes1);
+	PX_UNUSED(filterData0);
+	PX_UNUSED(filterData1);
+	PX_UNUSED(constantBlockSize);
+	PX_UNUSED(constantBlock);
+
+	// all initial and persisting reports for everything, with per-point data
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND
+		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
+		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	return PxFilterFlag::eDEFAULT;
+}
+
 PxPhysicsSystem::PxPhysicsSystem() {
 	realFrames = IDEAL_FRAMES;
 	fixedDeltaTime = IDEAL_DT;
@@ -14,11 +32,13 @@ PxPhysicsSystem::PxPhysicsSystem() {
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITY_SCALE, 0.0f);
+	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = ContactReportFilterShader;
+	sceneDesc.simulationEventCallback = new NCL::CSC8503::GameWorld;
 	gScene = gPhysics->createScene(sceneDesc);
 
 	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
@@ -38,7 +58,6 @@ void PxPhysicsSystem::StepPhysics(float dt) {
 		gScene->fetchResults(true);
 		dTOffset -= fixedDeltaTime;
 	}
-
 	NCL::GameTimer t;
 	t.Tick();
 	float updateTime = t.GetTimeDeltaSeconds();
@@ -71,3 +90,6 @@ void PxPhysicsSystem::CleanupPhysics() {
 
 	printf("SnippetHelloWorld done.\n");
 }
+
+
+
