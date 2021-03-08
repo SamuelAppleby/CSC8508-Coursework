@@ -20,12 +20,75 @@ TutorialGame::TutorialGame() {
 	player = nullptr;
 	lockedOrientation = true;
 	currentLevel = 1;
+	currentlySelected = 1;
+	avgFps = 1.0f;
+	framesPerSecond = 0;
+	fpsTimer = 1.0f;
+	finish = FinishType::INGAME;
+	InitialiseAssets();
+}
+
+/* Each of the little demo scenarios used in the game uses the same 2 meshes,
+and the same texture and shader. There's no need to ever load in anything else
+for this module, even in the coursework, but you can add it if you like! */
+void TutorialGame::InitialiseAssets() {
+	auto loadFunc = [](const string& name, OGLMesh** into) {
+		*into = new OGLMesh(name);
+		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
+		(*into)->UploadToGPU();
+	};
+
+	loadFunc("cube.msh", &cubeMesh);
+	loadFunc("sphere.msh", &sphereMesh);
+	loadFunc("Male1.msh", &charMeshA);
+	loadFunc("courier.msh", &charMeshB);
+	loadFunc("security.msh", &enemyMesh);
+	loadFunc("coin.msh", &bonusMesh);
+	loadFunc("capsule.msh", &capsuleMesh);
+
+	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	obstacleTex = (OGLTexture*)TextureLoader::LoadAPITexture("obstacle.png");
+	floorTex = (OGLTexture*)TextureLoader::LoadAPITexture("platform.png");
+	lavaTex = (OGLTexture*)TextureLoader::LoadAPITexture("lava.png");
+	trampolineTex = (OGLTexture*)TextureLoader::LoadAPITexture("trampoline.png");
+	iceTex = (OGLTexture*)TextureLoader::LoadAPITexture("ice.png");
+	woodenTex = (OGLTexture*)TextureLoader::LoadAPITexture("wood.png");
+	finishTex = (OGLTexture*)TextureLoader::LoadAPITexture("finish.png");
+	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
+	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
+	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
+	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+
+	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
+
 	InitCamera();
 	InitWorld();
 }
 
 TutorialGame::~TutorialGame() {
 	delete renderer;
+	delete cubeMesh;
+	delete sphereMesh;
+	delete charMeshA;
+	delete charMeshB;
+	delete enemyMesh;
+	delete bonusMesh;
+
+	delete basicTex;
+	delete obstacleTex;
+	delete floorTex;
+	delete lavaTex;
+	delete trampolineTex;
+	delete iceTex;
+	delete woodenTex;
+	delete finishTex;
+	delete menuTex;
+	delete basicShader;
+
+	delete toonShader;
+
+	delete physics;
+	//delete renderer;
 	delete world;
 }
 
@@ -228,6 +291,108 @@ void TutorialGame::InitGameObstacles(int level) {
 		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -50)), 10.0f, 10.0f);
 		break;
 	}
+}
+
+GameObject* TutorialGame::AddPxCubeToWorld(GameObject* cube, PxRigidActor* body, const Vector3& position, Vector3 dimensions) {
+	CollisionVolume* volume;
+	dynamic_cast<RotatingCubeObject*>(cube) ? volume = new OBBVolume(dimensions) : volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+	cube->GetTransform().SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, obstacleTex, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), body, cube->GetBoundingVolume()));
+	world->AddGameObject(cube);	
+	return cube;
+}
+
+GameObject* TutorialGame::AddPxSphereToWorld(GameObject* sphere, PxRigidActor* body, const Vector3& position, float radius) {
+	SphereVolume* volume = new SphereVolume(radius);
+	sphere->SetBoundingVolume((CollisionVolume*)volume);
+	sphere->GetTransform().SetScale(Vector3(radius, radius, radius));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, obstacleTex, toonShader));
+	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), body, sphere->GetBoundingVolume()));
+	world->AddGameObject(sphere);
+	return sphere;
+}
+
+GameObject* TutorialGame::AddPxCapsuleToWorld(GameObject* capsule, PxRigidActor* body, const Vector3& position, float radius, float halfHeight) {
+	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
+	capsule->SetBoundingVolume((CollisionVolume*)volume);
+	capsule->GetTransform().SetScale(Vector3(radius, halfHeight, radius));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+	capsule->SetPhysicsObject(new PhysicsObject(&capsule->GetTransform(), body, capsule->GetBoundingVolume()));
+	world->AddGameObject(capsule);
+	return capsule;
+}
+
+GameObject* TutorialGame::AddPxFloorToWorld(GameObject* cube, PxRigidStatic* body, const Vector3& position, Vector3 dimensions) {
+	CollisionVolume* volume;
+	dynamic_cast<RotatingCubeObject*>(cube) ? volume = new OBBVolume(dimensions) : volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+	cube->GetTransform().SetPosition(position).SetScale(dimensions * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, obstacleTex, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), body, cube->GetBoundingVolume()));
+	world->AddGameObject(cube);
+	return cube;
+}
+
+GameObject* TutorialGame::AddPxPickupToWorld(GameObject* p, PxRigidStatic* body, const Vector3& position, float radius) {
+	SphereVolume* volume = new SphereVolume(radius);
+	p->SetBoundingVolume((CollisionVolume*)volume);
+	p->GetTransform().SetScale(Vector3(radius, radius, radius));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, basicShader));
+	dynamic_cast<PowerupObject*>(p) ? p->GetRenderObject()->SetColour(Debug::MAGENTA) : p->GetRenderObject()->SetColour(Debug::YELLOW);
+	p->SetPhysicsObject(new PhysicsObject(&p->GetTransform(), body, p->GetBoundingVolume()));
+	p->GetPhysicsObject()->InitSphereInertia(false);
+	world->AddGameObject(p);
+	return p;
+}
+
+GameObject* TutorialGame::AddPxPlayerToWorld(GameObject* p, PxRigidActor* body, const Vector3& position, float scale) {
+	float meshSize = 3.0f * scale;
+	CapsuleVolume* volume = new CapsuleVolume(meshSize * 0.85, meshSize * 0.66);
+	p->SetBoundingVolume((CollisionVolume*)volume);
+	p->GetTransform().SetScale(Vector3(meshSize, meshSize * 0.85, meshSize));
+	(rand() % 2) ? p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, plainTex, toonShader)) :
+		p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshB, plainTex, toonShader));
+	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
+	p->SetPhysicsObject(new PhysicsObject(&p->GetTransform(), body, p->GetBoundingVolume()));
+	world->AddGameObject(p);
+	return p;
+}
+
+GameObject* TutorialGame::AddPxEnemyToWorld(GameObject* e, PxRigidActor* body, const Vector3& position, float scale) {
+	float meshSize = 3.0f * scale;
+	CapsuleVolume* volume = new CapsuleVolume(meshSize * 0.85, meshSize * 0.66);
+	e->SetBoundingVolume((CollisionVolume*)volume);
+	e->GetTransform().SetScale(Vector3(meshSize, meshSize * 0.85, meshSize));
+	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, plainTex, basicShader));
+	e->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
+	e->SetPhysicsObject(new PhysicsObject(&e->GetTransform(), body, e->GetBoundingVolume()));
+	world->AddGameObject(e);
+	return e;
+}
+
+/* Adds a bridge to our world, held by constraints */
+void TutorialGame::AddBridgeToWorld(Vector3 startPos) {
+	//Vector3 cubeSize(2.5, 0.5, 5);
+	//Vector3 baseSize(4, 1, 5);
+	//float bridgeWidth = 110;
+	//float invCubeMass = 5; // how heavy the middle pieces are
+	//int numLinks = 15;
+	//float maxDistance = (bridgeWidth / (numLinks + 2)); // constraint distance
+	//float cubeDistance = (bridgeWidth / (numLinks + 2)); // distance between links
+	//GameObject* start = AddFloorToWorld(new FloorObject, startPos + Vector3(0, 0, 0), baseSize);
+	//GameObject* end = AddFloorToWorld(new FloorObject, startPos + Vector3((numLinks + 2) * cubeDistance, 0, 0), baseSize);
+	//GameObject* previous = start;
+	//for (int i = 0; i < numLinks; ++i) {
+	//	GameObject* block = AddCubeToWorld(new CubeObject, startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize);
+	//	block->GetRenderObject()->SetDefaultTexture(woodenTex);
+	//	PositionConstraint* constraint = new PositionConstraint(previous, block, maxDistance);
+	//	world->AddConstraint(constraint);
+	//	previous = block;
+	//}
+	//PositionConstraint* constraint = new PositionConstraint(previous, end, maxDistance);
+	//world->AddConstraint(constraint);
 }
 
 /* If in debug mode we can select an object with the cursor, displaying its properties and allowing us to take control */

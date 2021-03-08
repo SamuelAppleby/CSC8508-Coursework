@@ -55,6 +55,31 @@ namespace NCL {
 			float forceMagnitude;
 
 			GameObject* selectionObject = nullptr;
+			OGLMesh*	capsuleMesh = nullptr;
+			OGLMesh*	cubeMesh	= nullptr;
+			OGLMesh*	sphereMesh	= nullptr;
+			OGLTexture* basicTex	= nullptr;
+			OGLTexture* floorTex = nullptr;
+			OGLTexture* lavaTex = nullptr;
+			OGLTexture* iceTex = nullptr;
+			OGLTexture* trampolineTex = nullptr;
+			OGLTexture* obstacleTex = nullptr;
+			OGLTexture* woodenTex = nullptr;
+			OGLTexture* finishTex = nullptr;
+			OGLTexture* menuTex = nullptr;
+			OGLTexture* plainTex = nullptr;
+			OGLTexture* wallTex = nullptr;
+			OGLShader*	basicShader = nullptr;
+
+			OGLShader* toonShader = nullptr;
+
+			//Coursework Meshes
+			OGLMesh*	charMeshA	= nullptr;
+			OGLMesh*	charMeshB	= nullptr;
+			OGLMesh*	enemyMesh	= nullptr;
+			OGLMesh*	bonusMesh	= nullptr;
+
+			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;
 		
 			PlayerObject* player;
