@@ -72,6 +72,14 @@ void GameWorld::UpdateWorld(float dt)
 	}
 }
 
+GameObject* GameWorld::FindObjectFromPhysicsBody(PxRigidActor* actor) {
+	for (auto& i : gameObjects) {
+		if (i->GetPhysicsObject()->GetPXActor() == actor) {
+			return i;
+		}
+	}
+}
+
 void GameWorld::ShowFacing() {
 	for (auto& i : gameObjects) {
 		Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects

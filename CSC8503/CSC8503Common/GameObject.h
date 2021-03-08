@@ -16,14 +16,6 @@ namespace NCL {
 			GameObject(string name = "");
 			~GameObject();
 
-			static Quaternion GetRegularQuaternion(PxQuat q) {
-				return Quaternion(q.x, q.y, q.z, q.w);
-			}
-
-			static Vector3 GetRegularVector3(PxVec3 pxVec) {
-				return Vector3(pxVec.x, pxVec.y, pxVec.z);
-			}
-
 			virtual void Update(float dt) {}
 
 			void SetName(string val) {
@@ -103,7 +95,7 @@ namespace NCL {
 			}
 
 		protected:
-			Transform			transform;
+			Transform transform;
 
 			PhysXObject* physicsObject;
 			RenderObject* renderObject;

@@ -14,6 +14,7 @@ _-_-_-_-_-_-_-""  ""
 #ifdef _WIN32
 #include "Mouse.h"
 #include "Win32Window.h"
+#include <algorithm>
 
 namespace NCL {
 	namespace Win32Code {

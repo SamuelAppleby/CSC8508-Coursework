@@ -44,6 +44,7 @@ namespace NCL
 
 			Camera* GetMainCamera() const
 			{
+			Camera* GetMainCamera() const {
 				return mainCamera;
 			}
 
@@ -55,6 +56,8 @@ namespace NCL
 			void ShowFacing();
 
 			virtual void UpdateWorld(float dt);
+
+			GameObject* FindObjectFromPhysicsBody(PxRigidActor* actor);
 
 			void OperateOnContents(GameObjectFunc f);
 

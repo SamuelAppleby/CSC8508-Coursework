@@ -1,4 +1,5 @@
 #include "PxPhysicsSystem.h"
+#include <iostream>
 
 PxPhysicsSystem::PxPhysicsSystem() {
 	realFrames = IDEAL_FRAMES;
@@ -32,7 +33,6 @@ PxPhysicsSystem::PxPhysicsSystem() {
 
 void PxPhysicsSystem::StepPhysics(float dt) {
 	dTOffset += dt;
-
 	while (dTOffset >= fixedDeltaTime) {
 		gScene->simulate(fixedDeltaTime);
 		gScene->fetchResults(true);
