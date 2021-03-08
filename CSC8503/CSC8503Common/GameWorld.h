@@ -23,10 +23,23 @@ namespace NCL {
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
-		class GameWorld {
+		class GameWorld : public PxSimulationEventCallback {
 		public:
 			GameWorld();
 			~GameWorld();
+
+			/* PhysX callback methods */
+			void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
+				PxActor* actor1 = pairHeader.actors[0];
+				PxActor* actor2 = pairHeader.actors[1];
+				FindObjectFromPhysicsBody(actor1)->OnCollisionBegin(FindObjectFromPhysicsBody(actor2));
+				FindObjectFromPhysicsBody(actor2)->OnCollisionBegin(FindObjectFromPhysicsBody(actor1));
+			}
+			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
+			void onWake(PxActor** actors, PxU32 count) {}
+			void onSleep(PxActor** actors, PxU32 count) {}
+			void onTrigger(PxTriggerPair* pairs, PxU32 count) {}
+			void onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) {}
 
 			void Clear();
 			void ClearAndErase();
@@ -46,21 +59,17 @@ namespace NCL {
 
 			virtual void UpdateWorld(float dt);
 
-			GameObject* FindObjectFromPhysicsBody(PxRigidActor* actor);
+			static GameObject* FindObjectFromPhysicsBody(PxActor* actor);
 
 			void OperateOnContents(GameObjectFunc f);
 
 			void GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const;
 
-			int GetTotalWorldObjects() const {
-				return gameObjects.size();
-			}
-
 			bool GetShuffleObjects() const {
 				return shuffleObjects;
 			}
+			static std::vector<GameObject*> gameObjects;
 		protected:
-			std::vector<GameObject*> gameObjects;
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;

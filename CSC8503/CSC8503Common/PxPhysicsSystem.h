@@ -39,12 +39,13 @@
 #include "PxPhysicsAPI.h"
 #include "PxPrint.h"
 #include "PxPVD.h"
-const int GRAVITY_SCALE = 4;
+#include "GameObject.h"
+#include "GameWorld.h"
+
 const int IDEAL_FRAMES = 240;
 const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 using namespace physx;
 class PxPhysicsSystem {
-
 public:
 	PxPhysicsSystem();
 	void StepPhysics(float dt);
@@ -61,11 +62,12 @@ public:
 	PxScene* GetGScene() {
 		return gScene;
 	}
+
+
 private:
 	float	dTOffset;
 	int realFrames;
 	float fixedDeltaTime;
-
 	PxDefaultAllocator		gAllocator;
 	PxDefaultErrorCallback	gErrorCallback;
 
