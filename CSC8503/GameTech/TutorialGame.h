@@ -120,7 +120,9 @@ namespace NCL {
 			OGLTexture* menuTex = nullptr;
 			OGLTexture* plainTex = nullptr;
 			OGLTexture* wallTex = nullptr;
+
 			OGLShader*	basicShader = nullptr;
+			OGLShader*	toonShader = nullptr;
 
 			//Coursework Meshes
 			OGLMesh*	charMeshA	= nullptr;

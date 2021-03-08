@@ -63,6 +63,7 @@ void TutorialGame::InitialiseAssets() {
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 
 	InitCamera();
 	InitWorld();
@@ -684,7 +685,7 @@ GameObject* TutorialGame::AddPxSphereToWorld(GameObject* sphere, PxRigidActor* b
 	SphereVolume* volume = new SphereVolume(radius);
 	sphere->SetBoundingVolume((CollisionVolume*)volume);
 	sphere->GetTransform().SetScale(Vector3(radius, radius, radius));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, obstacleTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, obstacleTex, toonShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), body, sphere->GetBoundingVolume()));
 	world->AddGameObject(sphere);
 	return sphere;
@@ -715,7 +716,7 @@ GameObject* TutorialGame::AddPxPickupToWorld(GameObject* p, PxRigidStatic* body,
 	SphereVolume* volume = new SphereVolume(radius);
 	p->SetBoundingVolume((CollisionVolume*)volume);
 	p->GetTransform().SetScale(Vector3(radius, radius, radius));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, basicShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	dynamic_cast<PowerupObject*>(p) ? p->GetRenderObject()->SetColour(Debug::MAGENTA) : p->GetRenderObject()->SetColour(Debug::YELLOW);
 	p->SetPhysicsObject(new PhysicsObject(&p->GetTransform(), body, p->GetBoundingVolume()));
 	p->GetPhysicsObject()->InitSphereInertia(false);
