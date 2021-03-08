@@ -335,6 +335,7 @@ ASALocalRun/
 .localhistory/
 
 # BeatPulse healthcheck temp database
+<<<<<<< HEAD
 healthchecksdb
 CSC8503/CSC8503Common/x64/Debug/CSC8503Common.idb
 CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.command.1.tlog
@@ -350,3 +351,6 @@ x64/Debug/GameTech.exe
 *.tlog
 *.lastbuildstate
 *.idb
+=======
+healthchecksdb
+>>>>>>> parent of 3fc097a (Update to git ignore)
