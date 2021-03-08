@@ -18,11 +18,14 @@
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
 
-namespace NCL {
-	namespace CSC8503 {
+namespace NCL
+{
+	namespace CSC8503
+	{
 		class PlayerObject;
 		enum class FinishType { INGAME, TIMEOUT, WIN, LOSE };
-		class TutorialGame {
+		class TutorialGame
+		{
 		public:
 			TutorialGame();
 			~TutorialGame();
@@ -39,7 +42,7 @@ namespace NCL {
 			void InitFloors(int level);
 			void InitGameExamples(int level);
 			void InitGameObstacles(int level);
-			
+
 			bool SelectObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
@@ -53,33 +56,8 @@ namespace NCL {
 			float forceMagnitude;
 
 			GameObject* selectionObject = nullptr;
-			OGLMesh*	capsuleMesh = nullptr;
-			OGLMesh*	cubeMesh	= nullptr;
-			OGLMesh*	sphereMesh	= nullptr;
-			OGLTexture* basicTex	= nullptr;
-			OGLTexture* floorTex = nullptr;
-			OGLTexture* lavaTex = nullptr;
-			OGLTexture* iceTex = nullptr;
-			OGLTexture* trampolineTex = nullptr;
-			OGLTexture* obstacleTex = nullptr;
-			OGLTexture* woodenTex = nullptr;
-			OGLTexture* finishTex = nullptr;
-			OGLTexture* menuTex = nullptr;
-			OGLTexture* plainTex = nullptr;
-			OGLTexture* wallTex = nullptr;
-			OGLShader*	basicShader = nullptr;
+			GameObject* lockedObject = nullptr;
 
-			OGLShader* toonShader = nullptr;
-
-			//Coursework Meshes
-			OGLMesh*	charMeshA	= nullptr;
-			OGLMesh*	charMeshB	= nullptr;
-			OGLMesh*	enemyMesh	= nullptr;
-			OGLMesh*	bonusMesh	= nullptr;
-
-			//Coursework Additional functionality	
-			GameObject* lockedObject	= nullptr;
-		
 			PlayerObject* player;
 			int currentLevel;
 			bool lockedOrientation;

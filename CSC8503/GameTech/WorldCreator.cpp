@@ -24,6 +24,7 @@ OGLTexture* WorldCreator::plainTex = nullptr;
 OGLTexture* WorldCreator::wallTex = nullptr;
 
 OGLShader* WorldCreator::basicShader = nullptr;
+OGLShader* WorldCreator::toonShader = nullptr;
 
 void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	pXPhysics = p;
@@ -55,6 +56,7 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
 
 WorldCreator::~WorldCreator() {
@@ -113,7 +115,7 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 
 	GameObject* capsule = new GameObject;
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
 	capsule->SetPhysicsObject(new PhysXObject(body, newMat));
 	world->AddGameObject(capsule);
 }
@@ -153,7 +155,7 @@ void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) 
 
 	GameObject* p = new GameObject;
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, basicShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	p->SetPhysicsObject(new PhysXObject(body, normalMat));
 	world->AddGameObject(p);

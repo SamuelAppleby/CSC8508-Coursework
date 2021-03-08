@@ -19,7 +19,7 @@
 #include "../Common/Matrix4.h"
 #include "../Common/Light.h"
 
-constexpr auto NUM_OF_LIGHTS = 32;
+//constexpr auto NUM_OF_LIGHTS = 32;
 
 namespace NCL
 {
@@ -42,8 +42,7 @@ namespace NCL
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
 
-			Camera* GetMainCamera() const
-			{
+		
 			Camera* GetMainCamera() const {
 				return mainCamera;
 			}
@@ -84,12 +83,12 @@ namespace NCL
 
 			void AddLight(Light& l)
 			{
-				lights[lightCount] = l;
+				//lights[lightCount] = l;
 			}
 
 		protected:
 			std::vector<GameObject*> gameObjects;
-			Light lights[NUM_OF_LIGHTS];
+			//Light lights[NUM_OF_LIGHTS];
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;

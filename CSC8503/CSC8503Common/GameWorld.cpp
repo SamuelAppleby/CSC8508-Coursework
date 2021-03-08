@@ -9,6 +9,7 @@ using namespace NCL::CSC8503;
 
 GameWorld::GameWorld()
 {
+
 	mainCamera = new Camera();
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
