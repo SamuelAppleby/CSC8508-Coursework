@@ -10,7 +10,7 @@ layout(location = 1) in vec4 colour;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in vec3 normal;
 
-uniform vec4 	objectColour = vec4(1,1,1,1);
+uniform vec4 		objectColour = vec4(1,1,1,1);
 
 uniform bool hasVertexColours = false;
 
