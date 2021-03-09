@@ -14,11 +14,6 @@ https://research.ncl.ac.uk/game/
 
 #include "Assets.h"
 
-#ifdef WIN32
-#include <filesystem>
-using namespace std::experimental::filesystem::v1;
-#endif
-
 using namespace NCL;
 using namespace Rendering;
 
@@ -29,9 +24,8 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 	if (filename.empty()) {
 		return false;
 	}
-	std::string extension = GetFileExtension(filename);
 
-	auto it = fileHandlers.find(extension);
+	auto it = fileHandlers.find(std::string());
 
 	std::string realPath = Assets::TEXTUREDIR + filename;
 
@@ -52,18 +46,6 @@ bool TextureLoader::LoadTexture(const std::string& filename, char*& outData, int
 
 void TextureLoader::RegisterTextureLoadFunction(TextureLoadFunction f, const std::string&fileExtension) {
 	fileHandlers.insert(std::make_pair(fileExtension, f));
-}
-
-std::string TextureLoader::GetFileExtension(const std::string& fileExtension) {
-#ifdef WIN32
-	path p = path(fileExtension);
-
-	path ext = p.extension();
-
-	return ext.string();
-#else
-	return std::string();
-#endif
 }
 
 void TextureLoader::RegisterAPILoadFunction(APILoadFunction f) {

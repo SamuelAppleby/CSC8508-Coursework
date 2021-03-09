@@ -236,7 +236,8 @@ void GameTechRenderer::RenderCamera() {
 			lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
-			glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
+			Vector3 pos = gameWorld.GetMainCamera()->GetPosition();
+			glUniform3fv(cameraLocation, 1, (float*)&pos);
 
 			glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
@@ -257,7 +258,8 @@ void GameTechRenderer::RenderCamera() {
 		Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
 		glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
 
-		glUniform4fv(colourLocation, 1, (float*)&i->GetColour());
+		Vector4 col = i->GetColour();
+		glUniform4fv(colourLocation, 1, (float*)&col);
 
 		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
 
