@@ -135,15 +135,7 @@ void TutorialGame::DrawDebugInfo() {
 	renderer->DrawString("Total Objects:" + std::to_string(world->gameObjects.size()), Vector2(75, 85), Debug::WHITE, textSize);
 
 	/* If selected an object display all its physical properties */
-	if (selectionObject) {
-		/* Display state machine information */
-		if (dynamic_cast<StateGameObject*>(selectionObject)) {
-			renderer->DrawString("State:" + ((StateGameObject*)selectionObject)->StateToString(), Vector2(0, 55), Debug::WHITE, textSize);
-			
-			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
-			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
-		}
-		
+	if (selectionObject) {		
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
@@ -231,7 +223,7 @@ void TutorialGame::InitGameObstacles(int level) {
 
 /* If in debug mode we can select an object with the cursor, displaying its properties and allowing us to take control */
 bool TutorialGame::SelectObject() {
-	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT)) {
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !lockedObject) {
 		PxVec3 pos = PhyxConversions::GetVector3(world->GetMainCamera()->GetPosition());
 		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*world->GetMainCamera()));
 		float distance = 1000.0f;
