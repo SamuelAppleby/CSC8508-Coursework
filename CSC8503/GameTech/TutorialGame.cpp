@@ -103,8 +103,18 @@ void TutorialGame::UpdateLevel(float dt) {
 	/* Change how we move the camera dependng if we have a locked object */
 	if (lockedObject) {
 		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
-		if (lockedOrientation)
-			lockedObject->GetTransform().SetOrientation(PxQuat(world->GetMainCamera()->GetYaw(), { 0, 1, 0 }));
+		if (lockedOrientation) {
+			PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
+			actor->setAngularVelocity(PxVec3(0));
+			float yaw = world->GetMainCamera()->GetYaw();
+			yaw = Maths::DegreesToRadians(yaw);
+			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+			Window::GetWindow()->ShowOSPointer(false);
+			Window::GetWindow()->LockMouseToWindow(true);
+			PxTransform pose = actor->getGlobalPose();
+			Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
+			world->GetMainCamera()->SetPosition(camPos);
+		}
 	}
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
 		world->GetMainCamera()->UpdateCamera(dt);
@@ -297,21 +307,25 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
-	float force = 5000.0f * dt;
+	float force = 1200.0f;
 
 	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
 		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
+		body->setLinearDamping(0.4f);
 
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-			body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-			body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-			body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-			body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
-
-		body->setLinearVelocity(PhyxConversions::GetVector3(Maths::Clamp(Vector3(body->getLinearVelocity()), Vector3(-15, -50, -15), Vector3(15, 50, 15))));
+		if (lockedObject->IsGrounded()) {
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+				body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+				body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+				body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+				body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded())
+				body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * 20000, PxForceMode::eIMPULSE);
+				lockedObject->SetGrounded(false);
+		}
 
 		/* We can lock the objects orientation with K or swap between camera positons with 1 */
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))
