@@ -11,22 +11,16 @@ using namespace NCL;
 using namespace CSC8503;
 
 TutorialGame* tutorialGame = nullptr;
-
-
-
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
 
-
-
 class Pause : public PushdownState
 {
-
-
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		tutorialGame->Update(dt);
+		//tutorialGame->Update(dt);
+		tutorialGame->renderer->Render();
 
 		Debug::Print("Press P To Resume", Vector2(20, 50), Vector4(1, 0, 0, 1));
 		Debug::FlushRenderables(dt);
