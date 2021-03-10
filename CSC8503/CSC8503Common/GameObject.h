@@ -50,7 +50,6 @@ namespace NCL {
 			}
 
 			virtual void OnCollisionBegin(GameObject* otherObject) {
-				std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
 			}
 
 			virtual void OnCollisionEnd(GameObject* otherObject) {}
