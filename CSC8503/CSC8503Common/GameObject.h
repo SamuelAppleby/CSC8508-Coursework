@@ -49,9 +49,6 @@ namespace NCL {
 				return name;
 			}
 
-			virtual void OnCollisionBegin(GameObject* otherObject) {
-			}
-      
 			virtual void OnCollisionBegin(GameObject* otherObject);
 
 			virtual void OnCollisionEnd(GameObject* otherObject);
