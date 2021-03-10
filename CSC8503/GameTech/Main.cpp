@@ -3,10 +3,11 @@
  *               21/01/2021
  *                170348069
  *				  Main File			 */
-#include "TutorialGame.h"
+//#include "TutorialGame.h"
 #include "../../Common/Window.h"
 #include "../CSC8503Common/PushdownMachine.h"
-extern int snippetMain(int, const char* const*, TutorialGame* t, float dt);
+#include "GameStatesPDA.h"
+void GamePushdownAutomata(Window* w);
 
 using namespace NCL;
 using namespace CSC8503;
@@ -28,11 +29,16 @@ int main(int argc, char** argv) {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-	TutorialGame* t = new TutorialGame();
+	GamePushdownAutomata(w);
+	Window::DestroyGameWindow();		// After we have exited the automata (we've quit) destroy the window
+	return 0;
+}
 
+/* This method drives the entire game on a pushdown automata */
+void GamePushdownAutomata(Window* w) {
+	PushdownMachine machine(new MainMenu());
 	while (w->UpdateWindow()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
-		t->Update(dt);
 		if (dt > 0.1f) {
 			std::cout << "Skipping large time delta" << std::endl;
 			continue;
@@ -41,11 +47,9 @@ int main(int argc, char** argv) {
 			w->ShowConsole(true);
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NEXT))
 			w->ShowConsole(false);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
-			break;
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T))
 			w->SetWindowPosition(0, 0);
+		if (!machine.Update(dt))
+			return;
 	}
-	Window::DestroyGameWindow();		// After we have exited the automata (we've quit) destroy the window
-	return 0;
 }

@@ -8,6 +8,8 @@ using namespace NCL;
 using namespace NCL::CSC8503;
 std::vector<GameObject*> GameWorld::gameObjects;
 
+
+
 GameWorld::GameWorld() {
 	mainCamera = new Camera();
 	shuffleObjects		= false;
@@ -26,6 +28,10 @@ void GameWorld::ClearAndErase() {
 	for (auto& i : gameObjects) {
 		delete i;
 	}
+
+
+	// DELETE all PHYX actors here
+	//PX_Rel
 	Clear();
 }
 

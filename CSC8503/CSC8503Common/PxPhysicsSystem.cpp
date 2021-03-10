@@ -76,16 +76,16 @@ void PxPhysicsSystem::StepPhysics(float dt) {
 }
 
 void PxPhysicsSystem::CleanupPhysics() {
-	/*PX_RELEASE(gScene);
+	PX_RELEASE(gScene);
 	PX_RELEASE(gDispatcher);
-	PX_RELEASE(gPhysics);*/
+	PX_RELEASE(gPhysics);
 	if (gPvd) {
 		PxPvdTransport* transport = gPvd->getTransport();
 		gPvd->release();
 		gPvd = NULL;
-		//PX_RELEASE(transport);
+		PX_RELEASE(transport);
 	}
-	//PX_RELEASE(gFoundation);
+	PX_RELEASE(gFoundation);
 
 	printf("SnippetHelloWorld done.\n");
 }
