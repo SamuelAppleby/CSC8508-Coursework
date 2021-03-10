@@ -22,6 +22,7 @@ mono_crash.*
 [Rr]elease/
 [Rr]eleases/
 x64/
+x64/Debug
 x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
@@ -65,7 +66,6 @@ artifacts/
 StyleCopReport.xml
 
 # Files built by Visual Studio
-!*.dll
 *_i.c
 *_p.c
 *_h.h

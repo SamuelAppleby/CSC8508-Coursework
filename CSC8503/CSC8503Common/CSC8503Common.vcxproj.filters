@@ -19,9 +19,6 @@
     <Filter Include="Pathfinding">
       <UniqueIdentifier>{0b2c094a-c927-467a-91ed-973f45426add}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering">
-      <UniqueIdentifier>{1d6c9e10-6269-415f-bcf3-18b51bc3cf01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game Objects">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
