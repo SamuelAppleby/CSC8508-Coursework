@@ -12,6 +12,7 @@ GameWorld::GameWorld() {
 	mainCamera = new Camera();
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
+	totalCollisions = 0;
 }
 
 GameWorld::~GameWorld() {
@@ -51,15 +52,19 @@ void GameWorld::OperateOnContents(GameObjectFunc f) {
 }
 
 void GameWorld::UpdateWorld(float dt) {
+	int tempCols = 0;
 	std::random_device rd;
 	std::mt19937 g(rd());
 	if (shuffleObjects)
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
 	for (auto& i : gameObjects) {
+		if (i->IsColliding())
+			tempCols++;
 	    i->GetTransform().SetOrientation(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().q);
 		i->GetTransform().SetPosition(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().p);
 		i->Update(dt);
 	}
+	totalCollisions = tempCols;
 }
 
 GameObject* GameWorld::FindObjectFromPhysicsBody(PxActor* actor) {

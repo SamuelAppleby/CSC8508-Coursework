@@ -18,7 +18,6 @@ namespace NCL {
 			~GameObject();
 
 			virtual void Update(float dt) {
-				
 			}
 
 			void SetName(string val) {
@@ -105,6 +104,10 @@ namespace NCL {
 				return isGrounded;
 			}
 
+			bool IsColliding() const {
+				return isColliding;
+			}
+
 		protected:
 			Transform transform;
 
@@ -118,6 +121,8 @@ namespace NCL {
 			float timeAlive;
 			float powerUpTimer;
 			bool isGrounded;
+
+			bool isColliding;
 		};
 	}
 }

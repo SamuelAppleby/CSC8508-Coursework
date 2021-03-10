@@ -56,6 +56,10 @@ namespace NCL {
 			float textSize = 15.0f;
 
 			CameraState camState;
+
+			int avgFps;
+			int framesPerSecond;
+			float fpsTimer;
 		};
 	}
 }

@@ -12,7 +12,7 @@ PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 
 	// all initial and persisting reports for everything, with per-point data
 	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND 
-		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS | PxPairFlag::eDETECT_CCD_CONTACT;
+		/*| PxPairFlag::eNOTIFY_TOUCH_PERSISTS*/ | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eDETECT_CCD_CONTACT;
 
 	return PxFilterFlags();
 }
@@ -31,6 +31,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
+
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);

@@ -4,6 +4,7 @@
  *                170348069
  *			Game World Definition		 */
 #pragma once
+#include <set>
 #include <vector>
 #include <functional>
 #include "GameObject.h"
@@ -11,7 +12,6 @@
 #include <algorithm>
 #include <random>
 #include "Debug.h"
-#include "../CSC8503Common/GameObject.h"
 #include "../../Common/Camera.h"
 #include "../../Common/Vector2.h"
 #include "../../Common/Vector3.h"
@@ -31,9 +31,23 @@ namespace NCL {
 			/* PhysX callback methods */
 			void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
 				PxActor* actor1 = pairHeader.actors[0];
+				GameObject* obj1 = FindObjectFromPhysicsBody(actor1);
+
 				PxActor* actor2 = pairHeader.actors[1];
-				FindObjectFromPhysicsBody(actor1)->OnCollisionBegin(FindObjectFromPhysicsBody(actor2));
-				FindObjectFromPhysicsBody(actor2)->OnCollisionBegin(FindObjectFromPhysicsBody(actor1));
+				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
+
+				for (PxU32 i = 0; i < nbPairs; i++) {
+					const PxContactPair& cp = pairs[i];
+
+					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+						obj1->OnCollisionBegin(obj2);
+						obj2->OnCollisionBegin(obj1);
+					}
+					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+						obj1->OnCollisionEnd(obj2);
+						obj2->OnCollisionEnd(obj1);
+					}
+				}			
 			}
 			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
 			void onWake(PxActor** actors, PxU32 count) {}
@@ -69,10 +83,15 @@ namespace NCL {
 				return shuffleObjects;
 			}
 			static std::vector<GameObject*> gameObjects;
+
+			int GetTotalCollisions() const {
+				return totalCollisions;
+			}
 		protected:
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;
+			int totalCollisions;
 		};
 	}
 }

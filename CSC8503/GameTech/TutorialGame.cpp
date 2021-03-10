@@ -20,6 +20,9 @@ TutorialGame::TutorialGame() {
 	player = nullptr;
 	lockedOrientation = true;
 	currentLevel = 1;
+	avgFps = 1.0f;
+	framesPerSecond = 0;
+	fpsTimer = 1.0f;
 	InitCamera();
 	InitWorld();
 }
@@ -62,6 +65,16 @@ void TutorialGame::UpdateLevel(float dt) {
 		DrawDebugInfo();
 		world->ShowFacing();
 	}
+	/* Rolling FPS calculations */
+	fpsTimer -= dt;
+	++framesPerSecond;
+	if (fpsTimer < 0.0f) {
+		float alpha = 0.1f;
+		avgFps = alpha * avgFps + (1.0 - alpha) * framesPerSecond;
+		framesPerSecond = 0;
+		fpsTimer = 1.0f;
+	}
+	renderer->DrawString("FPS:" + std::to_string(avgFps), Vector2(0, 5), Debug::WHITE, 15.0f);
 	
 	/* Camera state displayed to user */
 	switch (camState) {
@@ -142,7 +155,8 @@ void TutorialGame::DrawDebugInfo() {
 	}
 	else
 		renderer->DrawString("Lock selected object(L)", Vector2(0, 35), Debug::WHITE, textSize);
-	renderer->DrawString("Total Objects:" + std::to_string(world->gameObjects.size()), Vector2(75, 85), Debug::WHITE, textSize);
+	renderer->DrawString("Total Objects:" + std::to_string(world->gameObjects.size()), Vector2(75, 80), Debug::WHITE, textSize);
+	renderer->DrawString("Current Collisions:" + std::to_string(world->GetTotalCollisions()), Vector2(70, 85), Debug::WHITE, 15.0f);
 
 	/* If selected an object display all its physical properties */
 	if (selectionObject) {		
@@ -322,9 +336,10 @@ void TutorialGame::LockedObjectMovement(float dt) {
 				body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
 				body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
-			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded())
+			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
 				body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * 20000, PxForceMode::eIMPULSE);
 				lockedObject->SetGrounded(false);
+			}
 		}
 
 		/* We can lock the objects orientation with K or swap between camera positons with 1 */
