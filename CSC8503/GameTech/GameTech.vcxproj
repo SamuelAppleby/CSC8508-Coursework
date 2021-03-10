@@ -168,6 +168,7 @@
     <ClCompile Include="WorldCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameStatesPDA.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="TutorialGame.h" />
     <ClInclude Include="WorldCreator.h" />

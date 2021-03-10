@@ -42,6 +42,8 @@
 #include "GameObject.h"
 #include "GameWorld.h"
 
+#define PX_RELEASE(x)	if(x)	{ x->release(); x = NULL;	}
+
 const int IDEAL_FRAMES = 240;
 const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 using namespace physx;

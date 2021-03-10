@@ -12,33 +12,42 @@
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
 
-namespace NCL {
-	namespace CSC8503 {
+namespace NCL
+{
+	namespace CSC8503
+	{
 		class PlayerObject;
 		enum class FinishType { INGAME, TIMEOUT, WIN, LOSE };
-		class TutorialGame {
+		class TutorialGame
+		{
 		public:
 			TutorialGame();
 			~TutorialGame();
+
+			void DeleteWorld();
 
 			void Update(float dt);
 			void UpdateLevel(float dt);
 			void DrawDebugInfo();
 
+			void InitWorld();
+
+
+			//GameTechRenderer* GetRenderer() { return renderer; }
+			GameTechRenderer* renderer;
+
 		protected:
 			void InitCamera();
 			void UpdateKeys();
 
-			void InitWorld();
 			void InitFloors(int level);
 			void InitGameExamples(int level);
 			void InitGameObstacles(int level);
-			
+
 			bool SelectObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
-			GameTechRenderer* renderer;
 			PxPhysicsSystem* pXPhysics;
 			GameWorld* world;
 
@@ -47,13 +56,14 @@ namespace NCL {
 			float forceMagnitude;
 
 			GameObject* selectionObject = nullptr;
-			GameObject* lockedObject	= nullptr;
-		
+			GameObject* lockedObject = nullptr;
+
 			PlayerObject* player;
 			int currentLevel;
 			bool lockedOrientation;
 
 			float textSize = 15.0f;
+
 
 			CameraState camState;
 

@@ -8,11 +8,15 @@ using namespace physx;
 using namespace NCL;
 using namespace CSC8503;
 
-TutorialGame::TutorialGame() {
+TutorialGame::TutorialGame()
+{
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);
-	pXPhysics = new PxPhysicsSystem();
-	WorldCreator::Create(pXPhysics, world);
+	if (pXPhysics == nullptr)
+	{
+		pXPhysics = new PxPhysicsSystem();
+	}
+
 	forceMagnitude = 10.0f;
 	useBroadphase = true;
 	inSelectionMode = false;
@@ -24,33 +28,49 @@ TutorialGame::TutorialGame() {
 	framesPerSecond = 0;
 	fpsTimer = 1.0f;
 	InitCamera();
-	InitWorld();
+	WorldCreator::Create(pXPhysics, world); // initialize all textures / mesh / shaders 
+	
+	//InitWorld();
 }
 
-TutorialGame::~TutorialGame() {
+
+
+TutorialGame::~TutorialGame()
+{
 	delete renderer;
 	delete world;
 }
 
-void TutorialGame::Update(float dt) {
+void TutorialGame::DeleteWorld()
+{
+	world->ClearAndErase();
+	pXPhysics->CleanupPhysics();
+}
+
+void TutorialGame::Update(float dt)
+{
 	pXPhysics->StepPhysics(dt);
 	UpdateLevel(dt);
-	Debug::FlushRenderables(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	renderer->Render();
+	Debug::FlushRenderables(dt);
 }
 
 /* Logic for updating level 1 or level 2 */
-void TutorialGame::UpdateLevel(float dt) {
+void TutorialGame::UpdateLevel(float dt)
+{
 	/* Enter debug mode? */
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q)) {
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
+	{
 		inSelectionMode = !inSelectionMode;
-		if (inSelectionMode) {
+		if (inSelectionMode)
+		{
 			Window::GetWindow()->ShowOSPointer(true);
 			Window::GetWindow()->LockMouseToWindow(false);
 		}
-		else {
+		else
+		{
 			Window::GetWindow()->ShowOSPointer(false);
 			Window::GetWindow()->LockMouseToWindow(true);
 		}
@@ -59,7 +79,8 @@ void TutorialGame::UpdateLevel(float dt) {
 	/* Debug mode selection */
 	string message = inSelectionMode ? "Change to play mode(Q)" : "Change to debug mode(Q)";
 	renderer->DrawString(message, Vector2(68, 10), Debug::WHITE, textSize);
-	if (inSelectionMode) {
+	if (inSelectionMode)
+	{
 		UpdateKeys();
 		SelectObject();
 		DrawDebugInfo();
@@ -77,7 +98,8 @@ void TutorialGame::UpdateLevel(float dt) {
 	renderer->DrawString("FPS:" + std::to_string(avgFps), Vector2(0, 5), Debug::WHITE, 15.0f);
 	
 	/* Camera state displayed to user */
-	switch (camState) {
+	switch (camState)
+	{
 	case CameraState::FREE:
 		renderer->DrawString("Change to Global Camera[1]", Vector2(62, 20), Debug::WHITE, textSize);
 		break;
@@ -96,8 +118,10 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 
 	/* Change Camera */
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1)) {
-		switch (camState) {
+	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
+	{
+		switch (camState)
+		{
 		case CameraState::FREE:
 			camState = currentLevel == 1 ? CameraState::GLOBAL1 : CameraState::GLOBAL2;
 			break;
@@ -114,9 +138,11 @@ void TutorialGame::UpdateLevel(float dt) {
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
-	if (lockedObject) {
+	if (lockedObject)
+	{
 		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
-		if (lockedOrientation) {
+		if (lockedOrientation)
+		{
 			PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
 			actor->setAngularVelocity(PxVec3(0));
 			float yaw = world->GetMainCamera()->GetYaw();
@@ -140,7 +166,8 @@ void TutorialGame::UpdateLevel(float dt) {
 }
 
 /* Draws debug information to screen, and will display selected object properties */
-void TutorialGame::DrawDebugInfo() {
+void TutorialGame::DrawDebugInfo()
+{
 	string message = world->GetShuffleObjects() ? "Shuffle Objects(F1):On" : "Shuffle Objects(F1):Off";
 	renderer->DrawString(message, Vector2(0, 10), Debug::WHITE, textSize);
 
@@ -148,7 +175,8 @@ void TutorialGame::DrawDebugInfo() {
 
 	renderer->DrawString("Click Force(Scroll Wheel):" + std::to_string((int)forceMagnitude), Vector2(0, 25), Debug::WHITE, textSize);
 
-	if (lockedObject) {
+	if (lockedObject)
+	{
 		renderer->DrawString("Unlock object(L)", Vector2(0, 35), Debug::WHITE, textSize);
 		message = lockedOrientation ? "Lock object orientation(K): On" : "Lock object orientation(K): Off";
 		renderer->DrawString(message, Vector2(0, 40), Debug::WHITE, textSize);
@@ -159,18 +187,21 @@ void TutorialGame::DrawDebugInfo() {
 	renderer->DrawString("Current Collisions:" + std::to_string(world->GetTotalCollisions()), Vector2(70, 85), Debug::WHITE, 15.0f);
 
 	/* If selected an object display all its physical properties */
-	if (selectionObject) {		
+	if (selectionObject)
+	{
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
 
-		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+		{
 			PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
 			renderer->DrawString("Linear Velocity:" + Vector3(body->getLinearVelocity()).ToString(), Vector2(0, 75), Debug::WHITE, textSize);
 			renderer->DrawString("Angular Veclocity:" + Vector3(body->getAngularVelocity()).ToString(), Vector2(0, 80), Debug::WHITE, textSize);
 			renderer->DrawString("Mass:" + std::to_string(body->getMass()), Vector2(0, 85), Debug::WHITE, textSize);
-		}	
-		else {
+		}
+		else
+		{
 			renderer->DrawString("Linear Velocity:" + Vector3(0, 0, 0).ToString(), Vector2(0, 75), Debug::WHITE, textSize);
 			renderer->DrawString("Angular Veclocity:" + Vector3(0, 0, 0).ToString(), Vector2(0, 80), Debug::WHITE, textSize);
 			renderer->DrawString("Mass: N/A", Vector2(0, 85), Debug::WHITE, textSize);
@@ -181,14 +212,16 @@ void TutorialGame::DrawDebugInfo() {
 }
 
 /* In debug mode we can change some of the backend physics engine with some key presses */
-void TutorialGame::UpdateKeys() {
+void TutorialGame::UpdateKeys()
+{
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1))
 		world->ShuffleObjects(!world->GetShuffleObjects());
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 10.0f;
 }
 
 /* Initialise camera to default location */
-void TutorialGame::InitCamera() {
+void TutorialGame::InitCamera()
+{
 	world->GetMainCamera()->SetNearPlane(0.5f);
 	world->GetMainCamera()->SetFarPlane(1000.0f);
 	world->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
@@ -198,20 +231,25 @@ void TutorialGame::InitCamera() {
 }
 
 /* Initialise all the elements contained within the world */
-void TutorialGame::InitWorld() {
-	world->ClearAndErase();
+void TutorialGame::InitWorld()
+{
+	
 	//pXPhysics->CleanupPhysics();
 	InitFloors(currentLevel);
 	InitGameExamples(currentLevel);
 	InitGameObstacles(currentLevel);
 }
 
+//void Tu
+
 /* Place all the levels solid floors */
-void TutorialGame::InitFloors(int level) {
-	switch (level) {
+void TutorialGame::InitFloors(int level)
+{
+	switch (level)
+	{
 	case 0:
 		break;
-	case 1:		
+	case 1:
 		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
 		break;
 	case 2:
@@ -220,8 +258,10 @@ void TutorialGame::InitFloors(int level) {
 }
 
 /* Initialises all game objects, enemies etc */
-void TutorialGame::InitGameExamples(int level) {
-	switch (level) {
+void TutorialGame::InitGameExamples(int level)
+{
+	switch (level)
+	{
 	case 0:
 		break;
 	case 1:
@@ -235,8 +275,10 @@ void TutorialGame::InitGameExamples(int level) {
 }
 
 /* This method will initialise any other moveable obstacles we want */
-void TutorialGame::InitGameObstacles(int level) {
-	switch (level) {
+void TutorialGame::InitGameObstacles(int level)
+{
+	switch (level)
+	{
 	case 1:
 		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
 		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
@@ -246,15 +288,19 @@ void TutorialGame::InitGameObstacles(int level) {
 }
 
 /* If in debug mode we can select an object with the cursor, displaying its properties and allowing us to take control */
-bool TutorialGame::SelectObject() {
-	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !lockedObject) {
+bool TutorialGame::SelectObject()
+{
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !lockedObject)
+	{
 		PxVec3 pos = PhyxConversions::GetVector3(world->GetMainCamera()->GetPosition());
 		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*world->GetMainCamera()));
 		float distance = 1000.0f;
 		PxRaycastBuffer hit;
 
-		if (pXPhysics->GetGScene()->raycast(pos, dir, distance, hit)) {
-			if (selectionObject) {
+		if (pXPhysics->GetGScene()->raycast(pos, dir, distance, hit))
+		{
+			if (selectionObject)
+			{
 				selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
 				selectionObject->SetSelected(false);
 			}
@@ -268,13 +314,17 @@ bool TutorialGame::SelectObject() {
 	}
 
 	/* We can lock the object and move it around */
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::L)) {
-		if (selectionObject) {
-			if (lockedObject == selectionObject) {
+	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::L))
+	{
+		if (selectionObject)
+		{
+			if (lockedObject == selectionObject)
+			{
 				camState = CameraState::FREE;
 				lockedObject = nullptr;
 			}
-			else {
+			else
+			{
 				camState = CameraState::THIRDPERSON;
 				lockedObject = selectionObject;
 			}
@@ -285,12 +335,15 @@ bool TutorialGame::SelectObject() {
 }
 
 /* If we've selected an object, we can manipulate it with some key presses */
-void TutorialGame::DebugObjectMovement() {
-	if (inSelectionMode && selectionObject) {
+void TutorialGame::DebugObjectMovement()
+{
+	if (inSelectionMode && selectionObject)
+	{
 		/* Using the arrow keys and numpad we can twist the object with torque*/
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 
-		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+		if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+		{
 			PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
 
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT))
@@ -305,12 +358,13 @@ void TutorialGame::DebugObjectMovement() {
 				body->addTorque(PxVec3(0, -10, 0), PxForceMode::eIMPULSE);
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
 				body->addTorque(PxVec3(0, 10, 0), PxForceMode::eIMPULSE);
-		}	
+		}
 	}
 }
 
 /* If we have control of an object we can move it around and perform certain actions */
-void TutorialGame::LockedObjectMovement(float dt) {
+void TutorialGame::LockedObjectMovement(float dt)
+{
 	if (inSelectionMode && selectionObject)
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 	Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
@@ -323,11 +377,13 @@ void TutorialGame::LockedObjectMovement(float dt) {
 	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 	float force = 1200.0f;
 
-	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+	{
 		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
 		body->setLinearDamping(0.4f);
 
-		if (lockedObject->IsGrounded()) {
+		if (lockedObject->IsGrounded())
+		{
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
 				body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
@@ -346,9 +402,11 @@ void TutorialGame::LockedObjectMovement(float dt) {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))
 			lockedOrientation = !lockedOrientation;
 	}
-	
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1)) {
-		switch (camState) {
+
+	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
+	{
+		switch (camState)
+		{
 		case CameraState::THIRDPERSON:
 			camState = CameraState::TOPDOWN;
 			break;

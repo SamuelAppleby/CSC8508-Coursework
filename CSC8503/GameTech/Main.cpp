@@ -3,9 +3,10 @@
  *               21/01/2021
  *                170348069
  *				  Main File			 */
-#include "TutorialGame.h"
+//#include "TutorialGame.h"
 #include "../../Common/Window.h"
 #include "../CSC8503Common/PushdownMachine.h"
+#include "GameStatesPDA.h"
 extern int snippetMain(int, const char* const*, TutorialGame* t, float dt);
 
 using namespace NCL;
@@ -28,11 +29,15 @@ int main(int argc, char** argv) {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-	TutorialGame* t = new TutorialGame();
+	//TutorialGame* t = new TutorialGame();
+
+	PushdownMachine machine = new MainMenu();
 
 	while (w->UpdateWindow()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
-		t->Update(dt);
+		//t->Update(dt);
+		machine.Update(dt);
+
 		if (dt > 0.1f) {
 			std::cout << "Skipping large time delta" << std::endl;
 			continue;
@@ -41,8 +46,8 @@ int main(int argc, char** argv) {
 			w->ShowConsole(true);
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NEXT))
 			w->ShowConsole(false);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
-			break;
+		//if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
+			//break;
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T))
 			w->SetWindowPosition(0, 0);
 	}
