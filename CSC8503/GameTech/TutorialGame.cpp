@@ -8,15 +8,10 @@ using namespace physx;
 using namespace NCL;
 using namespace CSC8503;
 
-TutorialGame::TutorialGame()
-{
+TutorialGame::TutorialGame() {
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);
-	if (pXPhysics == nullptr)
-	{
-		pXPhysics = new PxPhysicsSystem();
-	}
-
+	pXPhysics = new PxPhysicsSystem();
 	forceMagnitude = 10.0f;
 	useBroadphase = true;
 	inSelectionMode = false;
@@ -29,26 +24,20 @@ TutorialGame::TutorialGame()
 	fpsTimer = 1.0f;
 	InitCamera();
 	WorldCreator::Create(pXPhysics, world); // initialize all textures / mesh / shaders 
-	
-	//InitWorld();
 }
 
-
-
-TutorialGame::~TutorialGame()
-{
-	delete renderer;
+TutorialGame::~TutorialGame() {
 	delete world;
+	delete renderer;
+	delete pXPhysics;
 }
 
-void TutorialGame::DeleteWorld()
-{
+void TutorialGame::ResetWorld() {
 	world->ClearAndErase();
-	pXPhysics->CleanupPhysics();
+	//pXPhysics->ResetPhysics();
 }
 
-void TutorialGame::Update(float dt)
-{
+void TutorialGame::Update(float dt) {
 	pXPhysics->StepPhysics(dt);
 	UpdateLevel(dt);
 	world->UpdateWorld(dt);
@@ -183,7 +172,9 @@ void TutorialGame::DrawDebugInfo()
 	}
 	else
 		renderer->DrawString("Lock selected object(L)", Vector2(0, 35), Debug::WHITE, textSize);
-	renderer->DrawString("Total Objects:" + std::to_string(world->gameObjects.size()), Vector2(75, 80), Debug::WHITE, textSize);
+	renderer->DrawString("Static Physics Objects:" + std::to_string(pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC)), Vector2(65, 70), Debug::WHITE, textSize);
+	renderer->DrawString("Dynamic Physics Objects:" + std::to_string(pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC)), Vector2(63, 75), Debug::WHITE, textSize);
+	renderer->DrawString("Total Game Objects:" + std::to_string(world->gameObjects.size()), Vector2(67, 80), Debug::WHITE, textSize);
 	renderer->DrawString("Current Collisions:" + std::to_string(world->GetTotalCollisions()), Vector2(70, 85), Debug::WHITE, 15.0f);
 
 	/* If selected an object display all its physical properties */

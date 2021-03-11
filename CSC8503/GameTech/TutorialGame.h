@@ -24,10 +24,11 @@ namespace NCL
 			TutorialGame();
 			~TutorialGame();
 
-			void DeleteWorld();
+			void ResetWorld();
 
 			void Update(float dt);
 			void UpdateLevel(float dt);
+
 			void DrawDebugInfo();
 
 			void InitWorld();
@@ -48,8 +49,8 @@ namespace NCL
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
-			PxPhysicsSystem* pXPhysics;
 			GameWorld* world;
+			PxPhysicsSystem* pXPhysics;
 
 			bool useBroadphase;
 			bool inSelectionMode;

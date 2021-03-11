@@ -1,6 +1,5 @@
 #include "WorldCreator.h"
 PxPhysicsSystem* WorldCreator::pXPhysics = nullptr;
-PxMaterial* WorldCreator::normalMat = nullptr;
 GameWorld* WorldCreator::world = nullptr;
 
 OGLMesh* WorldCreator::charMeshA = nullptr;
@@ -27,7 +26,6 @@ OGLShader* WorldCreator::basicShader = nullptr;
 
 void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	pXPhysics = p;
-	normalMat = pXPhysics->GetGPhysics()->createMaterial(0.5f, 0.5f, 0.1f);
 	world = w;
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
@@ -121,12 +119,13 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	world->AddGameObject(capsule);
 }
 
-void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes) {
+void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity) {
 	GameObject* floor = new GameObject("Floor");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
-	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *normalMat);
-	floor->SetPhysicsObject(new PhysXObject(body, normalMat));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	floor->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	floor->GetTransform().SetScale(halfSizes * 2);
@@ -138,8 +137,8 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	GameObject* p = new GameObject("Pickup");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));;
-	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *normalMat);
-	p->SetPhysicsObject(new PhysXObject(body, normalMat));
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(radius, radius, radius));
@@ -154,9 +153,9 @@ void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) 
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*normalMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-	p->SetPhysicsObject(new PhysXObject(body, normalMat));
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
@@ -171,9 +170,9 @@ void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale) {
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*normalMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-	e->SetPhysicsObject(new PhysXObject(body, normalMat));
+	e->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	e->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));

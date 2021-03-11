@@ -34,7 +34,6 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		//Debug::
 		Debug::Print("Press Space To  Start", Vector2(5, 50), Vector4(1, 0, 0, 1));
 		std::cout << "Paused";
 	}
@@ -180,12 +179,13 @@ class MainMenu : public PushdownState
 
 	void  OnAwake() override
 	{
-		if (tutorialGame != nullptr)
+		if (tutorialGame == nullptr)
 		{
-			tutorialGame->DeleteWorld();
+			tutorialGame = new TutorialGame();
 		}
-
-		tutorialGame = new TutorialGame();
+		else {
+			tutorialGame->ResetWorld();
+		}
 
 		//Debug::Print("Press Space To  Start", Vector2(50, 50), Vector4(1, 0, 0, 1));
 		//std::cout << " Welcome to a really awesome game !\n";

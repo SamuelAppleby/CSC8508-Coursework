@@ -36,18 +36,21 @@ namespace NCL {
 				PxActor* actor2 = pairHeader.actors[1];
 				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
 
-				for (PxU32 i = 0; i < nbPairs; i++) {
-					const PxContactPair& cp = pairs[i];
+				if (obj1 && obj2) {
+					for (PxU32 i = 0; i < nbPairs; i++) {
+						const PxContactPair& cp = pairs[i];
 
-					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
-						obj1->OnCollisionBegin(obj2);
-						obj2->OnCollisionBegin(obj1);
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+							obj1->OnCollisionBegin(obj2);
+							obj2->OnCollisionBegin(obj1);
+						}
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+							obj1->OnCollisionEnd(obj2);
+							obj2->OnCollisionEnd(obj1);
+						}
 					}
-					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
-						obj1->OnCollisionEnd(obj2);
-						obj2->OnCollisionEnd(obj1);
-					}
-				}			
+				}
+						
 			}
 			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
 			void onWake(PxActor** actors, PxU32 count) {}

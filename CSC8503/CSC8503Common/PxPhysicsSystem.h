@@ -50,8 +50,11 @@ using namespace physx;
 class PxPhysicsSystem {
 public:
 	PxPhysicsSystem();
+	~PxPhysicsSystem();
+
+	//void ResetPhysics();
+
 	void StepPhysics(float dt);
-	void CleanupPhysics();
 
 	PxPhysics* GetGPhysics() {
 		return gPhysics;
