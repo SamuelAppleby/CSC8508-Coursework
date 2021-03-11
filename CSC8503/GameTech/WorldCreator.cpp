@@ -22,6 +22,7 @@ OGLTexture* WorldCreator::finishTex = nullptr;
 OGLTexture* WorldCreator::menuTex = nullptr;
 OGLTexture* WorldCreator::plainTex = nullptr;
 OGLTexture* WorldCreator::wallTex = nullptr;
+OGLTexture* WorldCreator::dogeTex = nullptr;
 
 OGLShader* WorldCreator::basicShader = nullptr;
 OGLShader* WorldCreator::toonShader = nullptr;
@@ -55,6 +56,7 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
+	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
@@ -116,6 +118,7 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	GameObject* capsule = new GameObject;
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
+	//capsule->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
 	capsule->SetPhysicsObject(new PhysXObject(body, newMat));
 	world->AddGameObject(capsule);
 }
@@ -127,7 +130,7 @@ void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSize
 
 	GameObject* floor = new GameObject;
 	floor->GetTransform().SetScale(halfSizes * 2);
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, basicShader));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, woodenTex, basicShader));
 	floor->SetPhysicsObject(new PhysXObject(body, normalMat));
 	world->AddGameObject(floor);
 }

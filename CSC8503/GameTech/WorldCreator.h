@@ -50,6 +50,7 @@ private:
 	static OGLTexture* menuTex;
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
+	static OGLTexture* dogeTex;
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
 };
