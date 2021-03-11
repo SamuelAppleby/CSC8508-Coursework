@@ -7,6 +7,12 @@
 #include "../../Common/Window.h"
 #include "../CSC8503Common/PushdownMachine.h"
 #include "GameStatesPDA.h"
+
+#include <irrKlang.h>
+#include <stdio.h>
+#include <conio.h>
+using namespace irrklang;
+
 void GamePushdownAutomata(Window* w);
 
 using namespace NCL;
@@ -24,6 +30,11 @@ int main(int argc, char** argv) {
 	Window* w = Window::CreateGameWindow("Fall Guys!", 1280, 720, false);
 	if (!w->HasInitialised())
 		return -1;
+
+	ISoundEngine* engine = createIrrKlangDevice();
+
+	engine->setSoundVolume(0.25f);
+	engine->play2D("../../Assets/Audio/BGM.mp3", true);
 
 	srand(time(0));
 	w->ShowOSPointer(false);
