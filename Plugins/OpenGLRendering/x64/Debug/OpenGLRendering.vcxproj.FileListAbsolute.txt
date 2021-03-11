@@ -1,2 +1,4 @@
 C:\Users\sambu\Downloads\CSC8508\x64\Debug\OpenGLRendering.pdb
 C:\Users\sambu\Downloads\CSC8508\Plugins\OpenGLRendering\x64\Debug\OpenGLRendering.pdb
+D:\GitHub\CSC8508-Coursework\x64\Debug\OpenGLRendering.pdb
+D:\GitHub\CSC8508-Coursework\Plugins\OpenGLRendering\x64\Debug\OpenGLRendering.pdb
