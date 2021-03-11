@@ -32,6 +32,7 @@ namespace NCL
 			void DrawDebugInfo();
 
 			void InitWorld();
+			void initLevel2();
 
 
 			//GameTechRenderer* GetRenderer() { return renderer; }
@@ -71,6 +72,13 @@ namespace NCL
 			int avgFps;
 			int framesPerSecond;
 			float fpsTimer;
+
+
+			//Level2 stuff here
+			vector<Cannon*> cannons;
+			void updateCannons(float dt);
+			void updateCannonBalls();
+			void clearCannons();
 		};
 	}
 }

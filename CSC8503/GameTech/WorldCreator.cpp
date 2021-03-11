@@ -213,3 +213,70 @@ void WorldCreator::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
 	world->AddGameObject(cube);
 }
+
+void WorldCreator::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3* rotation, float friction, float elasticity, string name) {
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	pXPhysics->GetGScene()->addActor(*body);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	body->setDominanceGroup(0);
+	RotatingCube* cube = new RotatingCube(body, rotation);
+	cube->GetTransform().SetScale(halfSizes * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	cube->SetPhysicsObject(new PhysXObject(body, newMat));
+	world->AddGameObject(cube);
+	cube->SetName(name);
+}
+
+void WorldCreator::AddPxCannonBallToWorld(const PxTransform& t, Cannon* cannonObj, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity) {
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
+	PxRigidBodyExt::updateMassAndInertia(*body, density);
+	body->setDominanceGroup(1);
+	pXPhysics->GetGScene()->addActor(*body);
+	Cannonball* sphere = new Cannonball(body);
+	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+	sphere->SetPhysicsObject(new PhysXObject(body, newMat));
+	world->AddGameObject(sphere);
+
+	body->addForce(*force, PxForceMode::eIMPULSE);
+	cannonObj->addShot(sphere);
+}
+
+void WorldCreator::AddPxCannonToWorld(Cannon* cannonObj) {
+	PxVec3 halfSizes = PxVec3(30, 15, 15);
+	PxTransform t = *cannonObj->getPosition();
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(30, 15, 15), *newMat);
+	cannonObj->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+
+	cannonObj->GetTransform().SetScale(halfSizes * 2);
+	cannonObj->SetRenderObject(new RenderObject(&cannonObj->GetTransform(), cubeMesh, basicTex, basicShader));
+	world->AddGameObject(cannonObj);
+	cannonObj->setBody(body);
+}
+
+void WorldCreator::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide, string name, float density, float friction, float elasticity) {
+	KillPlane* cube = new KillPlane(respawnCentre, respawnSizeRange);
+	cube->SetName(name);
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	cube->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	cube->GetTransform().SetScale(halfSizes * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	world->AddGameObject(cube);
+
+	if (hide) {
+		cube->disappear();
+	}
+
+}
