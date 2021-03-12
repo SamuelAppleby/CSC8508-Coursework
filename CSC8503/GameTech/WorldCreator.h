@@ -6,6 +6,7 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
+#include "../Common/Light.h"
 
 #include "../CSC8503Common/Cannonball.h"
 #include "../CSC8503Common/Cannon.h"
@@ -32,6 +33,7 @@ public:
 	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
+	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
 	static void AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3* rotation = new PxVec3(0, 10, 0), float friction = 0.5f, float elasticity = 0.5, string name = "RotatingCube");
 	static void AddPxCannonBallToWorld(const PxTransform& t, Cannon* cannonObj, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 5.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCannonToWorld(Cannon* cannonObj);
@@ -59,6 +61,8 @@ private:
 	static OGLTexture* menuTex;
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
+	static OGLTexture* dogeTex;
 	static OGLShader* basicShader;
+	static OGLShader* toonShader;
 };
 

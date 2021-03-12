@@ -17,9 +17,11 @@
 #include "../../Common/Vector3.h"
 #include "../../Common/TextureLoader.h"
 #include "../../Common/Matrix4.h"
+#include "../../Common/Light.h"
 namespace NCL {
 	class Camera;
-	namespace CSC8503 {
+	namespace CSC8503
+	{
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
@@ -64,11 +66,14 @@ namespace NCL {
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
+
+		
 			Camera* GetMainCamera() const {
 				return mainCamera;
 			}
 
-			void ShuffleObjects(bool state) {
+			void ShuffleObjects(bool state)
+			{
 				shuffleObjects = state;
 			}
 
@@ -90,11 +95,27 @@ namespace NCL {
 			int GetTotalCollisions() const {
 				return totalCollisions;
 			}
+
+			//void IncreamentLightCount()
+			//{
+			//	++lightCount;
+			//}
+			//int GetLightCount()
+			//{
+			//	return lightCount;
+			//}
+
+			//void AddLight(Light& l)
+			//{
+			//	//lights[lightCount] = l;
+			//}
+
 		protected:
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;
 			int totalCollisions;
+			int     lightCount;
 		};
 	}
 }
