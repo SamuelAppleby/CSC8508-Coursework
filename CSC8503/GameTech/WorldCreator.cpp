@@ -136,7 +136,7 @@ void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSize
 	if(!friction)
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
 	else
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
 	world->AddGameObject(floor);
 }
 
