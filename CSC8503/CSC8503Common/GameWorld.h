@@ -17,6 +17,7 @@
 #include "../../Common/Vector3.h"
 #include "../../Common/TextureLoader.h"
 #include "../../Common/Matrix4.h"
+#include "../../Common/Light.h"
 namespace NCL {
 	class Camera;
 	namespace CSC8503
@@ -95,19 +96,19 @@ namespace NCL {
 				return totalCollisions;
 			}
 
-			void IncreamentLightCount()
-			{
-				++lightCount;
-			}
-			int GetLightCount()
-			{
-				return lightCount;
-			}
+			//void IncreamentLightCount()
+			//{
+			//	++lightCount;
+			//}
+			//int GetLightCount()
+			//{
+			//	return lightCount;
+			//}
 
-			void AddLight(Light& l)
-			{
-				//lights[lightCount] = l;
-			}
+			//void AddLight(Light& l)
+			//{
+			//	//lights[lightCount] = l;
+			//}
 
 		protected:
 			Camera* mainCamera;
