@@ -24,9 +24,30 @@ namespace NCL {
 			}
 
 			void Update(float dt) {
+				body->setAngularVelocity(PxVec3((rotationAxes->x * 10) * dt, (rotationAxes->y *10) * dt, (rotationAxes->z * 10) * dt), PxForceMode::eFORCE);
+				//body->setKinematicTarget(PxTransform())
 
-				body->addTorque(PxVec3(rotationAxes->x * dt, rotationAxes->y * dt, rotationAxes->z * dt), PxForceMode::eFORCE);
 			}
+
+			
+			void OnCollisionBegin(GameObject* otherObject) {
+
+				if (otherObject->GetName() == "Player") {
+					otherObject->SetGrounded(true);
+				}
+
+
+			}
+
+			void OnCollisionEnd(GameObject* otherObject) {
+
+				if (otherObject->GetName() == "Player") {
+					otherObject->SetGrounded(false);
+				}
+
+
+			}
+			
 
 		protected:
 			const PxVec3* rotationAxes;

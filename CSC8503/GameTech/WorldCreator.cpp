@@ -149,11 +149,11 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 
 void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) {
 	GameObject* p = new GameObject("Player");
-
+	
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
@@ -220,13 +220,15 @@ void WorldCreator::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 h
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	pXPhysics->GetGScene()->addActor(*body);
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-	body->setDominanceGroup(0);
 	RotatingCube* cube = new RotatingCube(body, rotation);
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
 	cube->SetPhysicsObject(new PhysXObject(body, newMat));
 	world->AddGameObject(cube);
 	cube->SetName(name);
+	body->setMass(0.f);
+	body->setMassSpaceInertiaTensor(PxVec3(0.f));
+	body->setMaxLinearVelocity(100);
 }
 
 void WorldCreator::AddPxCannonBallToWorld(const PxTransform& t, Cannon* cannonObj, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity) {
@@ -234,14 +236,12 @@ void WorldCreator::AddPxCannonBallToWorld(const PxTransform& t, Cannon* cannonOb
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
-	body->setDominanceGroup(1);
 	pXPhysics->GetGScene()->addActor(*body);
 	Cannonball* sphere = new Cannonball(body);
 	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
 	sphere->SetPhysicsObject(new PhysXObject(body, newMat));
 	world->AddGameObject(sphere);
-
 	body->addForce(*force, PxForceMode::eIMPULSE);
 	cannonObj->addShot(sphere);
 }

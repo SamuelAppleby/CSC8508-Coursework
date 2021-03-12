@@ -132,23 +132,29 @@ void TutorialGame::UpdateLevel(float dt)
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
-	if (lockedObject)
-	{
-		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
-		if (lockedOrientation)
+	if (lockedObject != nullptr) {
+		if (lockedObject)
 		{
-			PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
-			actor->setAngularVelocity(PxVec3(0));
-			float yaw = world->GetMainCamera()->GetYaw();
-			yaw = Maths::DegreesToRadians(yaw);
-			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-			PxTransform pose = actor->getGlobalPose();
-			Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
-			world->GetMainCamera()->SetPosition(camPos);
+			world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
+			if (lockedOrientation)
+			{
+				if (lockedObject->GetPhysicsObject() != nullptr) {
+					PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
+					actor->setAngularVelocity(PxVec3(0));
+					float yaw = world->GetMainCamera()->GetYaw();
+					yaw = Maths::DegreesToRadians(yaw);
+					actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+					Window::GetWindow()->ShowOSPointer(false);
+					Window::GetWindow()->LockMouseToWindow(true);
+					PxTransform pose = actor->getGlobalPose();
+					Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
+					world->GetMainCamera()->SetPosition(camPos);
+				}
+
+			}
 		}
 	}
+
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
 		world->GetMainCamera()->UpdateCamera(dt);
 
@@ -194,7 +200,7 @@ void TutorialGame::DrawDebugInfo()
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
 
-		if (selectionObject->GetPhysicsObject() != nullptr) {
+		if (selectionObject->GetPhysicsObject() != nullptr && selectionObject->GetPhysicsObject()->GetPXActor() != nullptr) {
 			if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 			{
 				PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
@@ -407,7 +413,7 @@ void TutorialGame::LockedObjectMovement(float dt)
 				body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
 			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
 				body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * 20000, PxForceMode::eIMPULSE);
-				lockedObject->SetGrounded(false);
+				//lockedObject->SetGrounded(false);
 			}
 		}
 
@@ -434,11 +440,12 @@ void TutorialGame::LockedObjectMovement(float dt)
 void TutorialGame::initLevel2() {
 
 	world->GetMainCamera()->SetFarPlane(10000.0f);
+	world->GetMainCamera()->SetPosition(Vector3(0, -86, -1050));
 
 
 
 	//player added to check this is all a reasonable scale
-	WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 10, -60)), 3);
+	WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 57, -1411)), 1);
 
 
 	//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -494,18 +501,18 @@ void TutorialGame::initLevel2() {
 	//may need to add more if the jump isn't far enough
 	//honestly not sure on some of these values, there may not be enough stepping stones, so we should decide if more are needed after a little testing
 	//front row
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-60, -88, -470)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -480)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(50, -88, -475)), PxVec3(30, 1, 30), 0.5, 1.5);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-60, -88, -470)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -480)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(50, -88, -475)), PxVec3(30, 1, 30));
 	//next row
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-40, -88, -550)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(10, -88, -540)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(60, -88, -520)), PxVec3(30, 1, 30), 0.5, 1.5);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-40, -88, -550)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(10, -88, -540)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(60, -88, -520)), PxVec3(30, 1, 30));
 	//last row
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-65, -88, -610)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-20, -88, -620)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(20, -88, -640)), PxVec3(30, 1, 30), 0.5, 1.5);
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -88, -600)), PxVec3(30, 1, 30), 0.5, 1.5);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-65, -88, -610)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-20, -88, -620)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(20, -88, -640)), PxVec3(30, 1, 30));
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -88, -600)), PxVec3(30, 1, 30));
 
 
 	//buffer zone 2 (where contestants respawn on failing the second obstacle, this needs to be sorted on the individual kill plane)
@@ -551,23 +558,23 @@ void TutorialGame::initLevel2() {
 
 	//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
 	//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
-	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 30));
+	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 10));
 
 	//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 200));
-	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 30));
+	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 10));
 
 	//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 200));
-	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 30));
+	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 198), new const PxVec3(0, 0, 10));
 
 	//cannons
-	Cannon* cannon2 = new Cannon(new PxVec3(-150, -75, -850), new PxVec3(700000, 85000, 0));
-	Cannon* cannon3 = new Cannon(new PxVec3(-150, -75, -900), new PxVec3(700000, 85000, 0));
-	Cannon* cannon4 = new Cannon(new PxVec3(-150, -75, -950), new PxVec3(700000, 85000, 0));
+	Cannon* cannon2 = new Cannon(new PxVec3(-150, -80, -850), new PxVec3(7000000, 8500, 0), 10, 10);
+	Cannon* cannon3 = new Cannon(new PxVec3(-150, -80, -900), new PxVec3(7000000, 8500, 0), 10, 10);
+	Cannon* cannon4 = new Cannon(new PxVec3(-150, -80, -950), new PxVec3(7000000, 8500, 0), 10, 10);
 
-	Cannon* cannon5 = new Cannon(new PxVec3(150, -75, -825), new PxVec3(-700000, 85000, 0));
-	Cannon* cannon6 = new Cannon(new PxVec3(150, -75, -875), new PxVec3(-700000, 85000, 0));
-	Cannon* cannon7 = new Cannon(new PxVec3(150, -75, -925), new PxVec3(-700000, 85000, 0));
-	Cannon* cannon8 = new Cannon(new PxVec3(150, -75, -975), new PxVec3(-700000, 85000, 0));
+	Cannon* cannon5 = new Cannon(new PxVec3(150, -80, -825), new PxVec3(-7000000, 8500, 0), 10, 10);
+	Cannon* cannon6 = new Cannon(new PxVec3(150, -80, -875), new PxVec3(-7000000, 8500, 0), 10, 10);
+	Cannon* cannon7 = new Cannon(new PxVec3(150, -80, -925), new PxVec3(-7000000, 8500, 0), 10, 10);
+	Cannon* cannon8 = new Cannon(new PxVec3(150, -80, -975), new PxVec3(-7000000, 8500, 0), 10,10);
 
 	WorldCreator::AddPxCannonToWorld(cannon2);
 	WorldCreator::AddPxCannonToWorld(cannon3);
@@ -623,7 +630,7 @@ void TutorialGame::initLevel2() {
 	//so basically it's like that one bit of mario kart, but also indiana jones, takeshi's castle, and probably some other stuff
 	//media tends to be surprisingly boulder centric
 	//I thought it'd be fun if they were bowling balls rolling down a hill, and you were trying not to get hit 
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -331, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(200, 1, 300), 0);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -331, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(200, 1, 300),1);
 
 	//side wall left
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-100, -325, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(1, 12, 310));
@@ -647,15 +654,15 @@ void TutorialGame::initLevel2() {
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, 720, -1290), PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(60, 720, -1290), PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
 
-	Cannon* c1 = new Cannon(new PxVec3(-80, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c2 = new Cannon(new PxVec3(-60, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c3 = new Cannon(new PxVec3(-40, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c4 = new Cannon(new PxVec3(-20, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c5 = new Cannon(new PxVec3(0, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c6 = new Cannon(new PxVec3(20, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c7 = new Cannon(new PxVec3(40, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c8 = new Cannon(new PxVec3(60, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
-	Cannon* c9 = new Cannon(new PxVec3(80, 55, -1351), new PxVec3(1, 1, 70000), 30, 15, 15);
+	Cannon* c1 = new Cannon(new PxVec3(-80, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c2 = new Cannon(new PxVec3(-60, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c3 = new Cannon(new PxVec3(-40, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c4 = new Cannon(new PxVec3(-20, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c5 = new Cannon(new PxVec3(0, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c6 = new Cannon(new PxVec3(20, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c7 = new Cannon(new PxVec3(40, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c8 = new Cannon(new PxVec3(60, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
+	Cannon* c9 = new Cannon(new PxVec3(80, 55, -1351), new PxVec3(1, 1, 70000000), 30, 15, 10000);
 
 	cannons.push_back(c1);
 	cannons.push_back(c2);
@@ -704,7 +711,7 @@ void TutorialGame::initLevel2() {
 	//again, not sure how to create the arm, it's a moving object, might need another class for this
 	//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in
 	//blender blade
-	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -68, -1700)), PxVec3(190, 20, 20), new const PxVec3(0, 50, 0), 0.5f, 0.100000000015F, "BlenderBlade");
+	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -73, -1700)), PxVec3(190, 20, 20), new const PxVec3(0, 50, 0), 0.5f, 0.100000000015F, "BlenderBlade");
 
 	//blender floor
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -1630.5)), PxVec3(200, 1, 339));
