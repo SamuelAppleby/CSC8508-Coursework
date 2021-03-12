@@ -6,6 +6,7 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
+#include "../Common/Light.h"
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
@@ -26,6 +27,7 @@ public:
 	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
+	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
 private:
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
@@ -47,6 +49,7 @@ private:
 	static OGLTexture* menuTex;
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
+	static OGLTexture* dogeTex;
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
 };

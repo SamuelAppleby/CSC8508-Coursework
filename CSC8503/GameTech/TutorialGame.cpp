@@ -8,7 +8,8 @@ using namespace physx;
 using namespace NCL;
 using namespace CSC8503;
 
-TutorialGame::TutorialGame() {
+TutorialGame::TutorialGame()
+{
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);
 	pXPhysics = new PxPhysicsSystem();
@@ -37,7 +38,8 @@ void TutorialGame::ResetWorld() {
 	//pXPhysics->ResetPhysics();
 }
 
-void TutorialGame::Update(float dt) {
+void TutorialGame::Update(float dt)
+{
 	pXPhysics->StepPhysics(dt);
 	UpdateLevel(dt);
 	world->UpdateWorld(dt);

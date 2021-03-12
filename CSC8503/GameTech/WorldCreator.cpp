@@ -21,6 +21,7 @@ OGLTexture* WorldCreator::finishTex = nullptr;
 OGLTexture* WorldCreator::menuTex = nullptr;
 OGLTexture* WorldCreator::plainTex = nullptr;
 OGLTexture* WorldCreator::wallTex = nullptr;
+OGLTexture* WorldCreator::dogeTex = nullptr;
 
 OGLShader* WorldCreator::basicShader = nullptr;
 OGLShader* WorldCreator::toonShader = nullptr;
@@ -53,6 +54,7 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
+	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
