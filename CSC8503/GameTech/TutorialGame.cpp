@@ -35,7 +35,7 @@ TutorialGame::~TutorialGame() {
 
 void TutorialGame::ResetWorld() {
 	world->ClearAndErase();
-	clearCannons();
+	//clearCannons();
 	//pXPhysics->ResetPhysics();
 }
 
@@ -135,32 +135,24 @@ void TutorialGame::UpdateLevel(float dt)
 
 	/* Change how we move the camera dependng if we have a locked object */
 	if (lockedObject != nullptr) {
-		if (lockedObject)
-		{
-			world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
-			if (lockedOrientation)
-			{
-				if (lockedObject->GetPhysicsObject() != nullptr) {
-					PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
-					actor->setAngularVelocity(PxVec3(0));
-					float yaw = world->GetMainCamera()->GetYaw();
-					yaw = Maths::DegreesToRadians(yaw);
-					actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-					Window::GetWindow()->ShowOSPointer(false);
-					Window::GetWindow()->LockMouseToWindow(true);
-					PxTransform pose = actor->getGlobalPose();
-					Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
-					world->GetMainCamera()->SetPosition(camPos);
-				}
+		PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
+		if(lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+		float yaw = world->GetMainCamera()->GetYaw();
+		yaw = Maths::DegreesToRadians(yaw);
+		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+		Window::GetWindow()->ShowOSPointer(false);
+		Window::GetWindow()->LockMouseToWindow(true);
+		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
 
-			}
-		}
+		
 	}
 
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
 		world->GetMainCamera()->UpdateCamera(dt);
 
 	renderer->DrawString("Exit to Menu (ESC)", Vector2(75, 5), Debug::WHITE, textSize);
+	renderer->DrawString("Pause(P)", Vector2(88, 15), Debug::WHITE, textSize);
+
 	if (lockedObject)
 		LockedObjectMovement(dt);
 	else
@@ -306,7 +298,7 @@ bool TutorialGame::SelectObject()
 	{
 		PxVec3 pos = PhyxConversions::GetVector3(world->GetMainCamera()->GetPosition());
 		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*world->GetMainCamera()));
-		float distance = 1000.0f;
+		float distance = 10000.0f;
 		PxRaycastBuffer hit;
 
 		if (pXPhysics->GetGScene()->raycast(pos, dir, distance, hit))
@@ -396,27 +388,24 @@ void TutorialGame::LockedObjectMovement(float dt)
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
-	float force = 1200.0f;
+	float force = 500000.0f;
 
 	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 	{
 		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
 		body->setLinearDamping(0.4f);
 
-		if (lockedObject->IsGrounded())
-		{
-			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-				body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
-			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-				body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
-			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-				body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
-			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-				body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
-			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
-				body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * 20000, PxForceMode::eIMPULSE);
-				//lockedObject->SetGrounded(false);
-			}
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+			body->addForce(PhyxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+			body->addForce(PhyxConversions::GetVector3(-rightAxis) * force * dt, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+			body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+			body->addForce(PhyxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
+			body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
+			//lockedObject->SetGrounded(false);
 		}
 
 		/* We can lock the objects orientation with K or swap between camera positons with 1 */
@@ -699,13 +688,13 @@ void TutorialGame::initLevel2() {
 	//(if they can stay on, it's not gated to encourage players barging into each other
 
 	//diving board left
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, 55, -1495)), PxVec3(20, 1, 70), 0.5, 2);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, 45, -1495)), PxVec3(20, 1, 70), 0.5, 2);
 
 	//diving board centre
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, 55, -1495)), PxVec3(20, 1, 70), 0.5, 1.5);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, 45, -1495)), PxVec3(20, 1, 70), 0.5, 1.5);
 
 	//diving board right
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, 55, -1495)), PxVec3(20, 1, 70), 0.5, 1.5);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, 45, -1495)), PxVec3(20, 1, 70), 0.5, 1.5);
 
 	//OBSTACLE 5 - THE BLENDER
 	//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
@@ -713,7 +702,7 @@ void TutorialGame::initLevel2() {
 	//again, not sure how to create the arm, it's a moving object, might need another class for this
 	//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in
 	//blender blade
-	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -73, -1700)), PxVec3(190, 20, 20), new const PxVec3(0, 50, 0), 0.5f, 0.100000000015F, "BlenderBlade");
+	WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -78, -1700)), PxVec3(190, 20, 20), new const PxVec3(0, 50, 0), 0.5f, 0.100000000015F, "BlenderBlade");
 
 	//blender floor
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -1630.5)), PxVec3(200, 1, 339));

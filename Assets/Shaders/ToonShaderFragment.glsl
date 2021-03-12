@@ -39,5 +39,5 @@ void main()
 	else
 		color = vec4(color.xyz * 0.1,1.0);
 
-    fragColor = color;
+    fragColor = color * lightColour;
 }

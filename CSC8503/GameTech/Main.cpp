@@ -27,7 +27,7 @@ This time, we've added some extra functionality to the window class - we can
 hide or show the */
 
 int main(int argc, char** argv) {
-	Window* w = Window::CreateGameWindow("Fall Guys!", 1280, 720, false);
+	Window* w = Window::CreateGameWindow("Fall Guys!", 1920, 1080, true);
 	if (!w->HasInitialised())
 		return -1;
 

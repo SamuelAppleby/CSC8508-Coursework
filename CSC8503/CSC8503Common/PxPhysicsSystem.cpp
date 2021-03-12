@@ -33,7 +33,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
 
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITTY_SCALE, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = ContactReportFilterShader;

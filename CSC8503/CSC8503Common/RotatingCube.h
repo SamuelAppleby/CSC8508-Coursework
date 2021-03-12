@@ -24,7 +24,7 @@ namespace NCL {
 			}
 
 			void Update(float dt) {
-				body->setAngularVelocity(PxVec3((rotationAxes->x * 10) * dt, (rotationAxes->y *10) * dt, (rotationAxes->z * 10) * dt), PxForceMode::eFORCE);
+				body->setAngularVelocity(PxVec3((rotationAxes->x * 5) * dt, (rotationAxes->y *5) * dt, (rotationAxes->z * 5) * dt), PxForceMode::eFORCE);
 				//body->setKinematicTarget(PxTransform())
 
 			}
