@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "RenderObject.h"
 #include "PhysXObject.h"
+
 using std::vector;
 namespace NCL {
 	namespace CSC8503 {
@@ -16,7 +17,8 @@ namespace NCL {
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt) {}
+			virtual void Update(float dt) {
+			}
 
 			void SetName(string val) {
 				name = val;
@@ -46,9 +48,9 @@ namespace NCL {
 				return name;
 			}
 
-			virtual void OnCollisionBegin(GameObject* otherObject) {}
+			virtual void OnCollisionBegin(GameObject* otherObject);
 
-			virtual void OnCollisionEnd(GameObject* otherObject) {}
+			virtual void OnCollisionEnd(GameObject* otherObject);
 
 			void SetWorldID(int newID) {
 				worldID = newID;
@@ -94,6 +96,18 @@ namespace NCL {
 				timeAlive += dt;
 			}
 
+			void SetGrounded(bool val) {
+				isGrounded = val;
+			}
+
+			bool IsGrounded() const {
+				return isGrounded;
+			}
+
+			bool IsColliding() const {
+				return isColliding;
+			}
+
 		protected:
 			Transform transform;
 
@@ -106,6 +120,9 @@ namespace NCL {
 			float timeInSet;
 			float timeAlive;
 			float powerUpTimer;
+			bool isGrounded;
+
+			bool isColliding;
 		};
 	}
 }

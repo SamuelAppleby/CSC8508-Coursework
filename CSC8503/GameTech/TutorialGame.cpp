@@ -13,7 +13,6 @@ TutorialGame::TutorialGame()
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);
 	pXPhysics = new PxPhysicsSystem();
-	WorldCreator::Create(pXPhysics, world);
 	forceMagnitude = 10.0f;
 	useBroadphase = true;
 	inSelectionMode = false;
@@ -21,24 +20,32 @@ TutorialGame::TutorialGame()
 	player = nullptr;
 	lockedOrientation = true;
 	currentLevel = 1;
+	avgFps = 1.0f;
+	framesPerSecond = 0;
+	fpsTimer = 1.0f;
 	InitCamera();
-	InitWorld();
+	WorldCreator::Create(pXPhysics, world); // initialize all textures / mesh / shaders 
 }
 
-TutorialGame::~TutorialGame()
-{
-	delete renderer;
+TutorialGame::~TutorialGame() {
 	delete world;
+	delete renderer;
+	delete pXPhysics;
+}
+
+void TutorialGame::ResetWorld() {
+	world->ClearAndErase();
+	//pXPhysics->ResetPhysics();
 }
 
 void TutorialGame::Update(float dt)
 {
 	pXPhysics->StepPhysics(dt);
 	UpdateLevel(dt);
-	Debug::FlushRenderables(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	renderer->Render();
+	Debug::FlushRenderables(dt);
 }
 
 /* Logic for updating level 1 or level 2 */
@@ -70,7 +77,17 @@ void TutorialGame::UpdateLevel(float dt)
 		DrawDebugInfo();
 		world->ShowFacing();
 	}
-
+	/* Rolling FPS calculations */
+	fpsTimer -= dt;
+	++framesPerSecond;
+	if (fpsTimer < 0.0f) {
+		float alpha = 0.1f;
+		avgFps = alpha * avgFps + (1.0 - alpha) * framesPerSecond;
+		framesPerSecond = 0;
+		fpsTimer = 1.0f;
+	}
+	renderer->DrawString("FPS:" + std::to_string(avgFps), Vector2(0, 5), Debug::WHITE, 15.0f);
+	
 	/* Camera state displayed to user */
 	switch (camState)
 	{
@@ -116,7 +133,18 @@ void TutorialGame::UpdateLevel(float dt)
 	{
 		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
 		if (lockedOrientation)
-			lockedObject->GetTransform().SetOrientation(PxQuat(world->GetMainCamera()->GetYaw(), { 0, 1, 0 }));
+		{
+			PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
+			actor->setAngularVelocity(PxVec3(0));
+			float yaw = world->GetMainCamera()->GetYaw();
+			yaw = Maths::DegreesToRadians(yaw);
+			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+			Window::GetWindow()->ShowOSPointer(false);
+			Window::GetWindow()->LockMouseToWindow(true);
+			PxTransform pose = actor->getGlobalPose();
+			Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
+			world->GetMainCamera()->SetPosition(camPos);
+		}
 	}
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
 		world->GetMainCamera()->UpdateCamera(dt);
@@ -146,20 +174,14 @@ void TutorialGame::DrawDebugInfo()
 	}
 	else
 		renderer->DrawString("Lock selected object(L)", Vector2(0, 35), Debug::WHITE, textSize);
-	renderer->DrawString("Total Objects:" + std::to_string(world->GetTotalWorldObjects()), Vector2(75, 85), Debug::WHITE, textSize);
+	renderer->DrawString("Static Physics Objects:" + std::to_string(pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC)), Vector2(65, 70), Debug::WHITE, textSize);
+	renderer->DrawString("Dynamic Physics Objects:" + std::to_string(pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC)), Vector2(63, 75), Debug::WHITE, textSize);
+	renderer->DrawString("Total Game Objects:" + std::to_string(world->gameObjects.size()), Vector2(67, 80), Debug::WHITE, textSize);
+	renderer->DrawString("Current Collisions:" + std::to_string(world->GetTotalCollisions()), Vector2(70, 85), Debug::WHITE, 15.0f);
 
 	/* If selected an object display all its physical properties */
 	if (selectionObject)
 	{
-		/* Display state machine information */
-		if (dynamic_cast<StateGameObject*>(selectionObject))
-		{
-			renderer->DrawString("State:" + ((StateGameObject*)selectionObject)->StateToString(), Vector2(0, 55), Debug::WHITE, textSize);
-
-			message = selectionObject->GetPowerUpTimer() > 0.0f ? "Powered Up: Yes" : "Powered Up: No";
-			renderer->DrawString(message, Vector2(0, 50), Debug::WHITE, textSize);
-		}
-
 		renderer->DrawString("Selected Object:" + selectionObject->GetName(), Vector2(0, 60), Debug::WHITE, textSize);
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
@@ -204,12 +226,14 @@ void TutorialGame::InitCamera()
 /* Initialise all the elements contained within the world */
 void TutorialGame::InitWorld()
 {
-	world->ClearAndErase();
+	
 	//pXPhysics->CleanupPhysics();
 	InitFloors(currentLevel);
 	InitGameExamples(currentLevel);
 	InitGameObstacles(currentLevel);
 }
+
+//void Tu
 
 /* Place all the levels solid floors */
 void TutorialGame::InitFloors(int level)
@@ -234,9 +258,9 @@ void TutorialGame::InitGameExamples(int level)
 	case 0:
 		break;
 	case 1:
-		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 50, 0)), 1);
-		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 50, 0)), 1);
-		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 50, 0)), 1);
+		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
+		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
+		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case 2:
 		break;
@@ -249,9 +273,9 @@ void TutorialGame::InitGameObstacles(int level)
 	switch (level)
 	{
 	case 1:
-		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 0, -20)), 2);
-		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 0, -20)), PxVec3(2, 2, 2));
-		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 50, -20)), 2, 2);
+		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
+		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
+		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
 		break;
 	}
 }
@@ -259,7 +283,7 @@ void TutorialGame::InitGameObstacles(int level)
 /* If in debug mode we can select an object with the cursor, displaying its properties and allowing us to take control */
 bool TutorialGame::SelectObject()
 {
-	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT))
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !lockedObject)
 	{
 		PxVec3 pos = PhyxConversions::GetVector3(world->GetMainCamera()->GetPosition());
 		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*world->GetMainCamera()));
@@ -344,22 +368,28 @@ void TutorialGame::LockedObjectMovement(float dt)
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
 	Vector3 charForward = Quaternion(lockedObject->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
-	float force = 5000.0f * dt;
+	float force = 1200.0f;
 
 	if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 	{
 		PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
+		body->setLinearDamping(0.4f);
 
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-			body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-			body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-			body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-			body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
-
-		body->setLinearVelocity(PhyxConversions::GetVector3(Maths::Clamp(Vector3(body->getLinearVelocity()), Vector3(-15, -50, -15), Vector3(15, 50, 15))));
+		if (lockedObject->IsGrounded())
+		{
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+				body->addForce(PhyxConversions::GetVector3(fwdAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+				body->addForce(PhyxConversions::GetVector3(-rightAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+				body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+				body->addForce(PhyxConversions::GetVector3(rightAxis) * force, PxForceMode::eIMPULSE);
+			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
+				body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * 20000, PxForceMode::eIMPULSE);
+				lockedObject->SetGrounded(false);
+			}
+		}
 
 		/* We can lock the objects orientation with K or swap between camera positons with 1 */
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K))

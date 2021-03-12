@@ -10,8 +10,13 @@ using namespace CSC8503;
 PhysXObject::PhysXObject(PxRigidActor* actor, PxMaterial* m) {
 	pXActor = actor;
 	material = m;
+	if (actor->is<PxRigidDynamic>()) {			
+		PxRigidDynamic* body = (PxRigidDynamic*)actor;
+		body->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);		//Enable CCD so high v objects don't move through each other
+	}
 }
 
 PhysXObject::~PhysXObject() {
-
+	pXActor->release();
+	//material->release();
 }

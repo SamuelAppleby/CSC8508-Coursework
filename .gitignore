@@ -6,7 +6,6 @@
 # User-specific files
 *.rsuser
 *.suo
-*.user
 *.userosscache
 *.sln.docstates
 
@@ -17,7 +16,6 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -31,6 +29,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+*.tlog
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
@@ -65,7 +64,6 @@ artifacts/
 StyleCopReport.xml
 
 # Files built by Visual Studio
-!*.dll
 *_i.c
 *_p.c
 *_h.h
@@ -349,3 +347,107 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+Common/x64/Debug/Common.idb
+Common/x64/Debug/Common.tlog/CL.command.1.tlog
+Common/x64/Debug/Common.tlog/CL.read.1.tlog
+Common/x64/Debug/Common.tlog/CL.write.1.tlog
+Common/x64/Debug/Common.tlog/Common.lastbuildstate
+Common/x64/Debug/Common.tlog/Lib-link.read.1.tlog
+Common/x64/Debug/Common.tlog/Lib-link.write.1.tlog
+Common/x64/Debug/Common.tlog/Lib.command.1.tlog
+Common/x64/Debug/Common.vcxproj.FileListAbsolute.txt
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.idb
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.command.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.read.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CL.write.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/CSC8503Common.lastbuildstate
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/Lib-link.read.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/Lib-link.write.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.tlog/Lib.command.1.tlog
+CSC8503/CSC8503Common/x64/Debug/CSC8503Common.vcxproj.FileListAbsolute.txt
+CSC8503/GameTech/x64/Debug/GameTech.exe.recipe
+CSC8503/GameTech/x64/Debug/GameTech.tlog/CL.command.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/CL.read.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/CL.write.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/GameTech.lastbuildstate
+CSC8503/GameTech/x64/Debug/GameTech.tlog/link.command.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/link.read.1.tlog
+CSC8503/GameTech/x64/Debug/GameTech.tlog/link.write.1.tlog
+CSC8503/GameTech/x64/Debug/vc142.idb
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.idb
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/CL.command.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/CL.read.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/CL.write.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/Lib-link.read.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/Lib-link.write.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/Lib.command.1.tlog
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.tlog/Networking-ENet.lastbuildstate
+Plugins/Networking-ENet/x64/Debug/Networking-ENet.vcxproj.FileListAbsolute.txt
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.idb
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/CL.command.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/CL.read.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/CL.write.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/Lib-link-BgProbe.read.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/Lib-link.read.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/Lib-link.write.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/Lib.command.1.tlog
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.tlog/OpenGLRendering.lastbuildstate
+Plugins/OpenGLRendering/x64/Debug/OpenGLRendering.vcxproj.FileListAbsolute.txt
+x64/Debug/Common.lib
+x64/Debug/CSC8503Common.lib
+x64/Debug/GameTech.exe
+x64/Debug/Networking-ENet.lib
+x64/Debug/OpenGLRendering.lib
+
+Common/x64/Release/Common.idb
+Common/x64/Release/Common.tlog/CL.command.1.tlog
+Common/x64/Release/Common.tlog/CL.read.1.tlog
+Common/x64/Release/Common.tlog/CL.write.1.tlog
+Common/x64/Release/Common.tlog/Common.lastbuildstate
+Common/x64/Release/Common.tlog/Lib-link.read.1.tlog
+Common/x64/Release/Common.tlog/Lib-link.write.1.tlog
+Common/x64/Release/Common.tlog/Lib.command.1.tlog
+Common/x64/Release/Common.vcxproj.FileListAbsolute.txt
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.idb
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/CL.command.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/CL.read.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/CL.write.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/CSC8503Common.lastbuildstate
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/Lib-link.read.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/Lib-link.write.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.tlog/Lib.command.1.tlog
+CSC8503/CSC8503Common/x64/Release/CSC8503Common.vcxproj.FileListAbsolute.txt
+CSC8503/GameTech/x64/Release/GameTech.exe.recipe
+CSC8503/GameTech/x64/Release/GameTech.tlog/CL.command.1.tlog
+CSC8503/GameTech/x64/Release/GameTech.tlog/CL.read.1.tlog
+CSC8503/GameTech/x64/Release/GameTech.tlog/CL.write.1.tlog
+CSC8503/GameTech/x64/Release/GameTech.tlog/GameTech.lastbuildstate
+CSC8503/GameTech/x64/Release/GameTech.tlog/link.command.1.tlog
+CSC8503/GameTech/x64/Release/GameTech.tlog/link.read.1.tlog
+CSC8503/GameTech/x64/Release/GameTech.tlog/link.write.1.tlog
+CSC8503/GameTech/x64/Release/vc142.idb
+Plugins/Networking-ENet/x64/Release/Networking-ENet.idb
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/CL.command.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/CL.read.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/CL.write.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/Lib-link.read.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/Lib-link.write.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/Lib.command.1.tlog
+Plugins/Networking-ENet/x64/Release/Networking-ENet.tlog/Networking-ENet.lastbuildstate
+Plugins/Networking-ENet/x64/Release/Networking-ENet.vcxproj.FileListAbsolute.txt
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.idb
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/CL.command.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/CL.read.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/CL.write.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/Lib-link-BgProbe.read.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/Lib-link.read.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/Lib-link.write.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/Lib.command.1.tlog
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.tlog/OpenGLRendering.lastbuildstate
+Plugins/OpenGLRendering/x64/Release/OpenGLRendering.vcxproj.FileListAbsolute.txt
+x64/Release/Common.lib
+x64/Release/CSC8503Common.lib
+x64/Release/GameTech.exe
+x64/Release/Networking-ENet.lib
+x64/Release/OpenGLRendering.lib

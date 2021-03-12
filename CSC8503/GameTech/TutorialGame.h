@@ -5,16 +5,10 @@
  *			Tutorial Game definition		 */
 #pragma once
 #include "../GameTech/GameTechRenderer.h"
-#include "../CSC8503Common/StateGameObject.h"
-#include "../CSC8503Common/NavigationGrid.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../../Common/Camera.h"
 #include "../../Common/PhyxConversions.h"
 #include "../CSC8503/CSC8503Common/CollisionDetection.h"
-
-#include "../CSC8503Common/Pushdownstate.h"
-#include <ctype.h>
-#include "PxPhysicsAPI.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
 
@@ -30,15 +24,23 @@ namespace NCL
 			TutorialGame();
 			~TutorialGame();
 
+			void ResetWorld();
+
 			void Update(float dt);
 			void UpdateLevel(float dt);
+
 			void DrawDebugInfo();
+
+			void InitWorld();
+
+
+			//GameTechRenderer* GetRenderer() { return renderer; }
+			GameTechRenderer* renderer;
 
 		protected:
 			void InitCamera();
 			void UpdateKeys();
 
-			void InitWorld();
 			void InitFloors(int level);
 			void InitGameExamples(int level);
 			void InitGameObstacles(int level);
@@ -47,9 +49,8 @@ namespace NCL
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
-			GameTechRenderer* renderer;
-			PxPhysicsSystem* pXPhysics;
 			GameWorld* world;
+			PxPhysicsSystem* pXPhysics;
 
 			bool useBroadphase;
 			bool inSelectionMode;
@@ -64,7 +65,12 @@ namespace NCL
 
 			float textSize = 15.0f;
 
+
 			CameraState camState;
+
+			int avgFps;
+			int framesPerSecond;
+			float fpsTimer;
 		};
 	}
 }

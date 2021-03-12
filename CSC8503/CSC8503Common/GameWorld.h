@@ -4,6 +4,7 @@
  *                170348069
  *			Game World Definition		 */
 #pragma once
+#include <set>
 #include <vector>
 #include <functional>
 #include "GameObject.h"
@@ -11,29 +12,52 @@
 #include <algorithm>
 #include <random>
 #include "Debug.h"
-#include "../CSC8503Common/GameObject.h"
-#include "../Common/Camera.h"
-#include "../Common/Vector2.h"
-#include "../Common/Vector3.h"
-#include "../Common/TextureLoader.h"
-#include "../Common/Matrix4.h"
-#include "../Common/Light.h"
-
-//constexpr auto NUM_OF_LIGHTS = 32;
-
-namespace NCL
-{
+#include "../../Common/Camera.h"
+#include "../../Common/Vector2.h"
+#include "../../Common/Vector3.h"
+#include "../../Common/TextureLoader.h"
+#include "../../Common/Matrix4.h"
+namespace NCL {
 	class Camera;
 	namespace CSC8503
 	{
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
-		class GameWorld
-		{
+		class GameWorld : public PxSimulationEventCallback {
 		public:
 			GameWorld();
 			~GameWorld();
+
+			/* PhysX callback methods */
+			void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
+				PxActor* actor1 = pairHeader.actors[0];
+				GameObject* obj1 = FindObjectFromPhysicsBody(actor1);
+
+				PxActor* actor2 = pairHeader.actors[1];
+				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
+
+				if (obj1 && obj2) {
+					for (PxU32 i = 0; i < nbPairs; i++) {
+						const PxContactPair& cp = pairs[i];
+
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+							obj1->OnCollisionBegin(obj2);
+							obj2->OnCollisionBegin(obj1);
+						}
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+							obj1->OnCollisionEnd(obj2);
+							obj2->OnCollisionEnd(obj1);
+						}
+					}
+				}
+						
+			}
+			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
+			void onWake(PxActor** actors, PxU32 count) {}
+			void onSleep(PxActor** actors, PxU32 count) {}
+			void onTrigger(PxTriggerPair* pairs, PxU32 count) {}
+			void onAdvance(const PxRigidBody* const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) {}
 
 			void Clear();
 			void ClearAndErase();
@@ -56,20 +80,19 @@ namespace NCL
 
 			virtual void UpdateWorld(float dt);
 
-			GameObject* FindObjectFromPhysicsBody(PxRigidActor* actor);
+			static GameObject* FindObjectFromPhysicsBody(PxActor* actor);
 
 			void OperateOnContents(GameObjectFunc f);
 
 			void GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const;
 
-			int GetTotalWorldObjects() const
-			{
-				return gameObjects.size();
-			}
-
-			bool GetShuffleObjects() const
-			{
+			bool GetShuffleObjects() const {
 				return shuffleObjects;
+			}
+			static std::vector<GameObject*> gameObjects;
+
+			int GetTotalCollisions() const {
+				return totalCollisions;
 			}
 
 			void IncreamentLightCount()
@@ -87,11 +110,10 @@ namespace NCL
 			}
 
 		protected:
-			std::vector<GameObject*> gameObjects;
-			//Light lights[NUM_OF_LIGHTS];
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;
+			int totalCollisions;
 			int     lightCount;
 		};
 	}
