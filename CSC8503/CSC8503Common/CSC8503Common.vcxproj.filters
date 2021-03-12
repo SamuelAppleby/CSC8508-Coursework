@@ -26,6 +26,9 @@
     <Filter Include="Other">
       <UniqueIdentifier>{c3db9f5e-7a1c-4c2a-8563-13e0393a6bcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Level2Objs">
+      <UniqueIdentifier>{a90368db-1229-412b-b4d6-f0e49e2b3990}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -97,6 +100,18 @@
     <ClInclude Include="CollisionDetection.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Cannon.h">
+      <Filter>Level2Objs</Filter>
+    </ClInclude>
+    <ClInclude Include="Cannonball.h">
+      <Filter>Level2Objs</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatingCube.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="KillPlane.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -132,5 +147,13 @@
     <ClCompile Include="CollisionDetection.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Cannon.cpp">
+      <Filter>Level2Objs</Filter>
+    </ClCompile>
+    <ClCompile Include="Cannonball.cpp">
+      <Filter>Level2Objs</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatingCube.cpp" />
+    <ClCompile Include="KillPlane.cpp" />
   </ItemGroup>
 </Project>

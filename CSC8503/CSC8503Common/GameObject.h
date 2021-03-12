@@ -108,6 +108,10 @@ namespace NCL {
 				return isColliding;
 			}
 
+			virtual void setDestroy(bool newDestroy) {
+				destroy = newDestroy;
+			}
+
 		protected:
 			Transform transform;
 
@@ -123,6 +127,9 @@ namespace NCL {
 			bool isGrounded;
 
 			bool isColliding;
+
+			//level2 stuff
+			bool destroy;
 		};
 	}
 }
