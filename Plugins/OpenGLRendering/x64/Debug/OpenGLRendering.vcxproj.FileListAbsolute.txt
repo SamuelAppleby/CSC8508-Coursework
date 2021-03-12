@@ -1,2 +1,0 @@
-C:\Users\sambu\Downloads\CSC8508\x64\Debug\OpenGLRendering.pdb
-C:\Users\sambu\Downloads\CSC8508\Plugins\OpenGLRendering\x64\Debug\OpenGLRendering.pdb
