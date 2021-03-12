@@ -48,5 +48,6 @@ private:
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
 	static OGLShader* basicShader;
+	static OGLShader* toonShader;
 };
 
