@@ -31,7 +31,6 @@ namespace NCL {
 
 
 		protected:
-			bool destroy;
 			PxActor* body;
 		};
 	}

@@ -442,12 +442,12 @@ void TutorialGame::LockedObjectMovement(float dt)
 void TutorialGame::initLevel2() {
 
 	world->GetMainCamera()->SetFarPlane(10000.0f);
-	world->GetMainCamera()->SetPosition(Vector3(0, -86, -1050));
+	world->GetMainCamera()->SetPosition(Vector3(0, 50, 120));
 
 
 
 	//player added to check this is all a reasonable scale
-	WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 57, -1411)), 1);
+	WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 1, 0)), 1);
 
 
 	//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -791,10 +791,18 @@ void TutorialGame::updateCannonBalls() {
 void TutorialGame::clearCannons() {
 	for (int i = 0; i < cannons.size(); ++i) {
 		for (int j = 0; j < cannons[i]->getShots().size(); ++j) {
-				cannons[i]->getShots()[j]->SetRenderObject(NULL);
-				cannons[i]->getShots()[j]->SetPhysicsObject(NULL);
-				world->RemoveGameObject(cannons[i]->getShots()[j], false);
-				cannons[i]->removeShot(cannons[i]->getShots()[j]);
+			if (cannons[i]->getShots()[j]->GetRenderObject()!= nullptr){
+				 
+				delete cannons[i]->getShots()[j]->GetRenderObject();
+
+			}
+			if (cannons[i]->getShots()[j]->GetPhysicsObject() != nullptr) {
+
+				delete cannons[i]->getShots()[j]->GetPhysicsObject();
+
+			}
+			world->RemoveGameObject(cannons[i]->getShots()[j], false);
+			cannons[i]->removeShot(cannons[i]->getShots()[j]);
 		}
 	}
 
