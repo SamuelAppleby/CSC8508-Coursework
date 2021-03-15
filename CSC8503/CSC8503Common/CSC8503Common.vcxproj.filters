@@ -97,6 +97,15 @@
     <ClInclude Include="CollisionDetection.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Cannon.h">
+      <Filter>Level2Objs</Filter>
+    </ClInclude>
+    <ClInclude Include="Cannonball.h">
+      <Filter>Level2Objs</Filter>
+    </ClInclude>
+    <ClInclude Include="KillPlane.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
