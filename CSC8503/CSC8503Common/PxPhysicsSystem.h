@@ -46,12 +46,16 @@
 
 const int IDEAL_FRAMES = 240;
 const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
+const int GRAVITTY_SCALE = 4;
 using namespace physx;
 class PxPhysicsSystem {
 public:
 	PxPhysicsSystem();
+	~PxPhysicsSystem();
+
+	//void ResetPhysics();
+
 	void StepPhysics(float dt);
-	void CleanupPhysics();
 
 	PxPhysics* GetGPhysics() {
 		return gPhysics;

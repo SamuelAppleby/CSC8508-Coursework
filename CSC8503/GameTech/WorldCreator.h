@@ -23,7 +23,7 @@ public:
 	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes);
+	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f);
 
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -41,7 +41,6 @@ public:
 
 private:
 	static PxPhysicsSystem* pXPhysics;
-	static PxMaterial* normalMat;
 	static GameWorld* world;
 	static OGLMesh* capsuleMesh;
 	static OGLMesh* cubeMesh;
@@ -61,6 +60,8 @@ private:
 	static OGLTexture* menuTex;
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
+	static OGLTexture* dogeTex;
 	static OGLShader* basicShader;
+	static OGLShader* toonShader;
 };
 

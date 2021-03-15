@@ -34,7 +34,6 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		//Debug::
 		Debug::Print("Press Space To  Start", Vector2(5, 50), Vector4(1, 0, 0, 1));
 		std::cout << "Paused";
 	}
@@ -123,7 +122,7 @@ class MainMenu : public PushdownState
 
 		//g->UpdateGame(dt);
 		Debug::Print("1: Single Player", Vector2(5, 60), Vector4(1, 0, 0, 1));
-		Debug::Print("2: Vs bot", Vector2(5, 70), Vector4(1, 0, 0, 1));
+		Debug::Print("2: Level 2", Vector2(5, 70), Vector4(1, 0, 0, 1));
 		Debug::Print("3: Exit", Vector2(5, 80), Vector4(1, 0, 0, 1));
 
 		/*if (winner != 0)
@@ -164,7 +163,7 @@ class MainMenu : public PushdownState
 			*newState = new Multiplayer();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld();
+			tutorialGame->initLevel2();
 			//tutorialGame->InitAI();
 			return PushdownResult::Push;
 		}
@@ -180,12 +179,13 @@ class MainMenu : public PushdownState
 
 	void  OnAwake() override
 	{
-		if (tutorialGame != nullptr)
+		if (tutorialGame == nullptr)
 		{
-			tutorialGame->DeleteWorld();
+			tutorialGame = new TutorialGame();
 		}
-
-		tutorialGame = new TutorialGame();
+		else {
+			tutorialGame->ResetWorld();
+		}
 
 		//Debug::Print("Press Space To  Start", Vector2(50, 50), Vector4(1, 0, 0, 1));
 		//std::cout << " Welcome to a really awesome game !\n";

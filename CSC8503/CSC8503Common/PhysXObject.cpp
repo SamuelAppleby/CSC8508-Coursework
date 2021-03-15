@@ -17,5 +17,8 @@ PhysXObject::PhysXObject(PxRigidActor* actor, PxMaterial* m) {
 }
 
 PhysXObject::~PhysXObject() {
-
+	if (pXActor != NULL) {
+		pXActor->release();
+		//material->release();
+	}
 }

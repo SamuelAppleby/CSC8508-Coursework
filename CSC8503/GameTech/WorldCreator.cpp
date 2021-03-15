@@ -1,6 +1,5 @@
 #include "WorldCreator.h"
 PxPhysicsSystem* WorldCreator::pXPhysics = nullptr;
-PxMaterial* WorldCreator::normalMat = nullptr;
 GameWorld* WorldCreator::world = nullptr;
 
 OGLMesh* WorldCreator::charMeshA = nullptr;
@@ -22,12 +21,13 @@ OGLTexture* WorldCreator::finishTex = nullptr;
 OGLTexture* WorldCreator::menuTex = nullptr;
 OGLTexture* WorldCreator::plainTex = nullptr;
 OGLTexture* WorldCreator::wallTex = nullptr;
+OGLTexture* WorldCreator::dogeTex = nullptr;
 
 OGLShader* WorldCreator::basicShader = nullptr;
+OGLShader* WorldCreator::toonShader = nullptr;
 
 void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	pXPhysics = p;
-	normalMat = pXPhysics->GetGPhysics()->createMaterial(0.5f, 0.5f, 0.1f);
 	world = w;
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
@@ -54,7 +54,9 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
+	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
 
 WorldCreator::~WorldCreator() {
@@ -87,7 +89,7 @@ void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
 }
 
@@ -102,7 +104,7 @@ void WorldCreator::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius
 	pXPhysics->GetGScene()->addActor(*body);
 
 	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, toonShader));
 	world->AddGameObject(sphere);
 }
 
@@ -117,20 +119,24 @@ void WorldCreator::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radiu
 	pXPhysics->GetGScene()->addActor(*body);
 
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
 	world->AddGameObject(capsule);
 }
 
-void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes) {
+void WorldCreator::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity) {
 	GameObject* floor = new GameObject("Floor");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
-	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *normalMat);
-	floor->SetPhysicsObject(new PhysXObject(body, normalMat));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	floor->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	floor->GetTransform().SetScale(halfSizes * 2);
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, basicShader));
+	if(!friction)
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+	else
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
 	world->AddGameObject(floor);
 }
 
@@ -138,29 +144,30 @@ void WorldCreator::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	GameObject* p = new GameObject("Pickup");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));;
-	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *normalMat);
-	p->SetPhysicsObject(new PhysXObject(body, normalMat));
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(radius, radius, radius));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, basicShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	world->AddGameObject(p);
 }
 
 void WorldCreator::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale) {
 	GameObject* p = new GameObject("Player");
-
+	
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*normalMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
-	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-	p->SetPhysicsObject(new PhysXObject(body, normalMat));
+	*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	body->setMaxLinearVelocity(50);
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, basicShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
 }
@@ -171,13 +178,13 @@ void WorldCreator::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale) {
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*normalMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-	e->SetPhysicsObject(new PhysXObject(body, normalMat));
+	e->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
 	e->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, basicTex, basicShader));
+	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, basicTex, toonShader));
 	e->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
 	world->AddGameObject(e);
 }
@@ -194,7 +201,7 @@ void WorldCreator::AddPxSeeSawToWorld(const PxTransform & t, const PxVec3 halfSi
 	PxRevoluteJoint* joint = PxRevoluteJointCreate(*pXPhysics->GetGPhysics(), body, PxTransform(PxVec3(0)), NULL, PxTransform(t.p * 2));
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
 }
 
@@ -213,6 +220,11 @@ void WorldCreator::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
+
+	if (hide) {
+		cube->disappear();
+	}
+
 }
 
 void WorldCreator::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity) {

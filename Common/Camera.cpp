@@ -92,11 +92,14 @@ void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o) {
 
 	/* Set our play camera */
 	if (currentState == CameraState::TOPDOWN) {
-		position = Vector3(o->GetTransform().GetPosition()) + Vector3(0, 40, 0);
+		PxTransform pose = o->GetPhysicsObject()->GetPXActor()->getGlobalPose();
+		position = Vector3(0, 100, 0) + pose.p;
 		pitch = -90;
 	}
 	else if (currentState == CameraState::THIRDPERSON) {
-		position = Vector3(o->GetTransform().GetPosition()) + lockedOffset;
+		PxTransform pose = o->GetPhysicsObject()->GetPXActor()->getGlobalPose();
+		Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
+		position = camPos;
 		pitch = 0;
 	}
 }

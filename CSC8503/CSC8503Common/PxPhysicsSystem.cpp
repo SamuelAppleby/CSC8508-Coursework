@@ -33,7 +33,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
 
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITTY_SCALE, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = ContactReportFilterShader;
@@ -49,6 +49,35 @@ PxPhysicsSystem::PxPhysicsSystem() {
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 }
+
+PxPhysicsSystem::~PxPhysicsSystem() {
+	PX_RELEASE(gScene);
+	PX_RELEASE(gDispatcher);
+	PX_RELEASE(gPhysics);
+	if (gPvd) {
+		PxPvdTransport* transport = gPvd->getTransport();
+		PX_RELEASE(transport);
+		PX_RELEASE(gPvd);
+	}
+	PX_RELEASE(gMaterial);
+	PX_RELEASE(gFoundation);
+}
+
+//void PxPhysicsSystem::ResetPhysics() {
+//	PxU32 nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+//	PxActor** actors = new PxActor * [nbActors];
+//	gScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, actors, nbActors);
+//	while (nbActors--) {
+//		gScene->removeActor(*actors[nbActors]);
+//	}
+//
+//	nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+//	actors = new PxActor * [nbActors];
+//	gScene->getActors(PxActorTypeFlag::eRIGID_STATIC, actors, nbActors);
+//	while (nbActors--) {
+//		gScene->removeActor(*actors[nbActors]);
+//	}
+//}
 
 void PxPhysicsSystem::StepPhysics(float dt) {
 	dTOffset += dt;
@@ -75,20 +104,6 @@ void PxPhysicsSystem::StepPhysics(float dt) {
 	}
 }
 
-void PxPhysicsSystem::CleanupPhysics() {
-	PX_RELEASE(gScene);
-	PX_RELEASE(gDispatcher);
-	PX_RELEASE(gPhysics);
-	if (gPvd) {
-		PxPvdTransport* transport = gPvd->getTransport();
-		gPvd->release();
-		gPvd = NULL;
-		PX_RELEASE(transport);
-	}
-	PX_RELEASE(gFoundation);
-
-	printf("SnippetHelloWorld done.\n");
-}
 
 
 

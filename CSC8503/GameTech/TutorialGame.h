@@ -24,13 +24,15 @@ namespace NCL
 			TutorialGame();
 			~TutorialGame();
 
-			void DeleteWorld();
+			void ResetWorld();
 
 			void Update(float dt);
 			void UpdateLevel(float dt);
+
 			void DrawDebugInfo();
 
 			void InitWorld();
+			void initLevel2();
 
 
 			//GameTechRenderer* GetRenderer() { return renderer; }
@@ -48,8 +50,8 @@ namespace NCL
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
-			PxPhysicsSystem* pXPhysics;
 			GameWorld* world;
+			PxPhysicsSystem* pXPhysics;
 
 			bool useBroadphase;
 			bool inSelectionMode;
@@ -70,6 +72,13 @@ namespace NCL
 			int avgFps;
 			int framesPerSecond;
 			float fpsTimer;
+
+
+			//Level2 stuff here
+			vector<Cannon*> cannons;
+			void updateCannons(float dt);
+			void updateCannonBalls();
+			void clearCannons();
 		};
 	}
 }

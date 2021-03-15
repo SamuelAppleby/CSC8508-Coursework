@@ -17,9 +17,11 @@
 #include "../../Common/Vector3.h"
 #include "../../Common/TextureLoader.h"
 #include "../../Common/Matrix4.h"
+#include "../../Common/Light.h"
 namespace NCL {
 	class Camera;
-	namespace CSC8503 {
+	namespace CSC8503
+	{
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
@@ -36,18 +38,21 @@ namespace NCL {
 				PxActor* actor2 = pairHeader.actors[1];
 				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
 
-				for (PxU32 i = 0; i < nbPairs; i++) {
-					const PxContactPair& cp = pairs[i];
+				if (obj1 && obj2) {
+					for (PxU32 i = 0; i < nbPairs; i++) {
+						const PxContactPair& cp = pairs[i];
 
-					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
-						obj1->OnCollisionBegin(obj2);
-						obj2->OnCollisionBegin(obj1);
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+							obj1->OnCollisionBegin(obj2);
+							obj2->OnCollisionBegin(obj1);
+						}
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+							obj1->OnCollisionEnd(obj2);
+							obj2->OnCollisionEnd(obj1);
+						}
 					}
-					if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
-						obj1->OnCollisionEnd(obj2);
-						obj2->OnCollisionEnd(obj1);
-					}
-				}			
+				}
+						
 			}
 			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
 			void onWake(PxActor** actors, PxU32 count) {}
@@ -61,11 +66,14 @@ namespace NCL {
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
+
+		
 			Camera* GetMainCamera() const {
 				return mainCamera;
 			}
 
-			void ShuffleObjects(bool state) {
+			void ShuffleObjects(bool state)
+			{
 				shuffleObjects = state;
 			}
 
@@ -87,11 +95,27 @@ namespace NCL {
 			int GetTotalCollisions() const {
 				return totalCollisions;
 			}
+
+			//void IncreamentLightCount()
+			//{
+			//	++lightCount;
+			//}
+			//int GetLightCount()
+			//{
+			//	return lightCount;
+			//}
+
+			//void AddLight(Light& l)
+			//{
+			//	//lights[lightCount] = l;
+			//}
+
 		protected:
 			Camera* mainCamera;
 			bool	shuffleObjects;
 			int		worldIDCounter;
 			int totalCollisions;
+			int     lightCount;
 		};
 	}
 }
