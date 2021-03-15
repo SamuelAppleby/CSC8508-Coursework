@@ -220,11 +220,6 @@ void WorldCreator::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
-
-	if (hide) {
-		cube->disappear();
-	}
-
 }
 
 void WorldCreator::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity) {
