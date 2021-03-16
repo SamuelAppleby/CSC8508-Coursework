@@ -4,6 +4,9 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
+#include "../../Common/Imgui/imgui_impl_opengl3.h"
+#include "../../Common/Imgui/imgui_impl_win32.h"
+#include "GlobalVars.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -52,11 +55,21 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(w->GetHandle());
+	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
 GameTechRenderer::~GameTechRenderer() {
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -107,7 +120,41 @@ void GameTechRenderer::RenderFrame() {
 	RenderShadowMap();
 	RenderSkybox();
 	RenderCamera();
+	RenderUI();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+}
+
+
+void GameTechRenderer::RenderUI()
+{
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	bool showWin, anotherWin;
+
+	ImGui::NewFrame();
+	{
+		static float f = 0.0f;
+		static int counter = 0;
+		ImGui::Begin("Hello, world!");                               // Create a window called "Hello, world!" and append into it.
+		ImGui::Text("This is some useful text.");                    // Display some text (you can use a format strings too)
+		//ImGui::Checkbox("Demo Window", &showWin);                  // Edit bools storing our window open/close state
+		//ImGui::Checkbox("Another Window", &anotherWin);
+		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);               // Edit 1 float using a slider from 0.0f to 1.0f
+		////ImGui::ColorEdit3("clear color", (float*)&clear_color);  // Edit 3 floats representing a color
+		//if (ImGui::Button("Button"))                               // Buttons return true when clicked (most widgets return true when edited/activated)
+		//	counter++;
+		//ImGui::SameLine();
+		//ImGui::Text("counter = %d", counter);
+		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
+	}
+	ImGui::Render();
+	glViewport(0, 0, w->GetScreenSize().x, w->GetScreenSize().y);
+	glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GameTechRenderer::BuildObjectList() {

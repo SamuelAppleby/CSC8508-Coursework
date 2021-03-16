@@ -298,7 +298,7 @@ void OGLRenderer::DrawDebugStrings() {
 	debugTextMesh->SetVertexPositions(vertPos);
 	debugTextMesh->SetVertexTextureCoords(vertTex);
 	debugTextMesh->SetVertexColours(vertColours);
-	debugTextMesh->UpdateGPUBuffers(0, vertPos.size());
+	debugTextMesh->UpdateGPUBuffers(0, (size_t)vertPos.size());
 
 	BindMesh(debugTextMesh);
 	DrawBoundMesh();
@@ -320,7 +320,7 @@ void OGLRenderer::DrawDebugLines() {
 
 	debugLinesMesh->SetVertexPositions(vertPos);
 	debugLinesMesh->SetVertexColours(vertCol);
-	debugLinesMesh->UpdateGPUBuffers(0, vertPos.size());
+	debugLinesMesh->UpdateGPUBuffers(0, (size_t)vertPos.size());
 
 	BindMesh(debugLinesMesh);
 	DrawBoundMesh();

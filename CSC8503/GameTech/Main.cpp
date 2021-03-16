@@ -3,7 +3,7 @@
  *               21/01/2021
  *                170348069
  *				  Main File			 */
-//#include "TutorialGame.h"
+ //#include "TutorialGame.h"
 #include "../../Common/Window.h"
 #include "../CSC8503Common/PushdownMachine.h"
 #include "GameStatesPDA.h"
@@ -11,6 +11,8 @@
 #include <irrKlang.h>
 #include <stdio.h>
 #include <conio.h>
+
+#include "GlobalVars.h"
 using namespace irrklang;
 
 void GamePushdownAutomata(Window* w);
@@ -25,16 +27,32 @@ instead.
 
 This time, we've added some extra functionality to the window class - we can
 hide or show the */
+extern Win32Code::Win32Window* w = nullptr;/*
+extern float windowHeight = 720;*/
 
-int main(int argc, char** argv) {
-	Window* w = Window::CreateGameWindow("Fall Guys!", 1280, 720, false);
+
+int main(int argc, char** argv)
+{
+
+	w = new Win32Code::Win32Window("Fall Guys!", 1280, 720, false, 100, 100);
+
 	if (!w->HasInitialised())
 		return -1;
-
 	ISoundEngine* engine = createIrrKlangDevice();
 
 	engine->setSoundVolume(0.25f);
 	engine->play2D("../../Assets/Audio/BGM.mp3", true);
+
+
+
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//ImGui::StyleColorsDark();
+
+	//ImGui_ImplWin32_Init(w->GetHandle());
+	//ImGui_ImplOpenGL3_Init("#version 130");
+
+
 
 	srand(time(0));
 	w->ShowOSPointer(false);
@@ -46,11 +64,14 @@ int main(int argc, char** argv) {
 }
 
 /* This method drives the entire game on a pushdown automata */
-void GamePushdownAutomata(Window* w) {
+void GamePushdownAutomata(Window* w)
+{
 	PushdownMachine machine(new MainMenu());
-	while (w->UpdateWindow()) {
+	while (w->UpdateWindow())
+	{
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
-		if (dt > 0.1f) {
+		if (dt > 0.1f)
+		{
 			std::cout << "Skipping large time delta" << std::endl;
 			continue;
 		}

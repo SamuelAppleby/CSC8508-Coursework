@@ -68,7 +68,7 @@ int SimpleFont::BuildVerticesForString(std::string &text, Vector2&startPos, Vect
 	colours.reserve(colours.size() + (text.length() * 6));
 	texCoords.reserve(texCoords.size() + (text.length() * 6));
 
-	for (size_t i = 0; i < text.length(); ++i) {
+	for (int i = 0; i < text.length(); ++i) {
 		int charIndex = (int)text[i];
 
 		if (charIndex < startChar) {

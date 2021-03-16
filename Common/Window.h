@@ -20,17 +20,21 @@ _-_-_-_-_-_-_-""  ""
 
 #include <string>
 
-namespace NCL {
-	namespace Rendering {
+namespace NCL
+{
+	namespace Rendering
+	{
 		class RendererBase;
 	};
 	using namespace Rendering;
-	
-	class Window {
+
+	class Window
+	{
 	public:
 		static Window* CreateGameWindow(std::string title = "NCLGL!", int sizeX = 800, int sizeY = 600, bool fullScreen = false, int offsetX = 100, int offsetY = 100);
 
-		static void DestroyGameWindow() {
+		static void DestroyGameWindow()
+		{
 			delete window;
 			window = nullptr;
 		}
@@ -40,15 +44,17 @@ namespace NCL {
 
 		bool		HasInitialised()	const { return init; }
 
-		float		GetScreenAspect()	const {
+		float		GetScreenAspect()	const
+		{
 			return size.x / size.y;
 		}
 
 		Vector2		GetScreenSize()		const { return size; }
 		Vector2		GetScreenPosition()	const { return position; }
 
-		const std::string&  GetTitle()   const { return windowTitle; }
-		void				SetTitle(const std::string& title) {
+		const std::string& GetTitle()   const { return windowTitle; }
+		void				SetTitle(const std::string& title)
+		{
 			windowTitle = title;
 			UpdateTitle();
 		};
@@ -61,11 +67,12 @@ namespace NCL {
 		virtual void	SetConsolePosition(int x, int y) {};
 		virtual void	ShowConsole(bool state) {};
 
-		static const Keyboard*	 GetKeyboard() { return keyboard; }
-		static const Mouse*		 GetMouse() { return mouse; }
-		static const GameTimer*	 GetTimer() { return timer; }
+		static const Keyboard* GetKeyboard() { return keyboard; }
+		static const Mouse* GetMouse() { return mouse; }
+		static const GameTimer* GetTimer() { return timer; }
 
-		static Window*	const GetWindow() { return window; }
+		static Window* const GetWindow() { return window; }
+		//static Win32Code::Win32Window* const getWin32Window() { return win; }
 	protected:
 		Window();
 		virtual ~Window();
@@ -76,7 +83,7 @@ namespace NCL {
 
 		void ResizeRenderer();
 
-		RendererBase*	renderer;
+		RendererBase* renderer;
 
 		bool				init;
 		Vector2				position;
@@ -85,9 +92,10 @@ namespace NCL {
 
 		std::string			windowTitle;
 
-		static Window*		window;
-		static Keyboard*	keyboard;
-		static Mouse*		mouse;
-		static GameTimer*	timer;
+		static Window* window;
+		static Keyboard* keyboard;
+		static Mouse* mouse;
+		static GameTimer* timer;
+		//static Win32Code::Win32Window* win;
 	};
 }

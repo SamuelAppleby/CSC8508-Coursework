@@ -45,7 +45,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>NDEBUG;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../include;../../../include</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

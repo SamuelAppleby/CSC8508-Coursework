@@ -31,6 +31,8 @@ namespace NCL {
 
 			GameWorld&	gameWorld;
 
+			void RenderUI();
+
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();

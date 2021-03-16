@@ -28,6 +28,9 @@
     <Filter Include="Asset Handling">
       <UniqueIdentifier>{1d0b54c1-f5de-4083-b62a-78e5b7ec9b10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImgUI">
+      <UniqueIdentifier>{ed205d82-a1ec-4911-b76b-2d760bdbfe51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -116,6 +119,27 @@
     </ClCompile>
     <ClCompile Include="..\CSC8503\CSC8503Common\Debug.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_demo.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_draw.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_impl_opengl3.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_impl_win32.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_tables.cpp">
+      <Filter>ImgUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_widgets.cpp">
+      <Filter>ImgUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +232,30 @@
     </ClInclude>
     <ClInclude Include="PhyxConversions.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imconfig.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_impl_opengl3.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_impl_win32.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_internal.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_rectpack.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_textedit.h">
+      <Filter>ImgUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_truetype.h">
+      <Filter>ImgUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

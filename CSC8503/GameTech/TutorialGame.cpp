@@ -27,13 +27,17 @@ TutorialGame::TutorialGame()
 	WorldCreator::Create(pXPhysics, world); // initialize all textures / mesh / shaders 
 }
 
-TutorialGame::~TutorialGame() {
+
+
+TutorialGame::~TutorialGame()
+{
 	delete world;
 	delete renderer;
 	delete pXPhysics;
 }
 
-void TutorialGame::ResetWorld() {
+void TutorialGame::ResetWorld()
+{
 	world->ClearAndErase();
 	//clearCannons();
 	//pXPhysics->ResetPhysics();
@@ -55,6 +59,9 @@ void TutorialGame::UpdateLevel(float dt)
 	//level2 stuff
 	updateCannons(dt);
 	updateCannonBalls();
+
+
+	
 
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
@@ -85,14 +92,15 @@ void TutorialGame::UpdateLevel(float dt)
 	/* Rolling FPS calculations */
 	fpsTimer -= dt;
 	++framesPerSecond;
-	if (fpsTimer < 0.0f) {
+	if (fpsTimer < 0.0f)
+	{
 		float alpha = 0.1f;
 		avgFps = alpha * avgFps + (1.0 - alpha) * framesPerSecond;
 		framesPerSecond = 0;
 		fpsTimer = 1.0f;
 	}
 	renderer->DrawString("FPS:" + std::to_string(avgFps), Vector2(0, 5), Debug::WHITE, 15.0f);
-	
+
 	/* Camera state displayed to user */
 	switch (camState)
 	{
@@ -134,9 +142,10 @@ void TutorialGame::UpdateLevel(float dt)
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
-	if (lockedObject != nullptr) {
+	if (lockedObject != nullptr)
+	{
 		PxRigidDynamic* actor = (PxRigidDynamic*)lockedObject->GetPhysicsObject()->GetPXActor();
-		if(lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+		if (lockedObject->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
 		float yaw = world->GetMainCamera()->GetYaw();
 		yaw = Maths::DegreesToRadians(yaw);
 		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
@@ -144,7 +153,7 @@ void TutorialGame::UpdateLevel(float dt)
 		Window::GetWindow()->LockMouseToWindow(true);
 		world->GetMainCamera()->UpdateCameraWithObject(dt, lockedObject);
 
-		
+
 	}
 
 	else if (!inSelectionMode || camState == CameraState::GLOBAL1 || camState == CameraState::GLOBAL2)
@@ -156,8 +165,10 @@ void TutorialGame::UpdateLevel(float dt)
 	if (lockedObject)
 		LockedObjectMovement(dt);
 	else
-		if (selectionObject != nullptr) {
-			if (selectionObject->GetRenderObject() != nullptr) {
+		if (selectionObject != nullptr)
+		{
+			if (selectionObject->GetRenderObject() != nullptr)
+			{
 				DebugObjectMovement();
 			}
 		}
@@ -194,7 +205,8 @@ void TutorialGame::DrawDebugInfo()
 		renderer->DrawString("Position:" + Vector3(selectionObject->GetTransform().GetPosition()).ToString(), Vector2(0, 65), Debug::WHITE, textSize);
 		renderer->DrawString("Orientation:" + Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString(), Vector2(0, 70), Debug::WHITE, textSize);
 
-		if (selectionObject->GetPhysicsObject() != nullptr && selectionObject->GetPhysicsObject()->GetPXActor() != nullptr) {
+		if (selectionObject->GetPhysicsObject() != nullptr && selectionObject->GetPhysicsObject()->GetPXActor() != nullptr)
+		{
 			if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 			{
 				PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
@@ -237,7 +249,7 @@ void TutorialGame::InitCamera()
 /* Initialise all the elements contained within the world */
 void TutorialGame::InitWorld()
 {
-	
+
 	//pXPhysics->CleanupPhysics();
 	InitFloors(currentLevel);
 	InitGameExamples(currentLevel);
@@ -303,8 +315,10 @@ bool TutorialGame::SelectObject()
 
 		if (pXPhysics->GetGScene()->raycast(pos, dir, distance, hit))
 		{
-			if (selectionObject != nullptr) {
-				if (selectionObject->GetRenderObject() != nullptr) {
+			if (selectionObject != nullptr)
+			{
+				if (selectionObject->GetRenderObject() != nullptr)
+				{
 					selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
 					selectionObject->SetSelected(false);
 				}
@@ -315,10 +329,11 @@ bool TutorialGame::SelectObject()
 			selectionObject = world->FindObjectFromPhysicsBody(actor);
 
 
-			if (selectionObject->GetRenderObject()) {
-					selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+			if (selectionObject->GetRenderObject())
+			{
+				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 
-				
+
 			}
 			selectionObject->SetSelected(true);
 			return true;
@@ -403,7 +418,8 @@ void TutorialGame::LockedObjectMovement(float dt)
 			body->addForce(PhyxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
 			body->addForce(PhyxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded()) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && lockedObject->IsGrounded())
+		{
 			body->addForce(PhyxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
 			//lockedObject->SetGrounded(false);
 		}
@@ -428,7 +444,8 @@ void TutorialGame::LockedObjectMovement(float dt)
 	}
 }
 
-void TutorialGame::initLevel2() {
+void TutorialGame::initLevel2()
+{
 
 	world->GetMainCamera()->SetFarPlane(10000.0f);
 	world->GetMainCamera()->SetPosition(Vector3(0, 50, 120));
@@ -605,7 +622,7 @@ void TutorialGame::initLevel2() {
 	//so basically it's like that one bit of mario kart, but also indiana jones, takeshi's castle, and probably some other stuff
 	//media tends to be surprisingly boulder centric
 	//I thought it'd be fun if they were bowling balls rolling down a hill, and you were trying not to get hit 
-	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -331, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(200, 1, 300),1);
+	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -331, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(200, 1, 300), 1);
 
 	//side wall left
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-100, -325, -1225), PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(1, 12, 310));
@@ -724,7 +741,8 @@ void TutorialGame::initLevel2() {
 	WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1825)), PxVec3(50, 1, 50));
 }
 
-void TutorialGame::updateCannons(float dt) {
+void TutorialGame::updateCannons(float dt)
+{
 	/*for (int i = 0; i < cannons.size(); ++i) {
 		cannons[i]->Update(dt);
 		if (cannons[i]->getTimeSinceShot() > 5) {
@@ -734,10 +752,14 @@ void TutorialGame::updateCannons(float dt) {
 	}*/
 }
 
-void TutorialGame::updateCannonBalls() {
-	for (int i = 0; i < cannons.size(); ++i) {
-		for (int j = 0; j < cannons[i]->getShots().size(); ++j) {
-			if ((cannons[i]->getShots()[j]->getDestroy() || (cannons[i]->getShots()[j]->GetTimeAlive() > cannons[i]->getMaxAlive()))) {
+void TutorialGame::updateCannonBalls()
+{
+	for (int i = 0; i < cannons.size(); ++i)
+	{
+		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
+		{
+			if ((cannons[i]->getShots()[j]->getDestroy() || (cannons[i]->getShots()[j]->GetTimeAlive() > cannons[i]->getMaxAlive())))
+			{
 				pXPhysics->GetGScene()->removeActor(*cannons[i]->getShots()[j]->getBody());
 				cannons[i]->getShots()[j]->SetRenderObject(NULL);
 				cannons[i]->getShots()[j]->SetPhysicsObject(NULL);
@@ -748,15 +770,20 @@ void TutorialGame::updateCannonBalls() {
 	}
 }
 
-void TutorialGame::clearCannons() {
-	for (int i = 0; i < cannons.size(); ++i) {
-		for (int j = 0; j < cannons[i]->getShots().size(); ++j) {
-			if (cannons[i]->getShots()[j]->GetRenderObject()!= nullptr){
-				 
+void TutorialGame::clearCannons()
+{
+	for (int i = 0; i < cannons.size(); ++i)
+	{
+		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
+		{
+			if (cannons[i]->getShots()[j]->GetRenderObject() != nullptr)
+			{
+
 				delete cannons[i]->getShots()[j]->GetRenderObject();
 
 			}
-			if (cannons[i]->getShots()[j]->GetPhysicsObject() != nullptr) {
+			if (cannons[i]->getShots()[j]->GetPhysicsObject() != nullptr)
+			{
 
 				delete cannons[i]->getShots()[j]->GetPhysicsObject();
 

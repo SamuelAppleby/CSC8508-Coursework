@@ -113,6 +113,7 @@ class Multiplayer : public PushdownState
 
 class MainMenu : public PushdownState
 {
+public:
 
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
@@ -191,6 +192,8 @@ class MainMenu : public PushdownState
 		//std::cout << " Welcome to a really awesome game !\n";
 		//std::cout << " Press Space To Begin or escape to quit !\n";
 	}
+
+
 };
 
 
