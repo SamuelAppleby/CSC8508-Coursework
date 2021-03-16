@@ -4,9 +4,7 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
-#include "../../Common/Imgui/imgui_impl_opengl3.h"
-#include "../../Common/Imgui/imgui_impl_win32.h"
-#include "GlobalVars.h"
+
 
 using namespace NCL;
 using namespace Rendering;
@@ -61,6 +59,9 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(w->GetHandle());
 	ImGui_ImplOpenGL3_Init("#version 130");
+	
+	titleFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Bold.ttf", 50.0f);
+	textFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Regular.ttf", 15.0f);
 }
 
 GameTechRenderer::~GameTechRenderer() {
@@ -131,29 +132,133 @@ void GameTechRenderer::RenderUI()
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplWin32_NewFrame();
-	bool showWin, anotherWin;
+	bool* showWin = new bool(false), anotherWin;
 
 	ImGui::NewFrame();
-	{
-		static float f = 0.0f;
-		static int counter = 0;
-		ImGui::Begin("Hello, world!");                               // Create a window called "Hello, world!" and append into it.
-		ImGui::Text("This is some useful text.");                    // Display some text (you can use a format strings too)
-		//ImGui::Checkbox("Demo Window", &showWin);                  // Edit bools storing our window open/close state
-		//ImGui::Checkbox("Another Window", &anotherWin);
-		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);               // Edit 1 float using a slider from 0.0f to 1.0f
-		////ImGui::ColorEdit3("clear color", (float*)&clear_color);  // Edit 3 floats representing a color
-		//if (ImGui::Button("Button"))                               // Buttons return true when clicked (most widgets return true when edited/activated)
-		//	counter++;
-		//ImGui::SameLine();
-		//ImGui::Text("counter = %d", counter);
-		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	
+	static float f = 0.0f;
+	static int counter = 0;
+	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+
+
+	if (WorldCreator::GetCurrentLevel() == -1) {
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 10), ImGuiCond_Always);
+		ImGui::Begin("PAUSED");
+		ImGui::PopFont();
 		ImGui::End();
 	}
+
+	else if (WorldCreator::GetCurrentLevel() == 0) {
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Title Screen");
+		ImGui::Text("Level 1(1)");
+		ImGui::Text("Level 2(2)");
+		ImGui::Text("Exit (3)");
+		ImGui::PopFont();
+		ImGui::End();
+	}
+
+	else {
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::Begin("Game Info");
+		if (WorldCreator::GetDebugMode()) {
+			if (gameWorld.GetShuffleObjects())
+				ImGui::Text("Shuffle Objects(F1):On");
+			else
+				ImGui::Text("Shuffle Objects(F1):Off");
+		}
+		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::PopFont();
+		ImGui::End();
+
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2 * main_viewport->Size.y / 3) - 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 3), ImGuiCond_Always);
+		ImGui::Begin("Debug Information");
+		if (WorldCreator::GetSelectionObject()) {
+			ImGui::Text("Selected Object:%s", WorldCreator::GetSelectionObject()->GetName().c_str());
+			ImGui::Text("Position:%s", Vector3(WorldCreator::GetSelectionObject()->GetTransform().GetPosition()).ToString().c_str());
+			ImGui::Text("Orientation:%s", Quaternion(WorldCreator::GetSelectionObject()->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
+
+			if (WorldCreator::GetSelectionObject()->GetPhysicsObject() != nullptr) {
+				if (WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+					PxRigidDynamic* body = (PxRigidDynamic*)WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
+					ImGui::Text("Linear Velocity:%s", Vector3(body->getLinearVelocity()).ToString().c_str());
+					ImGui::Text("Angular Velocity:%s", Vector3(body->getAngularVelocity()).ToString().c_str());
+					ImGui::Text("Mass:%.1f", body->getMass());
+				}
+				else {
+					ImGui::Text("Linear Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+					ImGui::Text("Angular Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+					ImGui::Text("Mass:N/A");
+				}
+			}
+			ImGui::Text("Friction:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getDynamicFriction());
+			ImGui::Text("Elasticity:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getRestitution());
+		}
+		ImGui::PopFont();
+		ImGui::End();
+
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::Begin("Controls");
+		ImGui::Text("Exit to Menu (ESC)");
+		ImGui::Text("Pause(P)");
+
+		if (!WorldCreator::GetDebugMode())
+			ImGui::Text("Change to debug mode(Q)");
+		else {
+			ImGui::Text("Select Object (LM Click)");
+			if (WorldCreator::GetSelectionObject()) {
+				if (!WorldCreator::GetLockedObject())
+					ImGui::Text("Lock Selected Object (L)");
+				else
+					ImGui::Text("Unlock Object (L)");
+			}
+			ImGui::Text("Change to play mode(Q)");
+		}
+
+		switch (WorldCreator::GetCameraState())
+		{
+		case CameraState::FREE:
+			ImGui::Text("Change to Global Camera[1]");
+			break;
+		case CameraState::GLOBAL1:
+			ImGui::Text("Change to Free Camera[1]");
+			break;
+		case CameraState::GLOBAL2:
+			ImGui::Text("Change to Free Camera[1]");
+			break;
+		case CameraState::THIRDPERSON:
+			ImGui::Text("Change to Topdown Camera[1]");
+			break;
+		case CameraState::TOPDOWN:
+			ImGui::Text("Change to Thirdperson Camera[1]");
+			break;
+		}
+		ImGui::PopFont();
+		ImGui::End();
+
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + (3 * main_viewport->Size.y / 4) - 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::Begin("PhysX Information");
+		ImGui::Text("Static Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
+		ImGui::Text("Dynamic Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
+		ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
+		ImGui::Text("Current Collisions:%d", gameWorld.GetTotalCollisions());
+		ImGui::PopFont();
+		ImGui::End();
+	}
+
 	ImGui::Render();
-	glViewport(0, 0, w->GetScreenSize().x, w->GetScreenSize().y);
-	glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-	//glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 

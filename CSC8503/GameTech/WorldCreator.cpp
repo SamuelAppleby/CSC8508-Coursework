@@ -26,6 +26,14 @@ OGLTexture* WorldCreator::dogeTex = nullptr;
 OGLShader* WorldCreator::basicShader = nullptr;
 OGLShader* WorldCreator::toonShader = nullptr;
 
+bool WorldCreator::debugMode = false;
+CameraState WorldCreator::camState = CameraState::FREE;
+
+GameObject* WorldCreator::lockedObject = nullptr;
+GameObject* WorldCreator::selectionObject = nullptr;
+
+int WorldCreator::currentLevel = 0;
+
 void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
 	pXPhysics = p;
 	world = w;

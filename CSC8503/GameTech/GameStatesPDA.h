@@ -19,12 +19,8 @@ class Pause : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		//tutorialGame->Update(dt);
 		tutorialGame->renderer->Render();
-
-		Debug::Print("Press P To Resume", Vector2(20, 50), Vector4(1, 0, 0, 1));
 		Debug::FlushRenderables(dt);
-
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
@@ -34,12 +30,11 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		Debug::Print("Press Space To  Start", Vector2(5, 50), Vector4(1, 0, 0, 1));
-		std::cout << "Paused";
+		WorldCreator::SetCurrentLevel(-1);
 	}
 };
 
-class SinglePlayer : public PushdownState
+class Level1 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
@@ -53,6 +48,9 @@ class SinglePlayer : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
+			WorldCreator::SetDebugMode(false);
+			WorldCreator::SetSelectionObject(nullptr);
+			WorldCreator::SetLockedObject(nullptr);
 			return PushdownResult::Pop;
 		}
 
@@ -64,19 +62,17 @@ class SinglePlayer : public PushdownState
 
 		//	return PushdownResult::Pop; // back to main menu
 		//}
-
-
-
 		return PushdownResult::NoChange;
 
 	}
 	void OnAwake() override
 	{
+		WorldCreator::SetCurrentLevel(1);
 		//winner = 0;
 	}
 };
 
-class Multiplayer : public PushdownState
+class Level2 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
@@ -90,6 +86,9 @@ class Multiplayer : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
+			WorldCreator::SetDebugMode(false);
+			WorldCreator::SetSelectionObject(nullptr);
+			WorldCreator::SetLockedObject(nullptr);
 			return PushdownResult::Pop;
 		}
 		//if (tutorialGame->GetWinner() != 0)
@@ -107,6 +106,7 @@ class Multiplayer : public PushdownState
 
 	void OnAwake() override
 	{
+		WorldCreator::SetCurrentLevel(2);
 		//winner = 0;
 	}
 };
@@ -122,9 +122,6 @@ public:
 		tutorialGame->renderer->Render();
 
 		//g->UpdateGame(dt);
-		Debug::Print("1: Single Player", Vector2(5, 60), Vector4(1, 0, 0, 1));
-		Debug::Print("2: Level 2", Vector2(5, 70), Vector4(1, 0, 0, 1));
-		Debug::Print("3: Exit", Vector2(5, 80), Vector4(1, 0, 0, 1));
 
 		/*if (winner != 0)
 		{
@@ -145,26 +142,23 @@ public:
 
 		Debug::FlushRenderables(dt);
 
-
-
-
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1) ||
 			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD1))
 		{
-			*newState = new SinglePlayer();
+			*newState = new Level1();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld();
+			tutorialGame->InitWorld(1);
 			return PushdownResult::Push;
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM2) ||
 			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD2))
 		{
-			*newState = new Multiplayer();
+			*newState = new Level2();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->initLevel2();
+			tutorialGame->InitWorld(2);
 			//tutorialGame->InitAI();
 			return PushdownResult::Push;
 		}
@@ -180,6 +174,7 @@ public:
 
 	void  OnAwake() override
 	{
+		WorldCreator::SetCurrentLevel(0);
 		if (tutorialGame == nullptr)
 		{
 			tutorialGame = new TutorialGame();

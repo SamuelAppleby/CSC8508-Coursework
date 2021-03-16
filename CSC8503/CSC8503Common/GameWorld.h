@@ -65,8 +65,6 @@ namespace NCL {
 
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
-
-
 		
 			Camera* GetMainCamera() const {
 				return mainCamera;
@@ -109,6 +107,7 @@ namespace NCL {
 			//{
 			//	//lights[lightCount] = l;
 			//}
+			
 
 		protected:
 			Camera* mainCamera;

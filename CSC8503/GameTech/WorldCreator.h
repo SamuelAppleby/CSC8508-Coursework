@@ -38,7 +38,49 @@ public:
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize);
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
 
+	static PxPhysicsSystem* GetPhysicsSystem() {
+		return pXPhysics;
+	}
 
+	static bool GetDebugMode() {
+		return debugMode;
+	}
+
+	static CameraState GetCameraState() {
+		return camState;
+	}
+
+	static void SetDebugMode(bool val) {
+		debugMode = val;
+	}
+
+	static void SetCamMode(CameraState val) {
+		camState = val;
+	}
+
+	static GameObject* GetLockedObject() {
+		return lockedObject;
+	}
+
+	static GameObject* GetSelectionObject() {
+		return selectionObject;
+	}
+
+	static void SetLockedObject(GameObject* val) {
+		lockedObject = val;
+	}
+
+	static void SetSelectionObject(GameObject* val) {
+		selectionObject = val;
+	}
+
+	static void SetCurrentLevel(int val) {
+		currentLevel = val;
+	}
+
+	static int GetCurrentLevel() {
+		return currentLevel;
+	}
 private:
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
@@ -63,5 +105,13 @@ private:
 	static OGLTexture* dogeTex;
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
+
+	static bool debugMode;
+	static CameraState camState;
+
+	static GameObject* selectionObject;
+	static GameObject* lockedObject;
+
+	static int currentLevel;
 };
 

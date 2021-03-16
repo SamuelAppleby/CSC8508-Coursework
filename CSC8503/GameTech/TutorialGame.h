@@ -12,8 +12,6 @@
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
 
-
-
 namespace NCL
 {
 	namespace CSC8503
@@ -31,13 +29,7 @@ namespace NCL
 			void Update(float dt);
 			void UpdateLevel(float dt);
 
-			void DrawDebugInfo();
-
-			void InitWorld();
-			void initLevel2();
-
-
-			//GameTechRenderer* GetRenderer() { return renderer; }
+			void InitWorld(int currentLevel);
 			GameTechRenderer* renderer;
 
 		protected:
@@ -55,26 +47,7 @@ namespace NCL
 			GameWorld* world;
 			PxPhysicsSystem* pXPhysics;
 
-			bool useBroadphase;
-			bool inSelectionMode;
-			float forceMagnitude;
-
-			GameObject* selectionObject = nullptr;
-			GameObject* lockedObject = nullptr;
-
 			PlayerObject* player;
-			int currentLevel;
-			bool lockedOrientation;
-
-			float textSize = 15.0f;
-
-
-			CameraState camState;
-
-			int avgFps;
-			int framesPerSecond;
-			float fpsTimer;
-
 
 			//Level2 stuff here
 			vector<Cannon*> cannons;

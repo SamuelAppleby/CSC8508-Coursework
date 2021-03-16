@@ -43,17 +43,6 @@ int main(int argc, char** argv)
 	engine->setSoundVolume(0.25f);
 	engine->play2D("../../Assets/Audio/BGM.mp3", true);
 
-
-
-	//ImGui::CreateContext();
-	//ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//ImGui::StyleColorsDark();
-
-	//ImGui_ImplWin32_Init(w->GetHandle());
-	//ImGui_ImplOpenGL3_Init("#version 130");
-
-
-
 	srand(time(0));
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
