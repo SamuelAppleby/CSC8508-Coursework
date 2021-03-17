@@ -57,7 +57,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(w->GetHandle());
+	ImGui_ImplWin32_Init(WorldCreator::GetWindow()->GetHandle());
 	ImGui_ImplOpenGL3_Init("#version 130");
 	
 	titleFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Bold.ttf", 50.0f);
@@ -141,7 +141,7 @@ void GameTechRenderer::RenderUI()
 	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 
 
-	if (WorldCreator::GetCurrentLevel() == -1) {
+	if (WorldCreator::GetLevelState() == LevelState::PAUSED) {
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 10), ImGuiCond_Always);
@@ -150,7 +150,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 	}
 
-	else if (WorldCreator::GetCurrentLevel() == 0) {
+	else if (WorldCreator::GetLevelState() == LevelState::MENU) {
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);

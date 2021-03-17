@@ -1,6 +1,7 @@
 #include "WorldCreator.h"
 PxPhysicsSystem* WorldCreator::pXPhysics = nullptr;
 GameWorld* WorldCreator::world = nullptr;
+AudioManager* WorldCreator::audioManager = nullptr;
 
 OGLMesh* WorldCreator::charMeshA = nullptr;
 OGLMesh* WorldCreator::charMeshB = nullptr;
@@ -32,11 +33,14 @@ CameraState WorldCreator::camState = CameraState::FREE;
 GameObject* WorldCreator::lockedObject = nullptr;
 GameObject* WorldCreator::selectionObject = nullptr;
 
-int WorldCreator::currentLevel = 0;
+LevelState WorldCreator::levelState = LevelState::MENU;
 
-void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w) {
+Win32Code::Win32Window* WorldCreator::w = nullptr;
+
+void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a) {
 	pXPhysics = p;
 	world = w;
+	audioManager = a;
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);

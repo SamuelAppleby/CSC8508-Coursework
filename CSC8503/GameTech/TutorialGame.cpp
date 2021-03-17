@@ -13,9 +13,10 @@ TutorialGame::TutorialGame()
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);
 	pXPhysics = new PxPhysicsSystem();
+	audioManager = new AudioManager();
 	Debug::SetRenderer(renderer);
 	player = nullptr;
-	WorldCreator::Create(pXPhysics, world); // initialize all textures / mesh / shaders 
+	WorldCreator::Create(pXPhysics, world, audioManager); // initialize all textures / mesh / shaders 
 }
 
 TutorialGame::~TutorialGame()
@@ -79,7 +80,7 @@ void TutorialGame::UpdateLevel(float dt)
 		switch (WorldCreator::GetCameraState())
 		{
 		case CameraState::FREE:
-			if (WorldCreator::GetCurrentLevel() == 1)
+			if (WorldCreator::GetLevelState() == LevelState::LEVEL1)
 				WorldCreator::SetCamMode(CameraState::GLOBAL1);
 			else
 				WorldCreator::SetCamMode(CameraState::GLOBAL2);
@@ -137,26 +138,26 @@ void TutorialGame::InitCamera()
 }
 
 /* Initialise all the elements contained within the world */
-void TutorialGame::InitWorld(int currentLevel)
+void TutorialGame::InitWorld(LevelState state)
 {
-	WorldCreator::SetCurrentLevel(currentLevel);
-	InitFloors(currentLevel);
-	InitGameExamples(currentLevel);
-	InitGameObstacles(currentLevel);
+	WorldCreator::SetLevelState(state);
+	InitFloors(state);
+	InitGameExamples(state);
+	InitGameObstacles(state);
 	InitCamera();
 }
 
 /* Place all the levels solid floors */
-void TutorialGame::InitFloors(int level)
+void TutorialGame::InitFloors(LevelState state)
 {
-	switch (level)
+	switch (state)
 	{
-	case 0:
+	case LevelState::MENU:
 		break;
-	case 1:
+	case LevelState::LEVEL1:
 		WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
 		break;
-	case 2:
+	case LevelState::LEVEL2:
 		//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
 		//(that way, it also allows time for other players to catch up and makes each individual obstacle more chaotic, so it's a double win)
 		//first we'll do the floors
@@ -401,18 +402,18 @@ void TutorialGame::InitFloors(int level)
 }
 
 /* Initialises all game objects, enemies etc */
-void TutorialGame::InitGameExamples(int level)
+void TutorialGame::InitGameExamples(LevelState state)
 {
-	switch (level)
+	switch (state)
 	{
-	case 0:
+	case LevelState::MENU:
 		break;
-	case 1:
+	case LevelState::LEVEL1:
 		WorldCreator::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
 		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
 		WorldCreator::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
-	case 2:
+	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
 		WorldCreator::AddPxPlayerToWorld(PxTransform(PxVec3(0, 1, 0)), 1);
 		break;
@@ -420,16 +421,16 @@ void TutorialGame::InitGameExamples(int level)
 }
 
 /* This method will initialise any other moveable obstacles we want */
-void TutorialGame::InitGameObstacles(int level)
+void TutorialGame::InitGameObstacles(LevelState state)
 {
-	switch (level)
+	switch (state)
 	{
-	case 1:
+	case LevelState::LEVEL1:
 		WorldCreator::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
 		WorldCreator::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
 		WorldCreator::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
 		break;
-	case 2:
+	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
 		WorldCreator::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));

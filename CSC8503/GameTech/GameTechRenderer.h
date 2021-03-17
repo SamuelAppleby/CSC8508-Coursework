@@ -12,7 +12,6 @@
 #include "WorldCreator.h"
 #include "../../Common/Imgui/imgui_impl_opengl3.h"
 #include "../../Common/Imgui/imgui_impl_win32.h"
-#include "GlobalVars.h"
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;

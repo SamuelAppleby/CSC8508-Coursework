@@ -13,7 +13,6 @@ GameWorld::GameWorld() {
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
 	totalCollisions = 0;
-
 }
 
 GameWorld::~GameWorld() {

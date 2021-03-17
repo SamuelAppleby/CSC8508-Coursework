@@ -11,6 +11,7 @@
 #include "../CSC8503/CSC8503Common/CollisionDetection.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
+#include "../../Common/AudioManager.h"
 
 namespace NCL
 {
@@ -29,16 +30,16 @@ namespace NCL
 			void Update(float dt);
 			void UpdateLevel(float dt);
 
-			void InitWorld(int currentLevel);
+			void InitWorld(LevelState state);
 			GameTechRenderer* renderer;
 
 		protected:
 			void InitCamera();
 			void UpdateKeys();
 
-			void InitFloors(int level);
-			void InitGameExamples(int level);
-			void InitGameObstacles(int level);
+			void InitFloors(LevelState state);
+			void InitGameExamples(LevelState state);
+			void InitGameObstacles(LevelState state);
 
 			bool SelectObject();
 			void DebugObjectMovement();
@@ -46,6 +47,7 @@ namespace NCL
 
 			GameWorld* world;
 			PxPhysicsSystem* pXPhysics;
+			AudioManager* audioManager;
 
 			PlayerObject* player;
 

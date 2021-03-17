@@ -30,7 +30,7 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		WorldCreator::SetCurrentLevel(-1);
+		WorldCreator::SetLevelState(LevelState::PAUSED);
 	}
 };
 
@@ -67,7 +67,8 @@ class Level1 : public PushdownState
 	}
 	void OnAwake() override
 	{
-		WorldCreator::SetCurrentLevel(1);
+		WorldCreator::GetAudioManager()->StopSound();
+		WorldCreator::SetLevelState(LevelState::LEVEL1);
 		//winner = 0;
 	}
 };
@@ -106,7 +107,9 @@ class Level2 : public PushdownState
 
 	void OnAwake() override
 	{
-		WorldCreator::SetCurrentLevel(2);
+		WorldCreator::GetAudioManager()->StopSound();
+		WorldCreator::GetAudioManager()->PlayAudio("../../Assets/Audio/BGM.mp3", true);
+		WorldCreator::SetLevelState(LevelState::LEVEL2);
 		//winner = 0;
 	}
 };
@@ -148,7 +151,7 @@ public:
 			*newState = new Level1();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld(1);
+			tutorialGame->InitWorld(LevelState::LEVEL1);
 			return PushdownResult::Push;
 		}
 
@@ -158,7 +161,7 @@ public:
 			*newState = new Level2();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld(2);
+			tutorialGame->InitWorld(LevelState::LEVEL2);
 			//tutorialGame->InitAI();
 			return PushdownResult::Push;
 		}
@@ -174,7 +177,7 @@ public:
 
 	void  OnAwake() override
 	{
-		WorldCreator::SetCurrentLevel(0);
+		WorldCreator::SetLevelState(LevelState::MENU);
 		if (tutorialGame == nullptr)
 		{
 			tutorialGame = new TutorialGame();
@@ -182,6 +185,8 @@ public:
 		else {
 			tutorialGame->ResetWorld();
 		}
+		WorldCreator::GetAudioManager()->StopSound();
+		WorldCreator::GetAudioManager()->PlayAudio("../../Assets/Audio/keyboardcat.mp3");
 
 		//Debug::Print("Press Space To  Start", Vector2(50, 50), Vector4(1, 0, 0, 1));
 		//std::cout << " Welcome to a really awesome game !\n";

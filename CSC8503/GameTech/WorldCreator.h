@@ -7,17 +7,21 @@
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../Common/Light.h"
+#include "../../Common/Win32Window.h"
 
 #include "../CSC8503Common/Cannonball.h"
 #include "../CSC8503Common/Cannon.h"
 #include "../CSC8503Common/KillPlane.h"
+#include "../../Common/AudioManager.h"
 
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
+enum class LevelState { PAUSED, MENU, LEVEL1, LEVEL2 };
+
 class WorldCreator {
 public:
-	static void Create(PxPhysicsSystem* p, GameWorld* w);
+	static void Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a);
 	~WorldCreator();
 	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -74,16 +78,29 @@ public:
 		selectionObject = val;
 	}
 
-	static void SetCurrentLevel(int val) {
-		currentLevel = val;
+	static void SetLevelState(LevelState val) {
+		levelState = val;
 	}
 
-	static int GetCurrentLevel() {
-		return currentLevel;
+	static LevelState GetLevelState() {
+		return levelState;
+	}
+
+	static void SetWindow(Win32Code::Win32Window* val) {
+		w = val;
+	}
+
+	static Win32Code::Win32Window* GetWindow() {
+		return w;
+	}
+	static AudioManager* GetAudioManager() {
+		return audioManager;
 	}
 private:
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
+	static AudioManager* audioManager;
+
 	static OGLMesh* capsuleMesh;
 	static OGLMesh* cubeMesh;
 	static OGLMesh* sphereMesh;
@@ -112,6 +129,7 @@ private:
 	static GameObject* selectionObject;
 	static GameObject* lockedObject;
 
-	static int currentLevel;
+	static LevelState levelState;
+	static Win32Code::Win32Window* w;
 };
 

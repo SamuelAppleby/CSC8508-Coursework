@@ -8,46 +8,23 @@
 #include "../CSC8503Common/PushdownMachine.h"
 #include "GameStatesPDA.h"
 
-#include <irrKlang.h>
-#include <stdio.h>
-#include <conio.h>
-
-#include "GlobalVars.h"
-using namespace irrklang;
-
 void GamePushdownAutomata(Window* w);
 
 using namespace NCL;
 using namespace CSC8503;
-/* The main function should look pretty familar to you!
-We make a window, and then go into a while loop that repeatedly
-runs our 'game' until we press escape. Instead of making a 'renderer'
-and updating it, we instead make a whole game, and repeatedly update that,
-instead.
-
-This time, we've added some extra functionality to the window class - we can
-hide or show the */
-extern Win32Code::Win32Window* w = nullptr;/*
-extern float windowHeight = 720;*/
-
 
 int main(int argc, char** argv)
 {
+	WorldCreator::SetWindow(new Win32Code::Win32Window("Fall Guys!", 1280, 720, false, 100, 100));
 
-	w = new Win32Code::Win32Window("Fall Guys!", 1280, 720, false, 100, 100);
-
-	if (!w->HasInitialised())
+	if (!WorldCreator::GetWindow()->HasInitialised())
 		return -1;
-	ISoundEngine* engine = createIrrKlangDevice();
-
-	engine->setSoundVolume(0.25f);
-	engine->play2D("../../Assets/Audio/BGM.mp3", true);
 
 	srand(time(0));
-	w->ShowOSPointer(false);
-	w->LockMouseToWindow(true);
-	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-	GamePushdownAutomata(w);
+	WorldCreator::GetWindow()->ShowOSPointer(false);
+	WorldCreator::GetWindow()->LockMouseToWindow(true);
+	WorldCreator::GetWindow()->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
+	GamePushdownAutomata(WorldCreator::GetWindow());
 	Window::DestroyGameWindow();		// After we have exited the automata (we've quit) destroy the window
 	return 0;
 }

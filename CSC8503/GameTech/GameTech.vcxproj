@@ -170,7 +170,6 @@
   <ItemGroup>
     <ClInclude Include="GameStatesPDA.h" />
     <ClInclude Include="GameTechRenderer.h" />
-    <ClInclude Include="GlobalVars.h" />
     <ClInclude Include="TutorialGame.h" />
     <ClInclude Include="WorldCreator.h" />
   </ItemGroup>
