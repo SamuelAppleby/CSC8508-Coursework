@@ -278,7 +278,6 @@
     <ClInclude Include="RendererBase.h" />
     <ClInclude Include="ShaderBase.h" />
     <ClInclude Include="SimpleFont.h" />
-    <ClInclude Include="PhyxConversions.h" />
     <ClInclude Include="TextureBase.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TextureWriter.h" />

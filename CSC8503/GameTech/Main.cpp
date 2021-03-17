@@ -15,16 +15,16 @@ using namespace CSC8503;
 
 int main(int argc, char** argv)
 {
-	WorldCreator::SetWindow(new Win32Code::Win32Window("Fall Guys!", 1280, 720, false, 100, 100));
+	GameManager::SetWindow(new Win32Code::Win32Window("Fall Guys!", 1280, 720, false, 100, 100));
 
-	if (!WorldCreator::GetWindow()->HasInitialised())
+	if (!GameManager::GetWindow()->HasInitialised())
 		return -1;
 
 	srand(time(0));
-	WorldCreator::GetWindow()->ShowOSPointer(false);
-	WorldCreator::GetWindow()->LockMouseToWindow(true);
-	WorldCreator::GetWindow()->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
-	GamePushdownAutomata(WorldCreator::GetWindow());
+	GameManager::GetWindow()->ShowOSPointer(false);
+	GameManager::GetWindow()->LockMouseToWindow(true);
+	GameManager::GetWindow()->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
+	GamePushdownAutomata(GameManager::GetWindow());
 	Window::DestroyGameWindow();		// After we have exited the automata (we've quit) destroy the window
 	return 0;
 }

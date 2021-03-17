@@ -5,12 +5,12 @@
 #include "../CSC8503Common/StateTransition.h"
 #include "../CSC8503Common/State.h"
 #include "../../Common/Window.h"
-#include "TutorialGame.h"
+#include "LevelCreator.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
-TutorialGame* tutorialGame = nullptr;
+LevelCreator* tutorialGame = nullptr;
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
@@ -30,7 +30,7 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		WorldCreator::SetLevelState(LevelState::PAUSED);
+		GameManager::SetLevelState(LevelState::PAUSED);
 	}
 };
 
@@ -38,7 +38,6 @@ class Level1 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-
 		tutorialGame->Update(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
@@ -48,7 +47,7 @@ class Level1 : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
-			WorldCreator::ResetMenu();
+			GameManager::ResetMenu();
 			return PushdownResult::Pop;
 		}
 
@@ -61,12 +60,12 @@ class Level1 : public PushdownState
 		//	return PushdownResult::Pop; // back to main menu
 		//}
 		return PushdownResult::NoChange;
-
 	}
 	void OnAwake() override
 	{
-		WorldCreator::GetAudioManager()->StopSound();
-		WorldCreator::SetLevelState(LevelState::LEVEL1);
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
+		GameManager::SetLevelState(LevelState::LEVEL1);
 		//winner = 0;
 	}
 };
@@ -76,8 +75,6 @@ class Level2 : public PushdownState
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		tutorialGame->Update(dt);
-
-
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
 			*newState = new Pause();
@@ -85,7 +82,7 @@ class Level2 : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
-			WorldCreator::ResetMenu();
+			GameManager::ResetMenu();
 			return PushdownResult::Pop;
 		}
 		//if (tutorialGame->GetWinner() != 0)
@@ -96,16 +93,14 @@ class Level2 : public PushdownState
 
 		//	return PushdownResult::Pop; // back to main menu
 		//}
-
-
 		return PushdownResult::NoChange;
 	}
 
 	void OnAwake() override
 	{
-		WorldCreator::GetAudioManager()->StopSound();
-		WorldCreator::GetAudioManager()->PlayAudio("../../Assets/Audio/BGM.mp3", true);
-		WorldCreator::SetLevelState(LevelState::LEVEL2);
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
+		GameManager::SetLevelState(LevelState::LEVEL2);
 		//winner = 0;
 	}
 };
@@ -113,7 +108,6 @@ class Level2 : public PushdownState
 class MainMenu : public PushdownState
 {
 public:
-
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		//tutorialGame->Update(dt);
@@ -173,23 +167,21 @@ public:
 
 	void  OnAwake() override
 	{
-		WorldCreator::SetLevelState(LevelState::MENU);
+		GameManager::SetLevelState(LevelState::MENU);
 		if (tutorialGame == nullptr)
 		{
-			tutorialGame = new TutorialGame();
+			tutorialGame = new LevelCreator();
 		}
 		else {
 			tutorialGame->ResetWorld();
 		}
-		WorldCreator::GetAudioManager()->StopSound();
-		WorldCreator::GetAudioManager()->PlayAudio("../../Assets/Audio/keyboardcat.mp3");
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 
 		//Debug::Print("Press Space To  Start", Vector2(50, 50), Vector4(1, 0, 0, 1));
 		//std::cout << " Welcome to a really awesome game !\n";
 		//std::cout << " Press Space To Begin or escape to quit !\n";
 	}
-
-
 };
 
 

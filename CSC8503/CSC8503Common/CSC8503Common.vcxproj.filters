@@ -109,6 +109,9 @@
     <ClInclude Include="Cannon.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
+    <ClInclude Include="PhysXConversions.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -144,12 +147,16 @@
     <ClCompile Include="CollisionDetection.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="RotatingCube.cpp" />
-    <ClCompile Include="KillPlane.cpp" />
     <ClCompile Include="Cannon.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Cannonball.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatingCube.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="KillPlane.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
   </ItemGroup>

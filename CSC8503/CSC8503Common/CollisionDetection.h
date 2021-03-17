@@ -6,7 +6,7 @@
 #pragma once
 
 #include "../../Common/Camera.h"
-#include "../../Common/PhyxConversions.h"
+#include "PhysxConversions.h"
 #include "../../Common/Vector2.h"
 #include "../../Common/Window.h"
 #include "../../Common/Maths.h"

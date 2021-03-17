@@ -20,7 +20,7 @@ PxVec3 CollisionDetection::GetMouseDirection(const Camera& cam) {
 
 	c.Normalise();
 
-	return PhyxConversions::GetVector3(c);
+	return PhysxConversions::GetVector3(c);
 }
 
 Vector3 CollisionDetection::Unproject(const Vector3& screenPos, const Camera& cam) {

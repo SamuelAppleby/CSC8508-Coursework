@@ -9,7 +9,7 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../CSC8503Common/GameWorld.h"
-#include "WorldCreator.h"
+#include "GameManager.h"
 #include "../../Common/Imgui/imgui_impl_opengl3.h"
 #include "../../Common/Imgui/imgui_impl_win32.h"
 namespace NCL {
