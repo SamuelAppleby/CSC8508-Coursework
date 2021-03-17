@@ -11,7 +11,9 @@ namespace NCL {
 				body = newBody;
 				SetName("Cannonball");
 			}
+
 			void Update(float dt) {
+				GameObject::Update(dt);
 				StepTimeAlive(dt);
 			}
 

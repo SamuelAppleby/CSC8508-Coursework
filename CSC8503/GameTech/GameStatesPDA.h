@@ -5,12 +5,12 @@
 #include "../CSC8503Common/StateTransition.h"
 #include "../CSC8503Common/State.h"
 #include "../../Common/Window.h"
-#include "TutorialGame.h"
+#include "LevelCreator.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
-TutorialGame* tutorialGame = nullptr;
+LevelCreator* tutorialGame = nullptr;
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
@@ -19,12 +19,8 @@ class Pause : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		//tutorialGame->Update(dt);
-		tutorialGame->renderer->Render();
-
-		Debug::Print("Press P To Resume", Vector2(20, 50), Vector4(1, 0, 0, 1));
+		tutorialGame->GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
-
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
@@ -34,16 +30,14 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		Debug::Print("Press Space To  Start", Vector2(5, 50), Vector4(1, 0, 0, 1));
-		std::cout << "Paused";
+		GameManager::SetLevelState(LevelState::PAUSED);
 	}
 };
 
-class SinglePlayer : public PushdownState
+class Level1 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-
 		tutorialGame->Update(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
@@ -53,6 +47,7 @@ class SinglePlayer : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
+			GameManager::ResetMenu();
 			return PushdownResult::Pop;
 		}
 
@@ -64,25 +59,22 @@ class SinglePlayer : public PushdownState
 
 		//	return PushdownResult::Pop; // back to main menu
 		//}
-
-
-
 		return PushdownResult::NoChange;
-
 	}
 	void OnAwake() override
 	{
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
+		GameManager::SetLevelState(LevelState::LEVEL1);
 		//winner = 0;
 	}
 };
 
-class Multiplayer : public PushdownState
+class Level2 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		tutorialGame->Update(dt);
-
-
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
 			*newState = new Pause();
@@ -90,6 +82,7 @@ class Multiplayer : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
+			GameManager::ResetMenu();
 			return PushdownResult::Pop;
 		}
 		//if (tutorialGame->GetWinner() != 0)
@@ -100,30 +93,28 @@ class Multiplayer : public PushdownState
 
 		//	return PushdownResult::Pop; // back to main menu
 		//}
-
-
 		return PushdownResult::NoChange;
 	}
 
 	void OnAwake() override
 	{
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
+		GameManager::SetLevelState(LevelState::LEVEL2);
 		//winner = 0;
 	}
 };
 
 class MainMenu : public PushdownState
 {
-
+public:
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		//tutorialGame->Update(dt);
-		tutorialGame->renderer->Update(dt);
-		tutorialGame->renderer->Render();
+		tutorialGame->GetRenderer()->Update(dt);
+		tutorialGame->GetRenderer()->Render();
 
 		//g->UpdateGame(dt);
-		Debug::Print("1: Single Player", Vector2(5, 60), Vector4(1, 0, 0, 1));
-		Debug::Print("2: Level 2", Vector2(5, 70), Vector4(1, 0, 0, 1));
-		Debug::Print("3: Exit", Vector2(5, 80), Vector4(1, 0, 0, 1));
 
 		/*if (winner != 0)
 		{
@@ -144,26 +135,23 @@ class MainMenu : public PushdownState
 
 		Debug::FlushRenderables(dt);
 
-
-
-
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1) ||
 			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD1))
 		{
-			*newState = new SinglePlayer();
+			*newState = new Level1();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld();
+			tutorialGame->InitWorld(LevelState::LEVEL1);
 			return PushdownResult::Push;
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM2) ||
 			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD2))
 		{
-			*newState = new Multiplayer();
+			*newState = new Level2();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->initLevel2();
+			tutorialGame->InitWorld(LevelState::LEVEL2);
 			//tutorialGame->InitAI();
 			return PushdownResult::Push;
 		}
@@ -179,13 +167,16 @@ class MainMenu : public PushdownState
 
 	void  OnAwake() override
 	{
+		GameManager::SetLevelState(LevelState::MENU);
 		if (tutorialGame == nullptr)
 		{
-			tutorialGame = new TutorialGame();
+			tutorialGame = new LevelCreator();
 		}
 		else {
 			tutorialGame->ResetWorld();
 		}
+		GameManager::GetAudioManager()->StopSound();
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 
 		//Debug::Print("Press Space To  Start", Vector2(50, 50), Vector4(1, 0, 0, 1));
 		//std::cout << " Welcome to a really awesome game !\n";

@@ -60,11 +60,9 @@ void GameWorld::UpdateWorld(float dt) {
 	if (shuffleObjects)
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
 	for (auto& i : gameObjects) {
+		i->Update(dt);
 		if (i->IsColliding())
 			tempCols++;
-	    i->GetTransform().SetOrientation(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().q);
-		i->GetTransform().SetPosition(i->GetPhysicsObject()->GetPXActor()->getGlobalPose().p);
-		i->Update(dt);
 	}
 	totalCollisions = tempCols;
 }

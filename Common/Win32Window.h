@@ -59,8 +59,8 @@ namespace NCL {
 			HWND		GetHandle()			const { return windowHandle; }
 			HINSTANCE	GetInstance()		const { return windowInstance; }
 
-		protected:
 			Win32Window(const std::string& title, int sizeX, int sizeY, bool fullScreen, int offsetX, int offsetY);
+		protected:
 			virtual ~Win32Window(void);
 
 			bool	InternalUpdate()	override;

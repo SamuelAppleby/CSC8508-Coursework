@@ -9,7 +9,9 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../CSC8503Common/GameWorld.h"
-
+#include "GameManager.h"
+#include "../../Common/Imgui/imgui_impl_opengl3.h"
+#include "../../Common/Imgui/imgui_impl_win32.h"
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
@@ -30,6 +32,8 @@ namespace NCL {
 			OGLShader*		defaultShader;
 
 			GameWorld&	gameWorld;
+
+			void RenderUI();
 
 			void BuildObjectList();
 			void SortObjectList();
@@ -55,6 +59,9 @@ namespace NCL {
 			float		lightRadius;
 			Vector3		lightPosition;
 			Vector3		lightDirection;
+
+			ImFont* textFont;
+			ImFont* titleFont;
 		};
 	}
 }

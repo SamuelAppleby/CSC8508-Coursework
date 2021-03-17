@@ -18,6 +18,8 @@ namespace NCL {
 			~GameObject();
 
 			virtual void Update(float dt) {
+				transform.SetOrientation(physicsObject->GetPXActor()->getGlobalPose().q);
+				transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
 			}
 
 			void SetName(string val) {

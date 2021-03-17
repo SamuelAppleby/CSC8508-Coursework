@@ -4,7 +4,6 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
-
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
@@ -52,11 +51,24 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(GameManager::GetWindow()->GetHandle());
+	ImGui_ImplOpenGL3_Init("#version 130");
+	
+	titleFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Bold.ttf", 50.0f);
+	textFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Regular.ttf", 15.0f);
 }
 
 GameTechRenderer::~GameTechRenderer() {
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -107,7 +119,151 @@ void GameTechRenderer::RenderFrame() {
 	RenderShadowMap();
 	RenderSkybox();
 	RenderCamera();
+	RenderUI();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+}
+
+
+void GameTechRenderer::RenderUI()
+{
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	bool* showWin = new bool(false), anotherWin;
+
+	ImGui::NewFrame();
+	
+	static float f = 0.0f;
+	static int counter = 0;
+	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+
+
+	if (GameManager::GetLevelState() == LevelState::PAUSED) {
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 10), ImGuiCond_Always);
+		ImGui::Begin("PAUSED");
+		ImGui::PopFont();
+		ImGui::End();
+	}
+
+	else if (GameManager::GetLevelState() == LevelState::MENU) {
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Title Screen");
+		ImGui::Text("Level 1(1)");
+		ImGui::Text("Level 2(2)");
+		ImGui::Text("Exit (3)");
+		ImGui::PopFont();
+		ImGui::End();
+	}
+
+	else {
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 8), ImGuiCond_Always);
+		ImGui::Begin("Game Info");
+		if (GameManager::GetLevelState() == LevelState::DEBUG) {
+			if (gameWorld.GetShuffleObjects())
+				ImGui::Text("Shuffle Objects(F1):On");
+			else
+				ImGui::Text("Shuffle Objects(F1):Off");
+		}
+		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::PopFont();
+		ImGui::End();
+
+		ImGui::PushFont(textFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::Begin("Controls");
+		ImGui::Text("Exit to Menu (ESC)");
+		ImGui::Text("Pause(P)");
+
+		if (GameManager::GetLevelState() != LevelState::DEBUG)
+			ImGui::Text("Change to debug mode(Q)");
+		else {
+			if (!GameManager::GetSelectionObject()) {
+				ImGui::Text("Select Object (LM Click)");
+			}
+			else {
+				ImGui::Text("De-Select Object (RM Click)");
+				if (!GameManager::GetLockedObject())
+					ImGui::Text("Lock Selected Object (L)");
+				else
+					ImGui::Text("Unlock Object (L)");
+			}
+			ImGui::Text("Change to play mode(Q)");
+		}
+
+		switch (GameManager::GetCameraState())
+		{
+		case CameraState::FREE:
+			ImGui::Text("Change to Global Camera[1]");
+			break;
+		case CameraState::GLOBAL1:
+			ImGui::Text("Change to Free Camera[1]");
+			break;
+		case CameraState::GLOBAL2:
+			ImGui::Text("Change to Free Camera[1]");
+			break;
+		case CameraState::THIRDPERSON:
+			ImGui::Text("Change to Topdown Camera[1]");
+			break;
+		case CameraState::TOPDOWN:
+			ImGui::Text("Change to Thirdperson Camera[1]");
+			break;
+		}
+		ImGui::PopFont();
+		ImGui::End();
+
+		if (GameManager::GetLevelState() == LevelState::DEBUG) {
+			if (GameManager::GetSelectionObject()) {
+				ImGui::PushFont(textFont);
+				ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2.5 * main_viewport->Size.y / 3.5) - 20), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 3.5), ImGuiCond_Always);
+				ImGui::Begin("Debug Information");
+				if (GameManager::GetSelectionObject()) {
+					ImGui::Text("Selected Object:%s", GameManager::GetSelectionObject()->GetName().c_str());
+					ImGui::Text("Position:%s", Vector3(GameManager::GetSelectionObject()->GetTransform().GetPosition()).ToString().c_str());
+					ImGui::Text("Orientation:%s", Quaternion(GameManager::GetSelectionObject()->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
+
+					if (GameManager::GetSelectionObject()->GetPhysicsObject() != nullptr) {
+						if (GameManager::GetSelectionObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+							PxRigidDynamic* body = (PxRigidDynamic*)GameManager::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
+							ImGui::Text("Linear Velocity:%s", Vector3(body->getLinearVelocity()).ToString().c_str());
+							ImGui::Text("Angular Velocity:%s", Vector3(body->getAngularVelocity()).ToString().c_str());
+							ImGui::Text("Mass:%.1f", body->getMass());
+						}
+						else {
+							ImGui::Text("Linear Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+							ImGui::Text("Angular Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+							ImGui::Text("Mass:N/A");
+						}
+					}
+					ImGui::Text("Friction:%.1f", GameManager::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getDynamicFriction());
+					ImGui::Text("Elasticity:%.1f", GameManager::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getRestitution());
+				}
+				ImGui::PopFont();
+				ImGui::End();
+			}
+		
+			ImGui::PushFont(textFont);
+			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
+			ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 6), ImGuiCond_Always);
+			ImGui::Begin("PhysX Information");
+			ImGui::Text("Static Physics Objects:%d", GameManager::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
+			ImGui::Text("Dynamic Physics Objects:%d", GameManager::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
+			ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
+			ImGui::Text("Current Collisions:%d", gameWorld.GetTotalCollisions());
+			ImGui::PopFont();
+			ImGui::End();
+		}
+	}
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GameTechRenderer::BuildObjectList() {
