@@ -4,14 +4,10 @@
  *                170348069
  *			Tutorial Game definition		 */
 #pragma once
-#include "../GameTech/GameTechRenderer.h"
-#include "../CSC8503Common/GameWorld.h"
-#include "../../Common/Camera.h"
 #include "../../Common/PhyxConversions.h"
 #include "../CSC8503/CSC8503Common/CollisionDetection.h"
-#include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../GameTech/WorldCreator.h"
-#include "../../Common/AudioManager.h"
+#include "GameTechRenderer.h"
 
 namespace NCL
 {
@@ -31,9 +27,14 @@ namespace NCL
 			void UpdateLevel(float dt);
 
 			void InitWorld(LevelState state);
-			GameTechRenderer* renderer;
+
+			GameTechRenderer* GetRenderer() const {
+				return renderer;
+			}
 
 		protected:
+			GameTechRenderer* renderer;
+			LevelState currentLevel;
 			void InitCamera();
 			void UpdateKeys();
 
@@ -44,10 +45,6 @@ namespace NCL
 			bool SelectObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
-
-			GameWorld* world;
-			PxPhysicsSystem* pXPhysics;
-			AudioManager* audioManager;
 
 			PlayerObject* player;
 

@@ -1,4 +1,6 @@
 #include "WorldCreator.h"
+Win32Code::Win32Window* WorldCreator::window = nullptr;
+
 PxPhysicsSystem* WorldCreator::pXPhysics = nullptr;
 GameWorld* WorldCreator::world = nullptr;
 AudioManager* WorldCreator::audioManager = nullptr;
@@ -27,7 +29,6 @@ OGLTexture* WorldCreator::dogeTex = nullptr;
 OGLShader* WorldCreator::basicShader = nullptr;
 OGLShader* WorldCreator::toonShader = nullptr;
 
-bool WorldCreator::debugMode = false;
 CameraState WorldCreator::camState = CameraState::FREE;
 
 GameObject* WorldCreator::lockedObject = nullptr;
@@ -35,12 +36,14 @@ GameObject* WorldCreator::selectionObject = nullptr;
 
 LevelState WorldCreator::levelState = LevelState::MENU;
 
-Win32Code::Win32Window* WorldCreator::w = nullptr;
-
 void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a) {
 	pXPhysics = p;
 	world = w;
 	audioManager = a;
+}
+
+void WorldCreator::CreateGraphics()
+{
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
@@ -71,7 +74,21 @@ void WorldCreator::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a) {
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
 
+void WorldCreator::ResetMenu()
+{
+	levelState = LevelState::MENU;
+	selectionObject = nullptr;
+	lockedObject = nullptr;
+	window->ShowOSPointer(false);
+	window->LockMouseToWindow(true);
+}
+
 WorldCreator::~WorldCreator() {
+	delete pXPhysics;
+	delete world;
+	delete audioManager;
+
+	delete capsuleMesh;
 	delete cubeMesh;
 	delete sphereMesh;
 	delete charMeshA;
@@ -87,7 +104,12 @@ WorldCreator::~WorldCreator() {
 	delete woodenTex;
 	delete finishTex;
 	delete menuTex;
+	delete plainTex;
+	delete wallTex;
+	delete dogeTex;
+
 	delete basicShader;
+	delete toonShader;
 }
 
 void WorldCreator::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity) {

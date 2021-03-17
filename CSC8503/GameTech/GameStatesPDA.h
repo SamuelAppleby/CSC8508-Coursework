@@ -19,7 +19,7 @@ class Pause : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		tutorialGame->renderer->Render();
+		tutorialGame->GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
@@ -48,9 +48,7 @@ class Level1 : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
-			WorldCreator::SetDebugMode(false);
-			WorldCreator::SetSelectionObject(nullptr);
-			WorldCreator::SetLockedObject(nullptr);
+			WorldCreator::ResetMenu();
 			return PushdownResult::Pop;
 		}
 
@@ -87,9 +85,7 @@ class Level2 : public PushdownState
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
-			WorldCreator::SetDebugMode(false);
-			WorldCreator::SetSelectionObject(nullptr);
-			WorldCreator::SetLockedObject(nullptr);
+			WorldCreator::ResetMenu();
 			return PushdownResult::Pop;
 		}
 		//if (tutorialGame->GetWinner() != 0)
@@ -121,8 +117,8 @@ public:
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		//tutorialGame->Update(dt);
-		tutorialGame->renderer->Update(dt);
-		tutorialGame->renderer->Render();
+		tutorialGame->GetRenderer()->Update(dt);
+		tutorialGame->GetRenderer()->Render();
 
 		//g->UpdateGame(dt);
 

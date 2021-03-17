@@ -10,34 +10,30 @@ using namespace CSC8503;
 
 TutorialGame::TutorialGame()
 {
-	world = new GameWorld();
-	renderer = new GameTechRenderer(*world);
-	pXPhysics = new PxPhysicsSystem();
-	audioManager = new AudioManager();
-	Debug::SetRenderer(renderer);
 	player = nullptr;
-	WorldCreator::Create(pXPhysics, world, audioManager); // initialize all textures / mesh / shaders 
+	WorldCreator::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
+	renderer = new GameTechRenderer(*WorldCreator::GetWorld());
+	Debug::SetRenderer(renderer);
+	WorldCreator::CreateGraphics();
 }
 
 TutorialGame::~TutorialGame()
 {
-	delete world;
 	delete renderer;
-	delete pXPhysics;
 }
 
 void TutorialGame::ResetWorld()
 {
-	world->ClearAndErase();
+	WorldCreator::GetWorld()->ClearAndErase();
 	//clearCannons();
-	//pXPhysics->ResetPhysics();
+	//WorldCreator::GetPhysicsSystem()->ResetPhysics();
 }
 
 void TutorialGame::Update(float dt)
 {
-	pXPhysics->StepPhysics(dt);
+	WorldCreator::GetPhysicsSystem()->StepPhysics(dt);
 	UpdateLevel(dt);
-	world->UpdateWorld(dt);
+	WorldCreator::GetWorld()->UpdateWorld(dt);
 	renderer->Update(dt);
 	renderer->Render();
 	Debug::FlushRenderables(dt);
@@ -53,25 +49,27 @@ void TutorialGame::UpdateLevel(float dt)
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
 	{
-		if (!WorldCreator::GetDebugMode())
+		if (WorldCreator::GetLevelState() != LevelState::DEBUG)
 		{
+			currentLevel = WorldCreator::GetLevelState();
 			Window::GetWindow()->ShowOSPointer(true);
 			Window::GetWindow()->LockMouseToWindow(false);
+			WorldCreator::SetLevelState(LevelState::DEBUG);
 		}
 		else
 		{
 			Window::GetWindow()->ShowOSPointer(false);
 			Window::GetWindow()->LockMouseToWindow(true);
+			WorldCreator::SetLevelState(currentLevel);
 		}
-		WorldCreator::SetDebugMode(!WorldCreator::GetDebugMode());
 	}
 
 	/* Debug mode selection */
-	if (WorldCreator::GetDebugMode())
+	if (WorldCreator::GetLevelState() == LevelState::DEBUG)
 	{
 		UpdateKeys();
 		SelectObject();
-		world->ShowFacing();
+		WorldCreator::GetWorld()->ShowFacing();
 	}
 
 	/* Change Camera */
@@ -94,7 +92,7 @@ void TutorialGame::UpdateLevel(float dt)
 			WorldCreator::SetCamMode(CameraState::FREE);
 			break;
 		}
-		world->GetMainCamera()->SetState(WorldCreator::GetCameraState());
+		WorldCreator::GetWorld()->GetMainCamera()->SetState(WorldCreator::GetCameraState());
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
@@ -102,14 +100,14 @@ void TutorialGame::UpdateLevel(float dt)
 	{
 		PxRigidDynamic* actor = (PxRigidDynamic*)WorldCreator::GetLockedObject()->GetPhysicsObject()->GetPXActor();
 		if (WorldCreator::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		float yaw = world->GetMainCamera()->GetYaw();
+		float yaw = WorldCreator::GetWorld()->GetMainCamera()->GetYaw();
 		yaw = Maths::DegreesToRadians(yaw);
 		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-		world->GetMainCamera()->UpdateCameraWithObject(dt, WorldCreator::GetLockedObject());
+		WorldCreator::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, WorldCreator::GetLockedObject());
 	}
 
-	else if (!WorldCreator::GetDebugMode() || WorldCreator::GetCameraState() == CameraState::GLOBAL1 || WorldCreator::GetCameraState() == CameraState::GLOBAL2)
-		world->GetMainCamera()->UpdateCamera(dt);
+	else if (WorldCreator::GetLevelState() != LevelState::DEBUG || WorldCreator::GetCameraState() == CameraState::GLOBAL1 || WorldCreator::GetCameraState() == CameraState::GLOBAL2)
+		WorldCreator::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	if (WorldCreator::GetLockedObject())
 		LockedObjectMovement(dt);
@@ -122,18 +120,18 @@ void TutorialGame::UpdateLevel(float dt)
 void TutorialGame::UpdateKeys()
 {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1))
-		world->ShuffleObjects(!world->GetShuffleObjects());
+		WorldCreator::GetWorld()->ShuffleObjects(!WorldCreator::GetWorld()->GetShuffleObjects());
 }
 
 /* Initialise camera to default location */
 void TutorialGame::InitCamera()
 {
-	world->GetMainCamera()->SetNearPlane(0.5f);
-	world->GetMainCamera()->SetFarPlane(10000.0f);
-	world->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
-	world->GetMainCamera()->SetYaw(0);
-	world->GetMainCamera()->SetPitch(0);
-	world->GetMainCamera()->SetState(CameraState::FREE);
+	WorldCreator::GetWorld()->GetMainCamera()->SetNearPlane(0.5f);
+	WorldCreator::GetWorld()->GetMainCamera()->SetFarPlane(10000.0f);
+	WorldCreator::GetWorld()->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
+	WorldCreator::GetWorld()->GetMainCamera()->SetYaw(0);
+	WorldCreator::GetWorld()->GetMainCamera()->SetPitch(0);
+	WorldCreator::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
 	WorldCreator::SetCamMode(CameraState::FREE);
 }
 
@@ -471,12 +469,12 @@ bool TutorialGame::SelectObject()
 {
 	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !WorldCreator::GetLockedObject())
 	{
-		PxVec3 pos = PhyxConversions::GetVector3(world->GetMainCamera()->GetPosition());
-		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*world->GetMainCamera()));
+		PxVec3 pos = PhyxConversions::GetVector3(WorldCreator::GetWorld()->GetMainCamera()->GetPosition());
+		PxVec3 dir = PhyxConversions::GetVector3(CollisionDetection::GetMouseDirection(*WorldCreator::GetWorld()->GetMainCamera()));
 		float distance = 10000.0f;
 		PxRaycastBuffer hit;
 
-		if (pXPhysics->GetGScene()->raycast(pos, dir, distance, hit))
+		if (WorldCreator::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
 		{
 			if (WorldCreator::GetSelectionObject()) {
 				WorldCreator::GetSelectionObject()->SetSelected(false);
@@ -485,7 +483,7 @@ bool TutorialGame::SelectObject()
 			}
 
 			PxRigidActor* actor = hit.block.actor;
-			WorldCreator::SetSelectionObject(world->FindObjectFromPhysicsBody(actor));
+			WorldCreator::SetSelectionObject(WorldCreator::GetWorld()->FindObjectFromPhysicsBody(actor));
 			WorldCreator::GetSelectionObject()->SetSelected(true);
 
 			if (WorldCreator::GetSelectionObject()->GetRenderObject())
@@ -493,6 +491,16 @@ bool TutorialGame::SelectObject()
 			return true;
 		}
 		return false;
+	}
+
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::RIGHT) && !WorldCreator::GetLockedObject())
+	{
+		if (WorldCreator::GetSelectionObject()) {
+			WorldCreator::GetSelectionObject()->SetSelected(false);
+			if (WorldCreator::GetSelectionObject()->GetRenderObject())
+				WorldCreator::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+			WorldCreator::SetSelectionObject(nullptr);
+		}
 	}
 
 	/* We can lock the object and move it around */
@@ -514,7 +522,7 @@ bool TutorialGame::SelectObject()
 				Window::GetWindow()->ShowOSPointer(false);
 				Window::GetWindow()->LockMouseToWindow(true);
 			}
-			world->GetMainCamera()->SetState(WorldCreator::GetCameraState());
+			WorldCreator::GetWorld()->GetMainCamera()->SetState(WorldCreator::GetCameraState());
 		}
 	}
 	return false;
@@ -547,7 +555,7 @@ void TutorialGame::LockedObjectMovement(float dt)
 {
 	/*if (inSelectionMode && selectionObject)
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));*/
-	Matrix4 view = world->GetMainCamera()->BuildViewMatrix();
+	Matrix4 view = WorldCreator::GetWorld()->GetMainCamera()->BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 	Vector3 rightAxis = Vector3(camWorld.GetColumn(0));
 
@@ -589,7 +597,7 @@ void TutorialGame::LockedObjectMovement(float dt)
 			WorldCreator::SetCamMode(CameraState::THIRDPERSON);
 			break;
 		}
-		world->GetMainCamera()->SetState(WorldCreator::GetCameraState());
+		WorldCreator::GetWorld()->GetMainCamera()->SetState(WorldCreator::GetCameraState());
 	}
 }
 
@@ -612,10 +620,10 @@ void TutorialGame::updateCannonBalls()
 		{
 			if ((cannons[i]->getShots()[j]->getDestroy() || (cannons[i]->getShots()[j]->GetTimeAlive() > cannons[i]->getMaxAlive())))
 			{
-				pXPhysics->GetGScene()->removeActor(*cannons[i]->getShots()[j]->getBody());
+				WorldCreator::GetPhysicsSystem()->GetGScene()->removeActor(*cannons[i]->getShots()[j]->getBody());
 				cannons[i]->getShots()[j]->SetRenderObject(NULL);
 				cannons[i]->getShots()[j]->SetPhysicsObject(NULL);
-				world->RemoveGameObject(cannons[i]->getShots()[j], false);
+				WorldCreator::GetWorld()->RemoveGameObject(cannons[i]->getShots()[j], false);
 				cannons[i]->removeShot(cannons[i]->getShots()[j]);
 			}
 		}
@@ -640,7 +648,7 @@ void TutorialGame::clearCannons()
 				delete cannons[i]->getShots()[j]->GetPhysicsObject();
 
 			}
-			world->RemoveGameObject(cannons[i]->getShots()[j], false);
+			WorldCreator::GetWorld()->RemoveGameObject(cannons[i]->getShots()[j], false);
 			cannons[i]->removeShot(cannons[i]->getShots()[j]);
 		}
 	}

@@ -1,27 +1,30 @@
 #pragma once
-#include "../GameTech/GameTechRenderer.h"
-#include "../CSC8503Common/GameWorld.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
-#include "../CSC8503Common/PxPhysicsSystem.h"
 #include "../Common/Light.h"
 #include "../../Common/Win32Window.h"
+
+#include "../CSC8503Common/GameWorld.h"
+#include "../CSC8503Common/PxPhysicsSystem.h"
+#include "../../Common/AudioManager.h"
 
 #include "../CSC8503Common/Cannonball.h"
 #include "../CSC8503Common/Cannon.h"
 #include "../CSC8503Common/KillPlane.h"
-#include "../../Common/AudioManager.h"
 
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
-enum class LevelState { PAUSED, MENU, LEVEL1, LEVEL2 };
+enum class LevelState { PAUSED, MENU, LEVEL1, LEVEL2, DEBUG };
 
 class WorldCreator {
 public:
 	static void Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a);
+	static void CreateGraphics();
+	static void ResetMenu();
+
 	~WorldCreator();
 	static void AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -42,20 +45,20 @@ public:
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize);
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
 
+	static GameWorld* GetWorld() {
+		return world;
+	}
+
 	static PxPhysicsSystem* GetPhysicsSystem() {
 		return pXPhysics;
 	}
 
-	static bool GetDebugMode() {
-		return debugMode;
+	static AudioManager* GetAudioManager() {
+		return audioManager;
 	}
 
 	static CameraState GetCameraState() {
 		return camState;
-	}
-
-	static void SetDebugMode(bool val) {
-		debugMode = val;
 	}
 
 	static void SetCamMode(CameraState val) {
@@ -87,16 +90,16 @@ public:
 	}
 
 	static void SetWindow(Win32Code::Win32Window* val) {
-		w = val;
+		window = val;
 	}
 
 	static Win32Code::Win32Window* GetWindow() {
-		return w;
+		return window;
 	}
-	static AudioManager* GetAudioManager() {
-		return audioManager;
-	}
+
 private:
+	static Win32Code::Win32Window* window;
+
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
 	static AudioManager* audioManager;
@@ -108,6 +111,7 @@ private:
 	static OGLMesh* charMeshB;
 	static OGLMesh* enemyMesh;
 	static OGLMesh* bonusMesh;
+
 	static OGLTexture* basicTex;
 	static OGLTexture* floorTex;
 	static OGLTexture* lavaTex;
@@ -120,16 +124,15 @@ private:
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
 	static OGLTexture* dogeTex;
+
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
 
-	static bool debugMode;
 	static CameraState camState;
 
 	static GameObject* selectionObject;
 	static GameObject* lockedObject;
 
 	static LevelState levelState;
-	static Win32Code::Win32Window* w;
 };
 

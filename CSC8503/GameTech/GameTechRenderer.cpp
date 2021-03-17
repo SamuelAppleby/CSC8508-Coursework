@@ -165,9 +165,9 @@ void GameTechRenderer::RenderUI()
 	else {
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::Begin("Game Info");
-		if (WorldCreator::GetDebugMode()) {
+		if (WorldCreator::GetLevelState() == LevelState::DEBUG) {
 			if (gameWorld.GetShuffleObjects())
 				ImGui::Text("Shuffle Objects(F1):On");
 			else
@@ -178,45 +178,20 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 
 		ImGui::PushFont(textFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2 * main_viewport->Size.y / 3) - 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 3), ImGuiCond_Always);
-		ImGui::Begin("Debug Information");
-		if (WorldCreator::GetSelectionObject()) {
-			ImGui::Text("Selected Object:%s", WorldCreator::GetSelectionObject()->GetName().c_str());
-			ImGui::Text("Position:%s", Vector3(WorldCreator::GetSelectionObject()->GetTransform().GetPosition()).ToString().c_str());
-			ImGui::Text("Orientation:%s", Quaternion(WorldCreator::GetSelectionObject()->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
-
-			if (WorldCreator::GetSelectionObject()->GetPhysicsObject() != nullptr) {
-				if (WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
-					PxRigidDynamic* body = (PxRigidDynamic*)WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
-					ImGui::Text("Linear Velocity:%s", Vector3(body->getLinearVelocity()).ToString().c_str());
-					ImGui::Text("Angular Velocity:%s", Vector3(body->getAngularVelocity()).ToString().c_str());
-					ImGui::Text("Mass:%.1f", body->getMass());
-				}
-				else {
-					ImGui::Text("Linear Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
-					ImGui::Text("Angular Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
-					ImGui::Text("Mass:N/A");
-				}
-			}
-			ImGui::Text("Friction:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getDynamicFriction());
-			ImGui::Text("Elasticity:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getRestitution());
-		}
-		ImGui::PopFont();
-		ImGui::End();
-
-		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::Begin("Controls");
 		ImGui::Text("Exit to Menu (ESC)");
 		ImGui::Text("Pause(P)");
 
-		if (!WorldCreator::GetDebugMode())
+		if (WorldCreator::GetLevelState() != LevelState::DEBUG)
 			ImGui::Text("Change to debug mode(Q)");
 		else {
-			ImGui::Text("Select Object (LM Click)");
-			if (WorldCreator::GetSelectionObject()) {
+			if (!WorldCreator::GetSelectionObject()) {
+				ImGui::Text("Select Object (LM Click)");
+			}
+			else {
+				ImGui::Text("De-Select Object (RM Click)");
 				if (!WorldCreator::GetLockedObject())
 					ImGui::Text("Lock Selected Object (L)");
 				else
@@ -246,18 +221,49 @@ void GameTechRenderer::RenderUI()
 		ImGui::PopFont();
 		ImGui::End();
 
-		ImGui::PushFont(textFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + (3 * main_viewport->Size.y / 4) - 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
-		ImGui::Begin("PhysX Information");
-		ImGui::Text("Static Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
-		ImGui::Text("Dynamic Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
-		ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
-		ImGui::Text("Current Collisions:%d", gameWorld.GetTotalCollisions());
-		ImGui::PopFont();
-		ImGui::End();
-	}
+		if (WorldCreator::GetLevelState() == LevelState::DEBUG) {
+			if (WorldCreator::GetSelectionObject()) {
+				ImGui::PushFont(textFont);
+				ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2.5 * main_viewport->Size.y / 3.5) - 20), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 3.5), ImGuiCond_Always);
+				ImGui::Begin("Debug Information");
+				if (WorldCreator::GetSelectionObject()) {
+					ImGui::Text("Selected Object:%s", WorldCreator::GetSelectionObject()->GetName().c_str());
+					ImGui::Text("Position:%s", Vector3(WorldCreator::GetSelectionObject()->GetTransform().GetPosition()).ToString().c_str());
+					ImGui::Text("Orientation:%s", Quaternion(WorldCreator::GetSelectionObject()->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
 
+					if (WorldCreator::GetSelectionObject()->GetPhysicsObject() != nullptr) {
+						if (WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+							PxRigidDynamic* body = (PxRigidDynamic*)WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
+							ImGui::Text("Linear Velocity:%s", Vector3(body->getLinearVelocity()).ToString().c_str());
+							ImGui::Text("Angular Velocity:%s", Vector3(body->getAngularVelocity()).ToString().c_str());
+							ImGui::Text("Mass:%.1f", body->getMass());
+						}
+						else {
+							ImGui::Text("Linear Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+							ImGui::Text("Angular Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
+							ImGui::Text("Mass:N/A");
+						}
+					}
+					ImGui::Text("Friction:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getDynamicFriction());
+					ImGui::Text("Elasticity:%.1f", WorldCreator::GetSelectionObject()->GetPhysicsObject()->GetMaterial()->getRestitution());
+				}
+				ImGui::PopFont();
+				ImGui::End();
+			}
+		
+			ImGui::PushFont(textFont);
+			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
+			ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 6), ImGuiCond_Always);
+			ImGui::Begin("PhysX Information");
+			ImGui::Text("Static Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
+			ImGui::Text("Dynamic Physics Objects:%d", WorldCreator::GetPhysicsSystem()->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
+			ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
+			ImGui::Text("Current Collisions:%d", gameWorld.GetTotalCollisions());
+			ImGui::PopFont();
+			ImGui::End();
+		}
+	}
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
