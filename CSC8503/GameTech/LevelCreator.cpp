@@ -14,7 +14,7 @@ LevelCreator::LevelCreator()
 	GameManager::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
 	renderer = new GameTechRenderer(*GameManager::GetWorld());
 	Debug::SetRenderer(renderer);
-	GameManager::CreateGraphics();
+	GameManager::LoadAssets();
 }
 
 LevelCreator::~LevelCreator()
@@ -111,7 +111,8 @@ void LevelCreator::UpdateLevel(float dt)
 
 	if (GameManager::GetLockedObject())
 		LockedObjectMovement(dt);
-	else if (GameManager::GetSelectionObject()) {
+	else if (GameManager::GetSelectionObject())
+	{
 		DebugObjectMovement();
 	}
 }
@@ -460,6 +461,16 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
+
+
+		for (int i = 0; i < 1; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000))));
+		}
+		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
+
+		//GameManager::AddPxCannonBallToWorld(t);
+
 		break;
 	}
 }
@@ -476,7 +487,8 @@ bool LevelCreator::SelectObject()
 
 		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
 		{
-			if (GameManager::GetSelectionObject()) {
+			if (GameManager::GetSelectionObject())
+			{
 				GameManager::GetSelectionObject()->SetSelected(false);
 				if (GameManager::GetSelectionObject()->GetRenderObject())
 					GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
@@ -495,7 +507,8 @@ bool LevelCreator::SelectObject()
 
 	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::RIGHT) && !GameManager::GetLockedObject())
 	{
-		if (GameManager::GetSelectionObject()) {
+		if (GameManager::GetSelectionObject())
+		{
 			GameManager::GetSelectionObject()->SetSelected(false);
 			if (GameManager::GetSelectionObject()->GetRenderObject())
 				GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
@@ -614,7 +627,7 @@ void LevelCreator::updateCannons(float dt)
 
 void LevelCreator::updateCannonBalls()
 {
-	for (int i = 0; i < cannons.size(); ++i)
+	/*for (int i = 0; i < cannons.size(); ++i)
 	{
 		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
 		{
@@ -627,12 +640,12 @@ void LevelCreator::updateCannonBalls()
 				cannons[i]->removeShot(cannons[i]->getShots()[j]);
 			}
 		}
-	}
+	}*/
 }
 
 void LevelCreator::clearCannons()
 {
-	for (int i = 0; i < cannons.size(); ++i)
+	/*for (int i = 0; i < cannons.size(); ++i)
 	{
 		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
 		{
@@ -653,5 +666,5 @@ void LevelCreator::clearCannons()
 		}
 	}
 
-	cannons.clear();
+	cannons.clear();*/
 }

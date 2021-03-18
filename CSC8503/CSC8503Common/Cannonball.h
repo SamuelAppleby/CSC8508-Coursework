@@ -2,38 +2,44 @@
 #include "GameObject.h"
 #include "GameWorld.h"
 
-namespace NCL {
-	namespace CSC8503 {
+namespace NCL
+{
+	namespace CSC8503
+	{
 		class Cannonball :
-			public GameObject {
+			public GameObject
+		{
 		public:
-			Cannonball(PxActor* newBody) {
-				body = newBody;
-				SetName("Cannonball");
+			Cannonball()
+			{
+				name = "Cannonball";
+				isActive = false;
+				timeLeft = 10.f;
+				//Disable();
 			}
 
-			void Update(float dt) {
-				GameObject::Update(dt);
-				StepTimeAlive(dt);
-			}
 
-			void setDestroy(bool newDestroy) {
+			void Update(float dt) override;
+			void ResetBall(const PxVec3& newPos, const PxVec3& force);
+
+
+			void setDestroy(bool newDestroy)
+			{
 				destroy = newDestroy;
 			}
 
-			bool getDestroy() {
+			bool getDestroy()
+			{
 				return destroy;
 			}
 
-			PxActor* getBody() {
-
-				return body;
-			}
-
-
+			bool isActive;
 
 		protected:
-			PxActor* body;
+
+			float timeLeft;
+			void Disable();
+			PxVec3 initialPos;
 		};
 	}
 }

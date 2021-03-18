@@ -159,6 +159,7 @@
     <ClInclude Include="NavigationMap.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NavigationPath.h" />
+    <ClInclude Include="Obstacles.h" />
     <ClInclude Include="PhysXConversions.h" />
     <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="PushdownMachine.h" />

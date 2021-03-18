@@ -112,6 +112,9 @@
     <ClInclude Include="PhysXConversions.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Obstacles.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">

@@ -49,7 +49,6 @@ namespace NCL
 			PlayerObject* player;
 
 			//Level2 stuff here
-			vector<Cannon*> cannons;
 			void updateCannons(float dt);
 			void updateCannonBalls();
 			void clearCannons();

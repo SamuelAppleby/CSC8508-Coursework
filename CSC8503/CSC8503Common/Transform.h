@@ -25,11 +25,15 @@ namespace NCL
 		{
 		public:
 			Transform();
+		
 			~Transform();
+
 
 			void SetPosition(const PxVec3& worldPos);
 			void SetScale(const PxVec3& worldScale);
 			void SetOrientation(const PxQuat& newOr);
+
+			//void 
 
 			PxVec3 GetPosition() const
 			{
@@ -52,6 +56,8 @@ namespace NCL
 			}
 			void UpdateMatrix();
 		protected:
+			//GameObject* go;
+			PxTransform* pxTransform; 
 			Matrix4	matrix;	
 			PxVec3 pxPos;
 			PxVec3 pxScale;
