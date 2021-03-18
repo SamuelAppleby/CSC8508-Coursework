@@ -10,7 +10,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-LevelCreator* tutorialGame = nullptr;
+LevelCreator* levelCreator = nullptr;
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
@@ -19,7 +19,7 @@ class Pause : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		tutorialGame->GetRenderer()->Render();
+		GameManager::GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
@@ -38,7 +38,7 @@ class Level1 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		tutorialGame->Update(dt);
+		levelCreator->Update(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
@@ -74,7 +74,7 @@ class Level2 : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		tutorialGame->Update(dt);
+		levelCreator->Update(dt);
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P))
 		{
 			*newState = new Pause();
@@ -105,34 +105,11 @@ class Level2 : public PushdownState
 	}
 };
 
-class MainMenu : public PushdownState
+class LevelScreen : public PushdownState
 {
-public:
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		//tutorialGame->Update(dt);
-		tutorialGame->GetRenderer()->Update(dt);
-		tutorialGame->GetRenderer()->Render();
-
-		//g->UpdateGame(dt);
-
-		/*if (winner != 0)
-		{
-			if (winner == 1)
-			{
-
-				Debug::Print("Player Won!!!!!!!!", Vector2(30, 20), Vector4(1, 1, 1, 1));
-				Debug::Print("Player Score:" + std::to_string(playerScore), Vector2(30, 25), Vector4(1, 1, 1, 1));
-				Debug::Print("AI Score:    " + std::to_string(aiScore), Vector2(30, 30), Vector4(1, 1, 1, 1));
-			}
-			else
-			{
-				Debug::Print("AI Won!!!!!!!!!", Vector2(30, 20), Vector4(1, 1, 1, 1));
-				Debug::Print("Player Score:" + std::to_string(playerScore), Vector2(30, 25), Vector4(1, 1, 1, 1));
-				Debug::Print("AI Score:    " + std::to_string(aiScore), Vector2(30, 30), Vector4(1, 1, 1, 1));
-			}
-		}*/
-
+		GameManager::GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1) ||
@@ -141,7 +118,7 @@ public:
 			*newState = new Level1();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld(LevelState::LEVEL1);
+			levelCreator->InitWorld(LevelState::LEVEL1);
 			return PushdownResult::Push;
 		}
 
@@ -151,8 +128,48 @@ public:
 			*newState = new Level2();
 
 			//playerScore = aiScore = 0;
-			tutorialGame->InitWorld(LevelState::LEVEL2);
+			levelCreator->InitWorld(LevelState::LEVEL2);
 			//tutorialGame->InitAI();
+			return PushdownResult::Push;
+		}
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) ||
+			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM3) ||
+			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD3) || 
+			GameManager::GetLevelState() == LevelState::MENU)
+		{
+			return PushdownResult::Pop;
+		}
+		return PushdownResult::NoChange;
+	}
+	void OnAwake() override
+	{
+
+	}
+};
+
+class MainMenu : public PushdownState
+{
+public:
+	PushdownResult OnUpdate(float dt, PushdownState** newState) override
+	{
+		GameManager::GetRenderer()->Update(dt);
+		GameManager::GetRenderer()->Render();
+		Debug::FlushRenderables(dt);
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1) ||
+			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD1))
+		{
+			*newState = new LevelScreen();
+			GameManager::SetLevelState(LevelState::MODESELECT);
+			return PushdownResult::Push;
+		}
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM2) ||
+			Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUMPAD2))
+		{
+			*newState = new LevelScreen();
+			GameManager::SetLevelState(LevelState::MODESELECT);
 			return PushdownResult::Push;
 		}
 
@@ -167,14 +184,14 @@ public:
 
 	void  OnAwake() override
 	{
-		GameManager::SetLevelState(LevelState::MENU);
-		if (tutorialGame == nullptr)
+		if (levelCreator == nullptr)
 		{
-			tutorialGame = new LevelCreator();
+			levelCreator = new LevelCreator();
 		}
 		else {
-			tutorialGame->ResetWorld();
+			levelCreator->ResetWorld();
 		}
+		GameManager::SetLevelState(LevelState::MENU);
 		GameManager::GetAudioManager()->StopSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 

@@ -7,7 +7,6 @@
 #include "../CSC8503Common/PhysxConversions.h"
 #include "../CSC8503/CSC8503Common/CollisionDetection.h"
 #include "../GameTech/GameManager.h"
-#include "GameTechRenderer.h"
 
 namespace NCL
 {
@@ -28,12 +27,7 @@ namespace NCL
 
 			void InitWorld(LevelState state);
 
-			GameTechRenderer* GetRenderer() const {
-				return renderer;
-			}
-
 		protected:
-			GameTechRenderer* renderer;
 			LevelState currentLevel;
 			void InitCamera();
 			void UpdateKeys();

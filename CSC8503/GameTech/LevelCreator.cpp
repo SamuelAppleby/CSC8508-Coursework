@@ -17,11 +17,6 @@ LevelCreator::LevelCreator()
 	GameManager::LoadAssets();
 }
 
-LevelCreator::~LevelCreator()
-{
-	delete renderer;
-}
-
 void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
@@ -34,8 +29,8 @@ void LevelCreator::Update(float dt)
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	UpdateLevel(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
-	renderer->Update(dt);
-	renderer->Render();
+	GameManager::GetRenderer()->Update(dt);
+	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
 }
 
@@ -79,17 +74,17 @@ void LevelCreator::UpdateLevel(float dt)
 		{
 		case CameraState::FREE:
 			if (GameManager::GetLevelState() == LevelState::LEVEL1)
-				GameManager::SetCamMode(CameraState::GLOBAL1);
+				GameManager::SetCamState(CameraState::GLOBAL1);
 			else
-				GameManager::SetCamMode(CameraState::GLOBAL2);
+				GameManager::SetCamState(CameraState::GLOBAL2);
 			break;
 		case CameraState::GLOBAL1:
 			InitCamera();
-			GameManager::SetCamMode(CameraState::FREE);
+			GameManager::SetCamState(CameraState::FREE);
 			break;
 		case CameraState::GLOBAL2:
 			InitCamera();
-			GameManager::SetCamMode(CameraState::FREE);
+			GameManager::SetCamState(CameraState::FREE);
 			break;
 		}
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
@@ -133,7 +128,7 @@ void LevelCreator::InitCamera()
 	GameManager::GetWorld()->GetMainCamera()->SetYaw(0);
 	GameManager::GetWorld()->GetMainCamera()->SetPitch(0);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
-	GameManager::SetCamMode(CameraState::FREE);
+	GameManager::SetCamState(CameraState::FREE);
 }
 
 /* Initialise all the elements contained within the world */
@@ -523,14 +518,14 @@ bool LevelCreator::SelectObject()
 		{
 			if (GameManager::GetLockedObject() == GameManager::GetSelectionObject())
 			{
-				GameManager::SetCamMode(CameraState::FREE);
+				GameManager::SetCamState(CameraState::FREE);
 				GameManager::SetLockedObject(nullptr);
 				Window::GetWindow()->ShowOSPointer(true);
 				Window::GetWindow()->LockMouseToWindow(false);
 			}
 			else
 			{
-				GameManager::SetCamMode(CameraState::THIRDPERSON);
+				GameManager::SetCamState(CameraState::THIRDPERSON);
 				GameManager::SetLockedObject(GameManager::GetSelectionObject());
 				Window::GetWindow()->ShowOSPointer(false);
 				Window::GetWindow()->LockMouseToWindow(true);
@@ -604,10 +599,10 @@ void LevelCreator::LockedObjectMovement(float dt)
 		switch (GameManager::GetCameraState())
 		{
 		case CameraState::THIRDPERSON:
-			GameManager::SetCamMode(CameraState::TOPDOWN);
+			GameManager::SetCamState(CameraState::TOPDOWN);
 			break;
 		case CameraState::TOPDOWN:
-			GameManager::SetCamMode(CameraState::THIRDPERSON);
+			GameManager::SetCamState(CameraState::THIRDPERSON);
 			break;
 		}
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());

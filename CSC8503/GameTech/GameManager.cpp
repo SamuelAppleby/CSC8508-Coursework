@@ -3,6 +3,7 @@ Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
 GameWorld* GameManager::world = nullptr;
+GameTechRenderer* GameManager::renderer = nullptr;
 AudioManager* GameManager::audioManager = nullptr;
 Obstacles* GameManager::obstacles = nullptr;
 
@@ -42,6 +43,9 @@ void GameManager::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a)
 {
 	pXPhysics = p;
 	world = w;
+	renderer = new GameTechRenderer(*GameManager::GetWorld(), pXPhysics);
+	Debug::SetRenderer(renderer);
+	renderer->InitGUI(window->GetHandle());
 	audioManager = a;
 	obstacles = new Obstacles();
 }
@@ -86,6 +90,8 @@ void GameManager::ResetMenu()
 	levelState = LevelState::MENU;
 	selectionObject = nullptr;
 	lockedObject = nullptr;
+	renderer->SetSelectionObject(nullptr);
+	renderer->SetLockedObject(nullptr);
 	window->ShowOSPointer(false);
 	window->LockMouseToWindow(true);
 }
@@ -94,6 +100,7 @@ GameManager::~GameManager()
 {
 	delete pXPhysics;
 	delete world;
+	delete renderer;
 	delete audioManager;
 
 	delete capsuleMesh;

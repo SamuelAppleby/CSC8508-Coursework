@@ -8,6 +8,7 @@
 
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
+#include "GameTechRenderer.h"
 #include "../../Common/AudioManager.h"
 
 #include "../CSC8503Common/Cannonball.h"
@@ -18,7 +19,7 @@
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
-enum class LevelState { PAUSED, MENU, LEVEL1, LEVEL2, DEBUG };
+enum class LevelState { PAUSED, MENU, MODESELECT, LEVEL1, LEVEL2, DEBUG };
 
 class GameManager {
 public:
@@ -58,6 +59,10 @@ public:
 		return pXPhysics;
 	}
 
+	static GameTechRenderer* GetRenderer() {
+		return renderer;
+	}
+
 	static AudioManager* GetAudioManager() {
 		return audioManager;
 	}
@@ -66,8 +71,9 @@ public:
 		return camState;
 	}
 
-	static void SetCamMode(CameraState val) {
+	static void SetCamState(CameraState val) {
 		camState = val;
+		renderer->SetCamState(camState);
 	}
 
 	static GameObject* GetLockedObject() {
@@ -80,14 +86,36 @@ public:
 
 	static void SetLockedObject(GameObject* val) {
 		lockedObject = val;
+		renderer->SetLockedObject(lockedObject);
 	}
 
 	static void SetSelectionObject(GameObject* val) {
 		selectionObject = val;
+		renderer->SetSelectionObject(selectionObject);
 	}
 
 	static void SetLevelState(LevelState val) {
 		levelState = val;
+		switch (levelState) {
+		case LevelState::MENU:
+			renderer->SetLevelState(UIState::MENU);
+			break;
+		case LevelState::DEBUG:
+			renderer->SetLevelState(UIState::DEBUG);
+			break;
+		case LevelState::LEVEL1:
+			renderer->SetLevelState(UIState::LEVEL);
+			break;
+		case LevelState::LEVEL2:
+			renderer->SetLevelState(UIState::LEVEL);
+			break;
+		case LevelState::PAUSED:
+			renderer->SetLevelState(UIState::PAUSED);
+			break;
+		case LevelState::MODESELECT:
+			renderer->SetLevelState(UIState::MODESELECT);
+			break;
+		}
 	}
 
 	static LevelState GetLevelState() {
@@ -107,6 +135,7 @@ private:
 
 	static PxPhysicsSystem* pXPhysics;
 	static GameWorld* world;
+	static GameTechRenderer* renderer;
 	static AudioManager* audioManager;
 	static Obstacles* obstacles;
 

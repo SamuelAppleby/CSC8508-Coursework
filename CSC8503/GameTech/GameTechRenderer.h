@@ -9,20 +9,33 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../CSC8503Common/GameWorld.h"
-#include "GameManager.h"
 #include "../../Common/Imgui/imgui_impl_opengl3.h"
 #include "../../Common/Imgui/imgui_impl_win32.h"
+#include "../CSC8503Common/PxPhysicsSystem.h"
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503 {
 		class RenderObject;
+		enum class UIState { PAUSED, MENU, LEVEL, DEBUG, MODESELECT, MULTIPLAYERMENU};
 
 		class GameTechRenderer : public OGLRenderer	{
 		public:
-			GameTechRenderer(GameWorld& world);
+			GameTechRenderer(GameWorld& world, PxPhysicsSystem* physics);
 			~GameTechRenderer();
-
+			void InitGUI(HWND handle);
+			void SetLevelState(UIState val) {
+				levelState = val;
+			}
+			void SetSelectionObject(GameObject* val) {
+				selectionObject = val;
+			}
+			void SetLockedObject(GameObject* val) {
+				lockedObject = val;
+			}
+			void SetCamState(CameraState val) {
+				camState = val;
+			}
 		protected:
 			void RenderFrame()	override;
 
@@ -62,6 +75,12 @@ namespace NCL {
 
 			ImFont* textFont;
 			ImFont* titleFont;
+
+			UIState levelState;
+			GameObject* lockedObject;
+			GameObject* selectionObject;
+			CameraState camState;
+			PxPhysicsSystem* pXPhysics;
 		};
 	}
 }
