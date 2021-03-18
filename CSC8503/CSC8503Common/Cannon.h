@@ -9,8 +9,10 @@ namespace NCL
 		class Cannon : public GameObject
 		{
 		public:
-			Cannon(PxVec3 newTrajectory, int newShotTimes = 10, int newShotSize = 5)
+			Cannon(PxVec3 newTrajectory, int newShotTimes = 10, int newShotSize = 5, PxVec3 newTranslate = PxVec3(0,100,0))
 			{
+
+				translate = newTranslate;
 				shotSize = newShotSize;
 				shotTimes = newShotTimes;
 				trajectory = newTrajectory;
@@ -63,6 +65,7 @@ namespace NCL
 			int shotSize;
 			int shotTimes;
 			float timeSinceShot;
+			PxVec3 translate;
 			PxVec3 trajectory;
 			Cannonball* currentBall;
 

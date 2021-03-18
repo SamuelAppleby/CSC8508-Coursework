@@ -318,9 +318,9 @@ Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxR
 	return cannonBall;
 }
 
-void GameManager::AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize)
+void GameManager::AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, const PxVec3 translate)
 {
-	Cannon* cannon = new Cannon(trajectory, shotTime, shotSize);
+	Cannon* cannon = new Cannon(trajectory, shotTime, shotSize, translate);
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(30, 15, 15), *pXPhysics->GetGMaterial());

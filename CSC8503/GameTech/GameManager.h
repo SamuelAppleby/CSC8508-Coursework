@@ -43,8 +43,8 @@ public:
 
 	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
 	static void AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5);
-	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 5.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize);
+	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
 
 	static GameWorld* GetWorld() {

@@ -23,6 +23,7 @@ void Cannonball::ResetBall(const PxVec3& newPos, const PxVec3& force)
 	//PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));	//PxVec3 force1 = PxVec3(0, 0, 0);
 	//PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
 	actor->addForce(force, PxForceMode::eIMPULSE);
+
 }
 
 void Cannonball::Update(float dt)
