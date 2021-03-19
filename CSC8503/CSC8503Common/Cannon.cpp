@@ -22,6 +22,7 @@ void Cannon::Shoot()
 		if (!i->isActive)
 		{
 			currentBall = i;
+
 			break;
 		}
 	}
@@ -29,7 +30,7 @@ void Cannon::Shoot()
 	if (currentBall != nullptr)
 	{
 		//;
-		currentBall->ResetBall(transform.GetPosition() + PxVec3(0, 100, 0), trajectory);
+		currentBall->ResetBall(transform.GetPosition() + translate, trajectory);
 	}
 	timeSinceShot = 0;
 }

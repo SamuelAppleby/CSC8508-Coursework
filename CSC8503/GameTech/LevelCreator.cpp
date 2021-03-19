@@ -419,38 +419,55 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
 
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 200));
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 2));
 
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 200));
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
 
 		//cannons
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -850)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -900)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -950)), PxVec3(7000000, 8500, 0), 10, 10);
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -850)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -900)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -950)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
 
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -825)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -875)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -925)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -975)), PxVec3(7000000, 8500, 0), 10, 10);
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -825)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -875)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
 
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -78, -1700)), PxVec3(190, 20, 20), PxVec3(0, 1, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -78, -1705)), PxVec3(190, 20, 20), PxVec3(0, 1, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0,25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
 
 
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 30; i++)
 		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000))));
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
 		}
+
+		/*
+		for (int i = 0; i < 5; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
+		}
+
+		for (int i = 0; i < 7; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
+		}
+
+		for (int i = 0; i < 5; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
+		}
+		*/
 		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
 
 		//GameManager::AddPxCannonBallToWorld(t);
