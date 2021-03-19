@@ -19,7 +19,7 @@
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
-enum class LevelState { LEVEL1, LEVEL2 };
+enum class LevelState { LEVEL1, LEVEL2, LEVEL3 };
 
 class GameManager {
 public:
@@ -33,7 +33,9 @@ public:
 	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f);
-
+	
+	static void AddBounceSticks(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
+		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 

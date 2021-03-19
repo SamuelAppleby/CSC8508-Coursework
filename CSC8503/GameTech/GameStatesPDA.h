@@ -103,10 +103,11 @@ public:
 			break;
 		case UIState::SOLOLEVEL2:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL2);
-			GameManager::SetLevelState(LevelState::LEVEL2);
+			levelCreator->InitWorld(LevelState::LEVEL3);
+			GameManager::SetLevelState(LevelState::LEVEL3);
 			return PushdownResult::Push;
 			break;
+
 		case UIState::HOSTLEVEL1:
 			/* Code for hosting level 1 */
 			break;

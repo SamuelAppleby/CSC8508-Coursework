@@ -173,22 +173,18 @@ void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity)
-{
-	GameObject* floor = new GameObject("Floor");
+void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity) {
+	GameObject* capsule = new GameObject("Capsule");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
-	floor->SetPhysicsObject(new PhysXObject(body, newMat));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	capsule->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	floor->GetTransform().SetScale(halfSizes * 2);
-	if (!friction)
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
-	world->AddGameObject(floor);
+	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
+	world->AddGameObject(capsule);
 }
 
 void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
@@ -297,7 +293,22 @@ void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 ha
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
 }
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity) {
+	GameObject* floor = new GameObject("Floor");
 
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	floor->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	floor->GetTransform().SetScale(halfSizes * 2);
+	if (!friction)
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+	else
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+	world->AddGameObject(floor);
+}
 Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity)
 {
 	Cannonball* cannonBall = new Cannonball();
