@@ -41,7 +41,7 @@ void LevelCreator::UpdateLevel(float dt)
 	updateCannonBalls();
 
 	/* Enter debug mode? */
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
+	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::TAB) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::INSERT))
 	{
 		if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG) 		
 			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);

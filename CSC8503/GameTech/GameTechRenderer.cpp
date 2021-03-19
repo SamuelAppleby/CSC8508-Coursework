@@ -121,6 +121,7 @@ void GameTechRenderer::InitGUI(HWND handle)
 	window_flags |= ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 	//window_flags |= ImGuiWindowFlags_NoScrollbar;
 	//window_flags |= ImGuiWindowFlags_MenuBar;
 	//window_flags |= ImGuiWindowFlags_NoNav;
@@ -238,6 +239,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::Begin("Options", &p_open, window_flags);
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
+		ImGui::SetWindowFontScale(0.5);
+		ImGui::TextWrapped("(Debug Mode Activated with TAB + INSERT)");
 		if (ImGui::Button("Back")) {
 			levelState = UIState::PAUSED;
 		}
@@ -319,18 +322,17 @@ void GameTechRenderer::RenderUI()
 			}
 		}
 
-		for (int i = 0; i < 10; ++i) {
-			if (ImGui::Button(std::to_string(i).c_str())) {
-				activeString->append(std::to_string(i));
+		/* Using hex to get keyboard inputs */
+		for (int i = 0x30; i <= 0x39; ++i) {
+			if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i)) {
+				activeString->append(std::to_string(i - 0x30));
 			}
-			ImGui::SameLine();
 		}
-		
-		if (ImGui::Button(".")) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::PERIOD) && activeString == &ipString) {
 			activeString->append(".");
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("DEL") && activeString->length() > 0) {
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK) && activeString->length() > 0) {
 			activeString->pop_back();
 		}
 
@@ -347,7 +349,6 @@ void GameTechRenderer::RenderUI()
 	case UIState::INGAME:
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::Begin("Game Info", &p_open, window_flags);
 		if (levelState == UIState::DEBUG) {
 			if (gameWorld.GetShuffleObjects())
@@ -360,11 +361,9 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 
 		ImGui::PushFont(textFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Pause(ESC)");
-		ImGui::Text("Change to debug mode(Q)");
 
 		switch (camState)
 		{
@@ -390,7 +389,6 @@ void GameTechRenderer::RenderUI()
 	case UIState::DEBUG:
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::Begin("Game Info", &p_open, window_flags);
 		if (gameWorld.GetShuffleObjects())
 			ImGui::Text("Shuffle Objects(F1):On");
@@ -401,8 +399,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 
 		ImGui::PushFont(textFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Exit to Menu (ESC)");
 		ImGui::Text("Pause(P)");
@@ -443,7 +440,6 @@ void GameTechRenderer::RenderUI()
 		if (selectionObject) {
 			ImGui::PushFont(textFont);
 			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2.5 * main_viewport->Size.y / 3.5) - 20), ImGuiCond_Always);
-			ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 3.5), ImGuiCond_Always);
 			ImGui::Begin("Debug Information", &p_open, window_flags);
 			ImGui::Text("Selected Object:%s", selectionObject->GetName().c_str());
 			ImGui::Text("Position:%s", Vector3(selectionObject->GetTransform().GetPosition()).ToString().c_str());
@@ -470,8 +466,7 @@ void GameTechRenderer::RenderUI()
 		}
 
 		ImGui::PushFont(textFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + (3 * main_viewport->Size.x / 4) - 20, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 4, main_viewport->Size.y / 6), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
 		ImGui::Begin("PhysX Information", &p_open, window_flags);
 		ImGui::Text("Static Physics Objects:%d", pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
 		ImGui::Text("Dynamic Physics Objects:%d", pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
