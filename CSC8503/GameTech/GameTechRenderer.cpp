@@ -4,8 +4,6 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
-#include "../../Common/Imgui/imgui_internal.h"
-#include "../../Common/AudioManager.h"
 
 using namespace NCL;
 using namespace Rendering;

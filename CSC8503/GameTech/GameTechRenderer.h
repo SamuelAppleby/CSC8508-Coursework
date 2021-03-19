@@ -12,7 +12,9 @@
 #include "../../Common/Imgui/imgui_impl_opengl3.h"
 #include "../../Common/Imgui/imgui_impl_win32.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
-
+#include "../../Common/Imgui/imgui_internal.h"
+#include "../../Common/AudioManager.h"
+#include <sstream>
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
