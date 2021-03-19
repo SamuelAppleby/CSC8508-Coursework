@@ -19,7 +19,7 @@
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
-enum class LevelState { PAUSED, MENU, MODESELECT, LEVEL1, LEVEL2, DEBUG };
+enum class LevelState { LEVEL1, LEVEL2 };
 
 class GameManager {
 public:
@@ -96,26 +96,6 @@ public:
 
 	static void SetLevelState(LevelState val) {
 		levelState = val;
-		switch (levelState) {
-		case LevelState::MENU:
-			renderer->SetLevelState(UIState::MENU);
-			break;
-		case LevelState::DEBUG:
-			renderer->SetLevelState(UIState::DEBUG);
-			break;
-		case LevelState::LEVEL1:
-			renderer->SetLevelState(UIState::LEVEL);
-			break;
-		case LevelState::LEVEL2:
-			renderer->SetLevelState(UIState::LEVEL);
-			break;
-		case LevelState::PAUSED:
-			renderer->SetLevelState(UIState::PAUSED);
-			break;
-		case LevelState::MODESELECT:
-			renderer->SetLevelState(UIState::MODESELECT);
-			break;
-		}
 	}
 
 	static LevelState GetLevelState() {

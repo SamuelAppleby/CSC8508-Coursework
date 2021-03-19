@@ -12,8 +12,6 @@ LevelCreator::LevelCreator()
 {
 	player = nullptr;
 	GameManager::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
-	renderer = new GameTechRenderer(*GameManager::GetWorld());
-	Debug::SetRenderer(renderer);
 	GameManager::LoadAssets();
 }
 
@@ -29,6 +27,7 @@ void LevelCreator::Update(float dt)
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	UpdateLevel(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
+	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
@@ -44,23 +43,16 @@ void LevelCreator::UpdateLevel(float dt)
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
 	{
-		if (GameManager::GetLevelState() != LevelState::DEBUG)
-		{
-			currentLevel = GameManager::GetLevelState();
-			Window::GetWindow()->ShowOSPointer(true);
-			Window::GetWindow()->LockMouseToWindow(false);
-			GameManager::SetLevelState(LevelState::DEBUG);
-		}
-		else
-		{
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-			GameManager::SetLevelState(currentLevel);
-		}
+		if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG) 		
+			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);
+		else 
+			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
+		Window::GetWindow()->ShowOSPointer(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
+		Window::GetWindow()->LockMouseToWindow(GameManager::GetRenderer()->GetUIState() != UIState::DEBUG);
 	}
 
 	/* Debug mode selection */
-	if (GameManager::GetLevelState() == LevelState::DEBUG)
+	if (GameManager::GetRenderer()->GetUIState() == UIState::DEBUG)
 	{
 		UpdateKeys();
 		SelectObject();
@@ -101,7 +93,8 @@ void LevelCreator::UpdateLevel(float dt)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
 	}
 
-	else if (GameManager::GetLevelState() != LevelState::DEBUG || GameManager::GetCameraState() == CameraState::GLOBAL1 || GameManager::GetCameraState() == CameraState::GLOBAL2)
+	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
+		GameManager::GetCameraState() == CameraState::GLOBAL1 || GameManager::GetCameraState() == CameraState::GLOBAL2)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	if (GameManager::GetLockedObject())
@@ -146,8 +139,6 @@ void LevelCreator::InitFloors(LevelState state)
 {
 	switch (state)
 	{
-	case LevelState::MENU:
-		break;
 	case LevelState::LEVEL1:
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
 		break;
@@ -400,8 +391,6 @@ void LevelCreator::InitGameExamples(LevelState state)
 {
 	switch (state)
 	{
-	case LevelState::MENU:
-		break;
 	case LevelState::LEVEL1:
 		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
 		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);

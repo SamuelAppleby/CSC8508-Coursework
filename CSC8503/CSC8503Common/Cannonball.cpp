@@ -11,17 +11,12 @@ void Cannonball::Disable()
 }
 void Cannonball::ResetBall(const PxVec3& newPos, const PxVec3& force)
 {
-
 	isActive = true;
 	timeLeft = 10.f;
 	PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
 	actor->setLinearVelocity(PxVec3(0, 0, 0));
 	actor->setAngularVelocity(PxVec3(0, 0, 0));
-	//actor->getGlobalPose().p =  newPos;
 	actor->setGlobalPose(PxTransform(newPos));
-	//transform.(PxTransform(newPos));
-	//PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));	//PxVec3 force1 = PxVec3(0, 0, 0);
-	//PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
 	actor->addForce(force, PxForceMode::eIMPULSE);
 }
 

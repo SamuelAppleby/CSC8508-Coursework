@@ -11,8 +11,13 @@ class AudioManager
 public:
 	AudioManager();
 	void PlayAudio(std::string dir, bool loop = false);
+	void UpdateAudio(float dt);
 	void StopSound();
+	static int& GetVolume() {
+		return volume;
+	}
 private:
 	ISoundEngine* engine;
+	static int volume;
 };
 

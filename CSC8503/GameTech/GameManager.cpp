@@ -37,7 +37,7 @@ CameraState GameManager::camState = CameraState::FREE;
 GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
 
-LevelState GameManager::levelState = LevelState::MENU;
+LevelState GameManager::levelState = LevelState::LEVEL1;
 
 void GameManager::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a)
 {
@@ -87,13 +87,11 @@ void GameManager::LoadAssets()
 
 void GameManager::ResetMenu()
 {
-	levelState = LevelState::MENU;
+	levelState = LevelState::LEVEL1;
 	selectionObject = nullptr;
 	lockedObject = nullptr;
 	renderer->SetSelectionObject(nullptr);
 	renderer->SetLockedObject(nullptr);
-	window->ShowOSPointer(false);
-	window->LockMouseToWindow(true);
 }
 
 GameManager::~GameManager()
