@@ -8,12 +8,7 @@ int main() {
 	if (!w->HasInitialised()) {
 		return -1;
 	}
-
 	NavMeshRenderer* renderer = new NavMeshRenderer();
-
-	w->LockMouseToWindow(true);
-	w->ShowOSPointer(false);
-
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float time = w->GetTimer()->GetTimeDeltaSeconds();
 		renderer->Update(time);

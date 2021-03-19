@@ -21,8 +21,6 @@ int main(int argc, char** argv)
 		return -1;
 
 	srand(time(0));
-	GameManager::GetWindow()->ShowOSPointer(false);
-	GameManager::GetWindow()->LockMouseToWindow(true);
 	GameManager::GetWindow()->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	GamePushdownAutomata(GameManager::GetWindow());
 	Window::DestroyGameWindow();		// After we have exited the automata (we've quit) destroy the window

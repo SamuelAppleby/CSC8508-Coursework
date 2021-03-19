@@ -10,43 +10,51 @@
 #include "PhysXObject.h"
 
 using std::vector;
-namespace NCL {
-	namespace CSC8503 {
-		class GameObject {
+namespace NCL
+{
+	namespace CSC8503
+	{
+		class GameObject
+		{
 		public:
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt) {
-				transform.SetOrientation(physicsObject->GetPXActor()->getGlobalPose().q);
-				transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
-			}
+			virtual void Update(float dt);
+			
 
-			void SetName(string val) {
+			void SetName(string val)
+			{
 				name = val;
 			}
 
-			Transform& GetTransform() {
+			Transform& GetTransform()
+			{
 				return transform;
 			}
 
-			RenderObject* GetRenderObject() const {
+			RenderObject* GetRenderObject() const
+			{
 				return renderObject;
 			}
 
-			PhysXObject* GetPhysicsObject() const {
+			PhysXObject* GetPhysicsObject() const
+			{
 				return physicsObject;
 			}
 
-			virtual void SetRenderObject(RenderObject* newObject) {
+			virtual void SetRenderObject(RenderObject* newObject)
+			{
 				renderObject = newObject;
 			}
 
-			virtual void SetPhysicsObject(PhysXObject* newObject) {
+			virtual void SetPhysicsObject(PhysXObject* newObject)
+			{
 				physicsObject = newObject;
 			}
 
-			const string& GetName() const {
+			const string& GetName() const
+			{
 				return name;
 			}
 
@@ -54,65 +62,80 @@ namespace NCL {
 
 			virtual void OnCollisionEnd(GameObject* otherObject);
 
-			void SetWorldID(int newID) {
+			void SetWorldID(int newID)
+			{
 				worldID = newID;
 			}
 
-			int GetWorldID() const {
+			int GetWorldID() const
+			{
 				return worldID;
 			}
 
-			int GetSelected() const {
+			int GetSelected() const
+			{
 				return selectedObject;
 			}
 
-			void SetSelected(bool val) {
+			void SetSelected(bool val)
+			{
 				selectedObject = val;
 			}
 
-			void IncreaseTimeInSet(float dt) {
+			void IncreaseTimeInSet(float dt)
+			{
 				timeInSet += dt;
 			}
 
-			void SetTimeInSet(float val) {
+			void SetTimeInSet(float val)
+			{
 				timeInSet = val;
 			}
 
-			float GetTimeInSet() const {
+			float GetTimeInSet() const
+			{
 				return timeInSet;
 			}
 
-			void SetPowerUpTimer(float val) {
+			void SetPowerUpTimer(float val)
+			{
 				powerUpTimer = val;
 			}
 
-			float GetPowerUpTimer() const {
+			float GetPowerUpTimer() const
+			{
 				return powerUpTimer;
 			}
 
-			float GetTimeAlive() const {
+			float GetTimeAlive() const
+			{
 				return timeAlive;
 			}
 
-			void StepTimeAlive(float dt) {
-				timeAlive += dt;
-			}
-
-			void SetGrounded(bool val) {
+			void SetGrounded(bool val)
+			{
 				isGrounded = val;
 			}
 
-			bool IsGrounded() const {
+			bool IsGrounded() const
+			{
 				return isGrounded;
 			}
 
-			bool IsColliding() const {
+			bool IsColliding() const
+			{
 				return isColliding;
 			}
 
-			virtual void setDestroy(bool newDestroy) {
+			virtual void setDestroy(bool newDestroy)
+			{
 				destroy = newDestroy;
 			}
+
+
+			void SetPosition(const PxVec3& worldPos);
+			void SetOrientation(const PxQuat& newOr);
+			void SetScale(const PxVec3& newScale);
 
 		protected:
 			Transform transform;

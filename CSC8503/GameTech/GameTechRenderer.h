@@ -9,20 +9,49 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../CSC8503Common/GameWorld.h"
-#include "GameManager.h"
 #include "../../Common/Imgui/imgui_impl_opengl3.h"
 #include "../../Common/Imgui/imgui_impl_win32.h"
+#include "../CSC8503Common/PxPhysicsSystem.h"
+#include "../../Common/Imgui/imgui_internal.h"
+#include "../../Common/AudioManager.h"
+#include <sstream>
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503 {
 		class RenderObject;
+		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, HOSTLEVEL1, JOINLEVEL1,
+			HOSTLEVEL2, JOINLEVEL2, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
 
 		class GameTechRenderer : public OGLRenderer	{
 		public:
-			GameTechRenderer(GameWorld& world);
+			GameTechRenderer(GameWorld& world, PxPhysicsSystem* physics);
 			~GameTechRenderer();
+			void InitGUI(HWND handle);
+			bool TestValidHost();
+			void SetUIState(UIState val) {
+				levelState = val;
+			}
+			UIState GetUIState() {
+				return levelState;
+			}
+			void SetSelectionObject(GameObject* val) {
+				selectionObject = val;
+			}
+			void SetLockedObject(GameObject* val) {
+				lockedObject = val;
+			}
+			void SetCamState(CameraState val) {
+				camState = val;
+			}
 
+			string GetIP() const {
+				return ipString;
+			}
+
+			string GetPort() const {
+				return portString;
+			}
 		protected:
 			void RenderFrame()	override;
 
@@ -62,6 +91,25 @@ namespace NCL {
 
 			ImFont* textFont;
 			ImFont* titleFont;
+
+			bool p_open;
+			ImGuiWindowFlags window_flags;
+
+			UIState levelState;
+			GameObject* lockedObject;
+			GameObject* selectionObject;
+			CameraState camState;
+			PxPhysicsSystem* pXPhysics;
+
+			int selectedLevel = 0;
+			bool readyToJoin = false;
+
+			string ipString = "Enter IP";
+			string portString = "Enter Port";
+
+			bool enterIP = false;
+			bool enterPort = false;
+
 		};
 	}
 }

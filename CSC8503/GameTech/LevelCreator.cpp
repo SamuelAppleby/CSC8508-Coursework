@@ -12,14 +12,7 @@ LevelCreator::LevelCreator()
 {
 	player = nullptr;
 	GameManager::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
-	renderer = new GameTechRenderer(*GameManager::GetWorld());
-	Debug::SetRenderer(renderer);
-	GameManager::CreateGraphics();
-}
-
-LevelCreator::~LevelCreator()
-{
-	delete renderer;
+	GameManager::LoadAssets();
 }
 
 void LevelCreator::ResetWorld()
@@ -34,8 +27,9 @@ void LevelCreator::Update(float dt)
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	UpdateLevel(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
-	renderer->Update(dt);
-	renderer->Render();
+	GameManager::GetAudioManager()->UpdateAudio(dt);
+	GameManager::GetRenderer()->Update(dt);
+	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
 }
 
@@ -47,25 +41,18 @@ void LevelCreator::UpdateLevel(float dt)
 	updateCannonBalls();
 
 	/* Enter debug mode? */
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q))
+	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::TAB) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::INSERT))
 	{
-		if (GameManager::GetLevelState() != LevelState::DEBUG)
-		{
-			currentLevel = GameManager::GetLevelState();
-			Window::GetWindow()->ShowOSPointer(true);
-			Window::GetWindow()->LockMouseToWindow(false);
-			GameManager::SetLevelState(LevelState::DEBUG);
-		}
-		else
-		{
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-			GameManager::SetLevelState(currentLevel);
-		}
+		if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG) 		
+			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);
+		else 
+			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
+		Window::GetWindow()->ShowOSPointer(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
+		Window::GetWindow()->LockMouseToWindow(GameManager::GetRenderer()->GetUIState() != UIState::DEBUG);
 	}
 
 	/* Debug mode selection */
-	if (GameManager::GetLevelState() == LevelState::DEBUG)
+	if (GameManager::GetRenderer()->GetUIState() == UIState::DEBUG)
 	{
 		UpdateKeys();
 		SelectObject();
@@ -79,17 +66,17 @@ void LevelCreator::UpdateLevel(float dt)
 		{
 		case CameraState::FREE:
 			if (GameManager::GetLevelState() == LevelState::LEVEL1)
-				GameManager::SetCamMode(CameraState::GLOBAL1);
+				GameManager::SetCamState(CameraState::GLOBAL1);
 			else
-				GameManager::SetCamMode(CameraState::GLOBAL2);
+				GameManager::SetCamState(CameraState::GLOBAL2);
 			break;
 		case CameraState::GLOBAL1:
 			InitCamera();
-			GameManager::SetCamMode(CameraState::FREE);
+			GameManager::SetCamState(CameraState::FREE);
 			break;
 		case CameraState::GLOBAL2:
 			InitCamera();
-			GameManager::SetCamMode(CameraState::FREE);
+			GameManager::SetCamState(CameraState::FREE);
 			break;
 		}
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
@@ -106,12 +93,14 @@ void LevelCreator::UpdateLevel(float dt)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
 	}
 
-	else if (GameManager::GetLevelState() != LevelState::DEBUG || GameManager::GetCameraState() == CameraState::GLOBAL1 || GameManager::GetCameraState() == CameraState::GLOBAL2)
+	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
+		GameManager::GetCameraState() == CameraState::GLOBAL1 || GameManager::GetCameraState() == CameraState::GLOBAL2)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	if (GameManager::GetLockedObject())
 		LockedObjectMovement(dt);
-	else if (GameManager::GetSelectionObject()) {
+	else if (GameManager::GetSelectionObject())
+	{
 		DebugObjectMovement();
 	}
 }
@@ -132,7 +121,7 @@ void LevelCreator::InitCamera()
 	GameManager::GetWorld()->GetMainCamera()->SetYaw(0);
 	GameManager::GetWorld()->GetMainCamera()->SetPitch(0);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
-	GameManager::SetCamMode(CameraState::FREE);
+	GameManager::SetCamState(CameraState::FREE);
 }
 
 /* Initialise all the elements contained within the world */
@@ -150,8 +139,6 @@ void LevelCreator::InitFloors(LevelState state)
 {
 	switch (state)
 	{
-	case LevelState::MENU:
-		break;
 	case LevelState::LEVEL1:
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
 		break;
@@ -404,8 +391,6 @@ void LevelCreator::InitGameExamples(LevelState state)
 {
 	switch (state)
 	{
-	case LevelState::MENU:
-		break;
 	case LevelState::LEVEL1:
 		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
 		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
@@ -434,32 +419,59 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
 
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 200));
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 2));
 
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 200));
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, -98, -900)), PxVec3(20, 20, 198), PxVec3(0, 0, 1));
 
 		//cannons
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -850)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -900)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -80, -950)), PxVec3(7000000, 8500, 0), 10, 10);
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -850)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -900)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -950)), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
 
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -825)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -875)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -925)), PxVec3(7000000, 8500, 0), 10, 10);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -80, -975)), PxVec3(7000000, 8500, 0), 10, 10);
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -825)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -875)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975)), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
 
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -78, -1700)), PxVec3(190, 20, 20), PxVec3(0, 1, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351)), PxVec3(1, 1, 70000000), 30, 15);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -78, -1705)), PxVec3(190, 20, 20), PxVec3(0, 1, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0,25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351)), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+
+
+		for (int i = 0; i < 30; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
+		}
+
+		/*
+		for (int i = 0; i < 5; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
+		}
+
+		for (int i = 0; i < 7; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
+		}
+
+		for (int i = 0; i < 5; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
+		}
+		*/
+		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
+
+		//GameManager::AddPxCannonBallToWorld(t);
+
 		break;
 	}
 }
@@ -476,7 +488,8 @@ bool LevelCreator::SelectObject()
 
 		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
 		{
-			if (GameManager::GetSelectionObject()) {
+			if (GameManager::GetSelectionObject())
+			{
 				GameManager::GetSelectionObject()->SetSelected(false);
 				if (GameManager::GetSelectionObject()->GetRenderObject())
 					GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
@@ -495,7 +508,8 @@ bool LevelCreator::SelectObject()
 
 	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::RIGHT) && !GameManager::GetLockedObject())
 	{
-		if (GameManager::GetSelectionObject()) {
+		if (GameManager::GetSelectionObject())
+		{
 			GameManager::GetSelectionObject()->SetSelected(false);
 			if (GameManager::GetSelectionObject()->GetRenderObject())
 				GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
@@ -510,14 +524,14 @@ bool LevelCreator::SelectObject()
 		{
 			if (GameManager::GetLockedObject() == GameManager::GetSelectionObject())
 			{
-				GameManager::SetCamMode(CameraState::FREE);
+				GameManager::SetCamState(CameraState::FREE);
 				GameManager::SetLockedObject(nullptr);
 				Window::GetWindow()->ShowOSPointer(true);
 				Window::GetWindow()->LockMouseToWindow(false);
 			}
 			else
 			{
-				GameManager::SetCamMode(CameraState::THIRDPERSON);
+				GameManager::SetCamState(CameraState::THIRDPERSON);
 				GameManager::SetLockedObject(GameManager::GetSelectionObject());
 				Window::GetWindow()->ShowOSPointer(false);
 				Window::GetWindow()->LockMouseToWindow(true);
@@ -591,10 +605,10 @@ void LevelCreator::LockedObjectMovement(float dt)
 		switch (GameManager::GetCameraState())
 		{
 		case CameraState::THIRDPERSON:
-			GameManager::SetCamMode(CameraState::TOPDOWN);
+			GameManager::SetCamState(CameraState::TOPDOWN);
 			break;
 		case CameraState::TOPDOWN:
-			GameManager::SetCamMode(CameraState::THIRDPERSON);
+			GameManager::SetCamState(CameraState::THIRDPERSON);
 			break;
 		}
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
@@ -614,7 +628,7 @@ void LevelCreator::updateCannons(float dt)
 
 void LevelCreator::updateCannonBalls()
 {
-	for (int i = 0; i < cannons.size(); ++i)
+	/*for (int i = 0; i < cannons.size(); ++i)
 	{
 		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
 		{
@@ -627,12 +641,12 @@ void LevelCreator::updateCannonBalls()
 				cannons[i]->removeShot(cannons[i]->getShots()[j]);
 			}
 		}
-	}
+	}*/
 }
 
 void LevelCreator::clearCannons()
 {
-	for (int i = 0; i < cannons.size(); ++i)
+	/*for (int i = 0; i < cannons.size(); ++i)
 	{
 		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
 		{
@@ -653,5 +667,5 @@ void LevelCreator::clearCannons()
 		}
 	}
 
-	cannons.clear();
+	cannons.clear();*/
 }

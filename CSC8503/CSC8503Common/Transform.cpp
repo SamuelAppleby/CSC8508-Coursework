@@ -21,20 +21,20 @@ void Transform::UpdateMatrix()
 	matrix = Matrix4::Translation(Vector3(pxPos)) * Matrix4(Quaternion(pxOrientation)) * Matrix4::Scale(Vector3(pxScale));
 }
 
-void Transform::SetPosition(const PxVec3& worldPos)
-{
-	pxPos = worldPos;
-	UpdateMatrix();
-}
-
 void Transform::SetScale(const PxVec3& worldScale)
 {
 	pxScale = worldScale;
 	UpdateMatrix();
 }
 
-void Transform::SetOrientation(const PxQuat& worldOrientation)
+void Transform::SetPosition(const PxVec3& worldPos)
 {
-	pxOrientation = worldOrientation;
-	UpdateMatrix();
+	pxPos = worldPos;
+	//UpdateMatrix();
+}
+
+void Transform::SetOrientation(const PxQuat& newOr)
+{
+	pxOrientation = newOr;
+	//UpdateMatrix();
 }
