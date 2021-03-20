@@ -24,6 +24,7 @@ namespace NCL
 
 			void Update(float dt);
 			void UpdateLevel(float dt);
+			void UpdatePlayer(float dt);
 
 			void InitWorld(LevelState state);
 			void InitPlayer(const PxTransform& t, const PxReal scale);

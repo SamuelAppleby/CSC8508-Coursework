@@ -209,8 +209,11 @@ void GameTechRenderer::RenderUI()
 			selectedLevel = 2;
 			levelState = UIState::MODESELECT;
 		}
+		if (ImGui::Button("Level 3")) {
+			selectedLevel = 3;
+			levelState = UIState::MODESELECT;
+		}
 		if (ImGui::Button("Options")) {
-			selectedLevel = 2;
 			levelState = UIState::OPTIONS;
 		}
 		if (ImGui::Button("Quit")) {
@@ -240,7 +243,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
 		ImGui::SetWindowFontScale(0.5);
-		ImGui::TextWrapped("(Debug Mode Activated with TAB + INSERT)");
+		ImGui::TextWrapped("(Debug Mode Activated with C + H)");
 		if (ImGui::Button("Back")) {
 			levelState = UIState::PAUSED;
 		}
@@ -253,7 +256,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Play Mode", &p_open, window_flags);
 		if (ImGui::Button("Single Player")) {
-			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : UIState::SOLOLEVEL2;
+			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
 		}
 		if (ImGui::Button("Multiplayer")) {
 			levelState = UIState::MULTIPLAYERMENU;

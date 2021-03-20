@@ -100,9 +100,6 @@
     <ClInclude Include="KillPlane.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="RotatingCube.h">
-      <Filter>Game Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Cannonball.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
@@ -157,9 +154,6 @@
       <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Cannonball.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="RotatingCube.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="KillPlane.cpp">

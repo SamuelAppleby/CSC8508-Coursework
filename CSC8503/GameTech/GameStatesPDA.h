@@ -103,11 +103,16 @@ public:
 			break;
 		case UIState::SOLOLEVEL2:
 			*newState = new Level();
+			levelCreator->InitWorld(LevelState::LEVEL2);
+			GameManager::SetLevelState(LevelState::LEVEL2);
+			return PushdownResult::Push;
+			break;
+		case UIState::SOLOLEVEL3:
+			*newState = new Level();
 			levelCreator->InitWorld(LevelState::LEVEL3);
 			GameManager::SetLevelState(LevelState::LEVEL3);
 			return PushdownResult::Push;
 			break;
-
 		case UIState::HOSTLEVEL1:
 			/* Code for hosting level 1 */
 			break;
@@ -120,6 +125,14 @@ public:
 			/* Code for hosting level 2 */
 			break;
 		case UIState::JOINLEVEL2:
+			/* Code for joining a hosted level 2 */
+			IPAddress = GameManager::GetRenderer()->GetIP();
+			portNo = GameManager::GetRenderer()->GetPort();
+			break;
+		case UIState::HOSTLEVEL3:
+			/* Code for hosting level 2 */
+			break;
+		case UIState::JOINLEVEL3:
 			/* Code for joining a hosted level 2 */
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
