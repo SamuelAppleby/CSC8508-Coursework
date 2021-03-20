@@ -1,37 +1,38 @@
 #include "GameClient.h"
 #include <iostream>
-#include <string>
 
 using namespace NCL;
 using namespace CSC8503;
 
-GameClient::GameClient()	{
+GameClient::GameClient() {
 	netHandle = enet_host_create(nullptr, 1, 1, 0, 0);
 }
 
-GameClient::~GameClient()	{
+GameClient::~GameClient() {
 	//threadAlive = false;
 	//updateThread.join();
 	enet_host_destroy(netHandle);
 }
 
-bool GameClient::Connect(uint8_t a, uint8_t b, uint8_t c, uint8_t d, int portNum) {
+bool GameClient::Connect(std::string ip, int portNum) {
 	ENetAddress address;
 	address.port = portNum;
 
-	address.host = (d << 24) | (c << 16) | (b << 8) | (a);
+	//address.host = (d << 24) | (c << 16) | (b << 8) | (a);
+
+	enet_address_set_host(&address, ip.c_str());
 
 	netPeer = enet_host_connect(netHandle, &address, 2, 0);
 
-	if (netPeer != nullptr) {
-		//threadAlive = true;
-		//updateThread = std::thread(&GameClient::ThreadedUpdate, this);
-	}
+	/*if (netPeer != nullptr) {
+		threadAlive = true;
+		updateThread = std::thread(&GameClient::ThreadedUpdate, this);
+	}*/
 
 	return netPeer != nullptr;
 }
 
-void GameClient::UpdateClient() {
+void GameClient::UpdateClient(float dt) {
 	if (netHandle == nullptr)
 	{
 		return;
@@ -44,15 +45,15 @@ void GameClient::UpdateClient() {
 			std::cout << "Client: Connected to server!" << std::endl;
 		}
 		else if (event.type == ENET_EVENT_TYPE_RECEIVE) {
-			std::cout << "Client: Packet recieved..." << std::endl;
+			//std::cout << "Client: Packet received..." << std::endl;
 			GamePacket* packet = (GamePacket*)event.packet->data;
-			ProcessPacket(packet);
+			ProcessPacket(dt, packet);
 		}
 		enet_packet_destroy(event.packet);
 	}
 }
 
-void GameClient::SendPacket(GamePacket&  payload) {
+void GameClient::SendPacket(GamePacket& payload) {
 	ENetPacket* dataPacket = enet_packet_create(&payload, payload.GetTotalSize(), 0);
 
 	int test = enet_peer_send(netPeer, 0, dataPacket);
@@ -60,6 +61,6 @@ void GameClient::SendPacket(GamePacket&  payload) {
 
 //void GameClient::ThreadedUpdate() {
 //	while (threadAlive) {
-//		UpdateClient();
+//		UpdateClient(0);
 //	}
 //}

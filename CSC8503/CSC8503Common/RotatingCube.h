@@ -26,7 +26,28 @@ namespace NCL {
 			void Update(float dt) {
 				body->setAngularVelocity(PxVec3((rotationAxes->x * 5) * dt, (rotationAxes->y *5) * dt, (rotationAxes->z * 5) * dt), PxForceMode::eFORCE);
 				//body->setKinematicTarget(PxTransform())
-			}			
+
+			}
+
+			
+			void OnCollisionBegin(GameObject* otherObject) {
+
+				if (otherObject->GetName() == "Player") {
+					otherObject->SetGrounded(true);
+				}
+
+
+			}
+
+			void OnCollisionEnd(GameObject* otherObject) {
+
+				if (otherObject->GetName() == "Player") {
+					otherObject->SetGrounded(false);
+				}
+
+
+			}
+			
 
 		protected:
 			const PxVec3* rotationAxes;

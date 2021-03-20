@@ -14,6 +14,7 @@ namespace NCL
 {
 	namespace CSC8503
 	{
+		class NetworkObject;
 		class GameObject
 		{
 		public:
@@ -43,6 +44,11 @@ namespace NCL
 				return physicsObject;
 			}
 
+			NetworkObject* GetNetworkObject() const
+			{
+				return networkObject;
+			}
+
 			virtual void SetRenderObject(RenderObject* newObject)
 			{
 				renderObject = newObject;
@@ -51,6 +57,11 @@ namespace NCL
 			virtual void SetPhysicsObject(PhysXObject* newObject)
 			{
 				physicsObject = newObject;
+			}
+
+			virtual void SetNetworkObject(NetworkObject* newObject)
+			{
+				networkObject = newObject;
 			}
 
 			const string& GetName() const
@@ -112,6 +123,16 @@ namespace NCL
 				return timeAlive;
 			}
 
+			void SetGrounded(bool val)
+			{
+				isGrounded = val;
+			}
+
+			bool IsGrounded() const
+			{
+				return isGrounded;
+			}
+
 			bool IsColliding() const
 			{
 				return isColliding;
@@ -122,14 +143,17 @@ namespace NCL
 				destroy = newDestroy;
 			}
 
+
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
+			void SetScale(const PxVec3& newScale);
 
 		protected:
 			Transform transform;
 
 			PhysXObject* physicsObject;
 			RenderObject* renderObject;
+			NetworkObject* networkObject;
 
 			int	worldID;
 			string	name;
@@ -137,8 +161,10 @@ namespace NCL
 			float timeInSet;
 			float timeAlive;
 			float powerUpTimer;
+			bool isGrounded;
 
 			bool isColliding;
+
 			//level2 stuff
 			bool destroy;
 		};

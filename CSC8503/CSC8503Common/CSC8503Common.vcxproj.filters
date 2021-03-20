@@ -26,6 +26,9 @@
     <Filter Include="Other">
       <UniqueIdentifier>{c3db9f5e-7a1c-4c2a-8563-13e0393a6bcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Networking">
+      <UniqueIdentifier>{57b80846-e17d-47ef-af40-262bbee8be18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -115,8 +118,20 @@
     <ClInclude Include="Obstacles.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerObject.h">
-      <Filter>Game Objects</Filter>
+    <ClInclude Include="NetworkBase.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkObject.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkState.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClient.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
+      <Filter>Networking</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +180,20 @@
     <ClCompile Include="KillPlane.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="NetworkBase.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkObject.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkState.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClient.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

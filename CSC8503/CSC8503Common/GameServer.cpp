@@ -5,17 +5,17 @@
 using namespace NCL;
 using namespace CSC8503;
 
-GameServer::GameServer(int onPort, int maxClients)	{
-	port		= onPort;
-	clientMax	= maxClients;
+GameServer::GameServer(int onPort, int maxClients) {
+	port = onPort;
+	clientMax = maxClients;
 	clientCount = 0;
-	netHandle	= nullptr;
+	//netHandle = nullptr;
 	//threadAlive = false;
 
 	Initialise();
 }
 
-GameServer::~GameServer()	{
+GameServer::~GameServer() {
 	Shutdown();
 }
 
@@ -59,14 +59,14 @@ bool GameServer::SendGlobalPacket(GamePacket& packet) {
 	return true;
 }
 
-void GameServer::UpdateServer() {
+void GameServer::UpdateServer(float dt) {
 	if (!netHandle) {
 		return;
 	}
 
 	ENetEvent event;
-	while (enet_host_service(netHandle, &event, 0) > 0)	{
-		int type	= event.type;
+	while (enet_host_service(netHandle, &event, 0) > 0) {
+		int type = event.type;
 		ENetPeer* p = event.peer;
 
 		int peer = p->incomingPeerID;
@@ -75,28 +75,53 @@ void GameServer::UpdateServer() {
 			std::cout << "Server: New client connected" << std::endl;
 			NewPlayerPacket player(peer);
 			SendGlobalPacket(player);
+			players.insert(std::pair<int, ENetPeer*>(peer, p));
+			clientCount++;
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
 			std::cout << "Server: A client has disconnected" << std::endl;
 			PlayerDisconnectPacket player(peer);
 			SendGlobalPacket(player);
+
+			std::map<int, ENetPeer*>::iterator it;
+			it = players.find(peer);
+
+			if (it != players.end()) {
+				players.erase(it);
+			}
+
+			clientCount--;
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
-			ProcessPacket(packet, peer);
+			ProcessPacket(dt, packet, peer);
 		}
 		enet_packet_destroy(event.packet);
 	}
 }
 
+bool GameServer::SendPacketToPeer(int peerID, GamePacket& packet) {
+	std::map<int, ENetPeer*>::iterator it;
+	it = players.find(peerID);
+
+	if (it != players.end()) {
+		ENetPacket* dataPacket = enet_packet_create(&packet, packet.GetTotalSize(), 0);
+		enet_peer_send(it->second, 0, dataPacket);
+
+		return true;
+	}
+
+	return false;
+}
+
 //void GameServer::ThreadedUpdate() {
 //	while (threadAlive) {
-//		UpdateServer();
+//		UpdateServer(0);
 //	}
 //}
 
 //Second networking tutorial stuff
 
-void GameServer::SetGameWorld(GameWorld &g) {
+void GameServer::SetGameWorld(GameWorld& g) {
 	gameWorld = &g;
 }
