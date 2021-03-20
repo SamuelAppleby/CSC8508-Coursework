@@ -552,7 +552,6 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 94.5, -775  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, 94.5, -775  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 94.5, -775  )*2), PxVec3(4, 6, 2));
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-23, 94.5, -775)*2), PxVec3(4, 6, 2)); gap in wall
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 94.5, -775  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 94.5, -775  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 94.5, -775   )*2), PxVec3(4, 6, 2));
@@ -601,7 +600,6 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 94.5, -875  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 94.5, -875  )*2), PxVec3(4, 6, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 94.5, -875  )*2), PxVec3(4, 6, 2));
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(43, 94.5, -875)*2), PxVec3(4, 6, 2)); gap in wall
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(48, 95.5, -875  )*2), PxVec3(4, 10, 2));//side wall blocking remaining gap
 		break;															  
 	}
@@ -620,7 +618,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 1, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
-		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
+		//InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	}
 }
@@ -737,12 +735,27 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//OBSTACLE 4
 		//Running through walls
 		//cubes	
+		
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F);
+
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 93, -825) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 95, -825) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 97, -825) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 93, -825) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 95, -825) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 97, -825) * 2), PxVec3(2, 2, 2), 1.0F);
+
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 93, -875) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 95, -875) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 97, -875) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 93, -875) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 95, -875) * 2), PxVec3(2, 2, 2), 1.0F);
+		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 97, -875) * 2), PxVec3(2, 2, 2), 1.0F);
 		break;
 	}
 }
