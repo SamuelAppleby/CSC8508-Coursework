@@ -147,7 +147,48 @@ void LevelCreator::InitFloors(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
+		//Josh's second level
+
+		//Floor 1
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0,0,0)), PxVec3(200, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 0, -175)), PxVec3(200, 1, 100));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 100, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 100, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 100, 25), PxVec3(200, 200, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 125, -175), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(12.5, 25, -175), PxVec3(175, 50, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 10, -200), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 10, -200), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 10, -225), PxVec3(200, 20, 1));
+
+		//Floor 2
+		GameManager::AddPxFloorToWorld(PxTransform(0, 200, 40), PxVec3(200, 1, 70));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 200, -165), PxVec3(200, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 300, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 300, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 325, 25), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 325, -175), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 210, 50), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 210, 50), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 210, 75), PxVec3(200, 20, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(-12.5, 225, 25), PxVec3(175, 50, 1));
+
+		//Floor 3
+		GameManager::AddPxFloorToWorld(PxTransform(0, 400, -100), PxVec3(200, 1, 250));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 500, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 500, -75), PxVec3(1, 200, 200));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 525, 25), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 525, -175), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 525, 25), PxVec3(200, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(12.5, 425, -175), PxVec3(175, 50, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(-100, 410, -200), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(100, 410, -200), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 410, -225), PxVec3(200, 20, 1));
+
+		//Floor 4
+		GameManager::AddPxFloorToWorld(PxTransform(62.5, 600, -75), PxVec3(75, 1, 200));
+
 		break;
 	case LevelState::LEVEL2:
 		//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -565,9 +606,13 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		/*
 		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
 		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
+		*/
+
+
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -586,9 +631,12 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+
+		/*
 		GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
 		GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
+		*/
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
