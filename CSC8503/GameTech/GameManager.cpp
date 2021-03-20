@@ -331,7 +331,8 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 	world->AddGameObject(cylinder);
 }
 
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity) {
+
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state) {
 	GameObject* floor = new GameObject("Floor");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
@@ -341,12 +342,24 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	pXPhysics->GetGScene()->addActor(*body);
 
 	floor->GetTransform().SetScale(halfSizes * 2);
-	if (!friction)
+	switch (state) {
+		case TextureState::FLOOR:
+			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+			break;
+		case TextureState::ICE:
+			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+			break;
+		case TextureState::INVISIBLE: 
+			break;
+		
+	}
+	/*if (!friction)
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
 	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));*/
 	world->AddGameObject(floor);
 }
+
 Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity)
 {
 	Cannonball* cannonBall = new Cannonball();

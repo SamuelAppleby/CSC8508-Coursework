@@ -21,6 +21,7 @@ using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3 };
+enum class TextureState { FLOOR, ICE, INVISIBLE};
 
 class GameManager {
 public:
@@ -35,7 +36,7 @@ public:
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR);
 	
 	static void AddBounceSticks(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
