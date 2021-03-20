@@ -601,7 +601,6 @@ void LevelCreator::InitFloors(LevelState state)
 /* Initialises all game objects, enemies etc */
 void LevelCreator::InitGameExamples(LevelState state)
 {
-
 	switch (state)
 	{
 	case LevelState::LEVEL1:

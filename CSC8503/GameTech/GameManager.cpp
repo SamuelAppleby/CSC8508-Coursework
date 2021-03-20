@@ -130,7 +130,7 @@ GameManager::~GameManager()
 	delete toonShader;
 }
 
-void GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity)
+GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity)
 {
 	GameObject* cube = new GameObject("Cube");
 
@@ -144,6 +144,8 @@ void GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes,
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
+
+	return cube;
 }
 
 void GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius, float density, float friction, float elasticity)
@@ -339,7 +341,7 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	return cube;
 }
 
-void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity)
+GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity)
 {
 	GameObject* cylinder = new GameObject("RotatingCylinder");
 
@@ -357,6 +359,8 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
 	world->AddGameObject(cylinder);
+
+	return cylinder;
 }
 
 

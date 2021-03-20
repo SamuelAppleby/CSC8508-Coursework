@@ -20,9 +20,10 @@ namespace NCL {
 			void Update(float dt) override;
 
 			NetworkPlayer* SpawnPlayer(int playerNum);
+			void AddLevelNetworkObject(GameObject* object);
 
-			void InitWorld(LevelState state) override;
-			//void InitGameObstacles(LevelState state) override;
+			void InitWorld(LevelState state);
+			void InitGameObstacles(LevelState state);
 
 			void ReceivePacket(float dt, int type, GamePacket* payload, int source) override;
 

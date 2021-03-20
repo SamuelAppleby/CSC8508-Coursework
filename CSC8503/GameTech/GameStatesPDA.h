@@ -142,25 +142,26 @@ public:
 			break;
 		case UIState::SOLOLEVEL1:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL1);
+			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL1);
 			GameManager::SetLevelState(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::SOLOLEVEL2:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL2);
+			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL2);
 			GameManager::SetLevelState(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
 		case UIState::SOLOLEVEL3:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL3);
+			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL3);
 			GameManager::SetLevelState(LevelState::LEVEL3);
 			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL1:
 			*newState = new MultiplayerLevel();
 			levelCreator->StartAsServer(LevelState::LEVEL1);
+			GameManager::SetLevelState(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL1:
@@ -168,11 +169,13 @@ public:
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
 			levelCreator->StartAsClient(LevelState::LEVEL1, IPAddress);
+			GameManager::SetLevelState(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL2:
 			*newState = new MultiplayerLevel();
 			levelCreator->StartAsServer(LevelState::LEVEL2);
+			GameManager::SetLevelState(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL2:
@@ -180,15 +183,22 @@ public:
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
 			levelCreator->StartAsClient(LevelState::LEVEL2, IPAddress);
+			GameManager::SetLevelState(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL3:
-			/* Code for hosting level 2 */
+			*newState = new MultiplayerLevel();
+			levelCreator->StartAsServer(LevelState::LEVEL3);
+			GameManager::SetLevelState(LevelState::LEVEL3);
+			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL3:
-			/* Code for joining a hosted level 2 */
+			*newState = new MultiplayerLevel();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
+			levelCreator->StartAsClient(LevelState::LEVEL3, IPAddress);
+			GameManager::SetLevelState(LevelState::LEVEL3);
+			return PushdownResult::Push;
 			break;
 		}
 		return PushdownResult::NoChange;
