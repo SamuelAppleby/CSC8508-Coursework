@@ -19,11 +19,18 @@ namespace NCL{
 			float GetRaycastTimer() const {
 				return raycastTimer;
 			}
+			void CollectCoin() {
+				coinsCollected++;
+			}
+			int GetCoinsCollected() const {
+				return coinsCollected;
+			}
 		protected:
 			float score;
 			float speed;
 			bool isGrounded;
 			float raycastTimer;
+			int coinsCollected;
 		};
 	}
 }

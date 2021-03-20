@@ -9,36 +9,25 @@ namespace NCL
 			public GameObject
 		{
 		public:
-			Cannonball()
-			{
+			Cannonball() {
 				name = "Cannonball";
 				isActive = false;
 				timeLeft = 10.f;
 				//Disable();
 			}
 
+			bool IsActive() const {
+				return isActive;
+			}
 
 			void Update(float dt) override;
 			void ResetBall(const PxVec3& newPos, const PxVec3& force);
 
-
-			void setDestroy(bool newDestroy)
-			{
-				destroy = newDestroy;
-			}
-
-			bool getDestroy()
-			{
-				return destroy;
-			}
-
-			bool isActive;
-
 		protected:
-
 			float timeLeft;
 			void Disable();
 			PxVec3 initialPos;
+			bool isActive;
 		};
 	}
 }

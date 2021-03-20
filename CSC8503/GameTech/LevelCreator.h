@@ -41,8 +41,6 @@ namespace NCL
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
 
-			PlayerObject* player;
-
 			//Level2 stuff here
 			void updateCannons(float dt);
 			void updateCannonBalls();

@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "../CSC8503Common/Coin.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -38,18 +39,19 @@ GameObject* GameManager::selectionObject = nullptr;
 
 LevelState GameManager::levelState = LevelState::LEVEL1;
 
+
+PlayerObject* GameManager::player = nullptr;
+
 void GameManager::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a)
 {
 	pXPhysics = p;
 	world = w;
-	renderer = new GameTechRenderer(*GameManager::GetWorld(), pXPhysics);
+	renderer = new GameTechRenderer(*GameManager::GetWorld(), *pXPhysics);
 	Debug::SetRenderer(renderer);
 	renderer->InitGUI(window->GetHandle());
 	audioManager = a;
 	obstacles = new Obstacles();
 }
-
-
 
 void GameManager::LoadAssets()
 {
@@ -203,16 +205,16 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
+void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 {
-	GameObject* p = new GameObject("Pickup");
+	Coin* p = new Coin();
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);;
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
 	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(radius, radius, radius));
+	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	world->AddGameObject(p);

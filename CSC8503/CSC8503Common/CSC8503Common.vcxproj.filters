@@ -115,6 +115,12 @@
     <ClInclude Include="PlayerObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Collectable.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -159,6 +165,8 @@
     <ClCompile Include="KillPlane.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

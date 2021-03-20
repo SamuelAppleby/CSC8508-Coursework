@@ -43,7 +43,7 @@ public:
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 
-	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
+	static void AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
 	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
@@ -54,10 +54,6 @@ public:
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
 
-	static GameWorld* GetWorld() {
-		return world;
-	}
-
 	static Obstacles* GetObstacles()
 	{
 		return obstacles;
@@ -66,21 +62,16 @@ public:
 		return pXPhysics;
 	}
 
+	static GameWorld* GetWorld() {
+		return world;
+	}
+
 	static GameTechRenderer* GetRenderer() {
 		return renderer;
 	}
 
 	static AudioManager* GetAudioManager() {
 		return audioManager;
-	}
-
-	static CameraState GetCameraState() {
-		return world->GetMainCamera()->GetState();
-	}
-
-	static void SetCamState(CameraState val) {
-		world->GetMainCamera()->SetState(val);
-		renderer->SetCamState(val);
 	}
 
 	static GameObject* GetLockedObject() {
@@ -115,6 +106,15 @@ public:
 
 	static Win32Code::Win32Window* GetWindow() {
 		return window;
+	}
+
+	static void SetPlayer(PlayerObject* val) {
+		player = val;
+		renderer->SetPlayer(player);
+	}
+
+	static PlayerObject* GetPlayer() {
+		return player;
 	}
 
 private:
@@ -155,5 +155,7 @@ private:
 	static GameObject* lockedObject;
 
 	static LevelState levelState;
+
+	static PlayerObject* player;
 };
 

@@ -153,6 +153,8 @@
     <ClInclude Include="BehaviourSequence.h" />
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="Cannonball.h" />
+    <ClInclude Include="Coin.h" />
+    <ClInclude Include="Collectable.h" />
     <ClInclude Include="CollisionDetection.h" />
     <ClInclude Include="KillPlane.h" />
     <ClInclude Include="NavigationGrid.h" />

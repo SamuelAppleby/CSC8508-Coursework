@@ -7,6 +7,7 @@ PlayerObject::PlayerObject() {
 	isGrounded = false;
 	speed = 500000.0f;
 	raycastTimer = .25f;
+	coinsCollected = 0;
 }
 
 void PlayerObject::Update(float dt) {

@@ -10,7 +10,6 @@ using namespace CSC8503;
 
 LevelCreator::LevelCreator()
 {
-	player = nullptr;
 	GameManager::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
 	GameManager::LoadAssets();
 }
@@ -36,7 +35,7 @@ void LevelCreator::Update(float dt)
 /* Logic for updating level 1 or level 2 */
 void LevelCreator::UpdateLevel(float dt)
 {
-	if (player) {
+	if (GameManager::GetPlayer()) {
 		UpdatePlayer(dt);
 	}
 
@@ -51,6 +50,7 @@ void LevelCreator::UpdateLevel(float dt)
 			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);
 		else 
 			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
+		GameManager::GetWorld()->SetDebugMode(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
 		Window::GetWindow()->ShowOSPointer(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
 		Window::GetWindow()->LockMouseToWindow(GameManager::GetRenderer()->GetUIState() != UIState::DEBUG);
 	}
@@ -60,30 +60,29 @@ void LevelCreator::UpdateLevel(float dt)
 	{
 		UpdateKeys();
 		SelectObject();
-		GameManager::GetWorld()->ShowFacing();
 	}
 
 	/* Change Camera */
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{
-		switch (GameManager::GetCameraState())
+		switch (GameManager::GetWorld()->GetMainCamera()->GetState())
 		{
 		case CameraState::FREE:
 			if (GameManager::GetLevelState() == LevelState::LEVEL1)
-				GameManager::SetCamState(CameraState::GLOBAL1);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::GLOBAL1);
 			else
-				GameManager::SetCamState(CameraState::GLOBAL2);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::GLOBAL2);
 			break;
 		case CameraState::GLOBAL1:
 			InitCamera();
-			GameManager::SetCamState(CameraState::FREE);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
 			break;
 		case CameraState::GLOBAL2:
 			InitCamera();
-			GameManager::SetCamState(CameraState::FREE);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
 			break;
 		}
-		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
+		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
@@ -98,7 +97,8 @@ void LevelCreator::UpdateLevel(float dt)
 	}
 
 	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
-		GameManager::GetCameraState() == CameraState::GLOBAL1 || GameManager::GetCameraState() == CameraState::GLOBAL2)
+		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 || 
+		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	if (GameManager::GetLockedObject())
@@ -110,20 +110,20 @@ void LevelCreator::UpdateLevel(float dt)
 }
 
 void LevelCreator::UpdatePlayer(float dt) {
-	if (player->GetRaycastTimer() <= 0.0f) {
-		PxVec3 pos = PhysxConversions::GetVector3(player->GetTransform().GetPosition()) + PxVec3(0, -6, 0);
+	if (GameManager::GetPlayer()->GetRaycastTimer() <= 0.0f) {
+		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition()) + PxVec3(0, -6, 0);
 		PxVec3 dir = PxVec3(0, -1, 0);
 		float distance = 4.0f;
 		PxRaycastBuffer hit;
 
 		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit)) {
 			GameObject* obj = GameManager::GetWorld()->FindObjectFromPhysicsBody(hit.block.actor);
-			player->SetIsGrounded(obj->GetName() == "Floor");
+			GameManager::GetPlayer()->SetIsGrounded(obj->GetName() == "Floor");
 		}
 		else {
-			player->SetIsGrounded(false);
+			GameManager::GetPlayer()->SetIsGrounded(false);
 		}
-		player->SetRaycastTimer(.25f);
+		GameManager::GetPlayer()->SetRaycastTimer(.25f);
 	}
 }
 
@@ -139,7 +139,7 @@ void LevelCreator::InitCamera()
 {
 	GameManager::GetWorld()->GetMainCamera()->SetNearPlane(0.5f);
 	GameManager::GetWorld()->GetMainCamera()->SetFarPlane(10000.0f);
-	if (!player) {
+	if (!GameManager::GetPlayer()) {
 		GameManager::GetWorld()->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
 		GameManager::GetWorld()->GetMainCamera()->SetYaw(0);
 		GameManager::GetWorld()->GetMainCamera()->SetPitch(0);
@@ -162,9 +162,9 @@ void LevelCreator::InitWorld(LevelState state)
 }
 
 void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
-	player = GameManager::AddPxPlayerToWorld(t, scale);
-	GameManager::SetLockedObject(player);
-	GameManager::SetCamState(CameraState::THIRDPERSON);
+	GameManager::SetPlayer(GameManager::AddPxPlayerToWorld(t, scale));
+	GameManager::SetLockedObject(GameManager::GetPlayer());
+	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 }
 
 /* Place all the levels solid floors */
@@ -610,15 +610,15 @@ void LevelCreator::InitGameExamples(LevelState state)
 {
 	switch (state) {
 	case LevelState::LEVEL1:
-		//InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
-		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:
 		InitPlayer(PxTransform(PxVec3(0, 1, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
-		//InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	}
 }
@@ -731,11 +731,9 @@ void LevelCreator::InitGameObstacles(LevelState state)
 			GameManager::AddBounceSticks(PxTransform(PxVec3(-40 + (i * 10), 104, -642)*2), 2, 2, 10.0F, 0.5F, 1.0F);
 		}
 		
-
 		//OBSTACLE 4
 		//Running through walls
-		//cubes	
-		
+		//cubes		
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F);
@@ -808,19 +806,18 @@ bool LevelCreator::SelectObject()
 		{
 			if (GameManager::GetLockedObject() == GameManager::GetSelectionObject())
 			{
-				GameManager::SetCamState(CameraState::FREE);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
 				GameManager::SetLockedObject(nullptr);
 				Window::GetWindow()->ShowOSPointer(true);
 				Window::GetWindow()->LockMouseToWindow(false);
 			}
 			else
 			{
-				GameManager::SetCamState(CameraState::THIRDPERSON);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 				GameManager::SetLockedObject(GameManager::GetSelectionObject());
 				Window::GetWindow()->ShowOSPointer(false);
 				Window::GetWindow()->LockMouseToWindow(true);
 			}
-			GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
 		}
 	}
 	return false;
@@ -878,16 +875,15 @@ void LevelCreator::LockedObjectMovement(float dt)
 
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{
-		switch (GameManager::GetCameraState())
+		switch (GameManager::GetWorld()->GetMainCamera()->GetState())
 		{
 		case CameraState::THIRDPERSON:
-			GameManager::SetCamState(CameraState::TOPDOWN);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::TOPDOWN);
 			break;
 		case CameraState::TOPDOWN:
-			GameManager::SetCamState(CameraState::THIRDPERSON);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 			break;
 		}
-		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetCameraState());
 	}
 }
 

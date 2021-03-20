@@ -4,12 +4,8 @@
  *                170348069
  *			Game Object Implementation		 */
 #include "GameObject.h"
-
+#include "Debug.h"
 using namespace NCL::CSC8503;
-
-
-
-
 GameObject::GameObject(string objectName) {
 	name = objectName;
 	worldID = -1;
@@ -20,6 +16,7 @@ GameObject::GameObject(string objectName) {
 	timeInSet = 0.0f;
 	powerUpTimer = 0.0f;
 	isColliding = false;
+	canDestroy = false;
 }
 
 GameObject::~GameObject()
@@ -35,8 +32,6 @@ void GameObject::Update(float dt) {
 	timeAlive += dt;
 }
 
-
-
 void GameObject::OnCollisionBegin(GameObject* otherObject) {
 	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
 	isColliding = true;
@@ -50,7 +45,6 @@ void GameObject::OnCollisionEnd(GameObject* otherObject) {
 
 void GameObject::SetPosition(const PxVec3& worldPos)
 {
-
 	PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
 	actor->setGlobalPose(PxTransform(worldPos));
 	transform.UpdateMatrix();
@@ -65,11 +59,4 @@ void GameObject::SetOrientation(const PxQuat& worldOrientation)
 	actor->setGlobalPose(PxTransform(transform.GetPosition(), worldOrientation));
 	transform.UpdateMatrix();
 }
-
-//void GameObject::SetScale(const PxVec3& newScale)
-//{
-//	PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
-//	//actor->getShapes()
-//}
-
 
