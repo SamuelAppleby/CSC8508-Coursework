@@ -22,11 +22,11 @@ namespace NCL
 
 			void ResetWorld();
 
-			void Update(float dt);
+			virtual void Update(float dt);
 			void UpdateLevel(float dt);
 
-			void InitWorld(LevelState state);
-			void InitPlayer(const PxTransform& t, const PxReal scale);
+			void virtual InitWorld(LevelState state);
+
 		protected:
 			LevelState currentLevel;
 			void InitCamera();
@@ -34,7 +34,7 @@ namespace NCL
 
 			void InitFloors(LevelState state);
 			void InitGameExamples(LevelState state);
-			void InitGameObstacles(LevelState state);
+			void virtual InitGameObstacles(LevelState state);
 
 			bool SelectObject();
 			void DebugObjectMovement();

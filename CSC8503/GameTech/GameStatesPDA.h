@@ -5,12 +5,12 @@
 #include "../CSC8503Common/StateTransition.h"
 #include "../CSC8503Common/State.h"
 #include "../../Common/Window.h"
-#include "LevelCreator.h"
+#include "NetworkedGame.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
-LevelCreator* levelCreator = nullptr;
+NetworkedGame* levelCreator = nullptr;
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
@@ -55,7 +55,7 @@ class Level : public PushdownState
 			return PushdownResult::Push;
 		}
 
-		levelCreator->Update(dt);
+		levelCreator->LevelCreator::Update(dt);
 		//if (tutorialGame->GetWinner() != 0)
 		//{
 		//	winner = tutorialGame->GetWinner();
@@ -84,6 +84,51 @@ class Level : public PushdownState
 	}
 };
 
+class MultiplayerLevel : public PushdownState
+{
+	PushdownResult OnUpdate(float dt, PushdownState** newState) override
+	{
+		if (GameManager::GetRenderer()->GetUIState() == UIState::MENU)
+		{
+			GameManager::ResetMenu();
+			return PushdownResult::Pop;
+		}
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
+		{
+			*newState = new Pause();
+			return PushdownResult::Push;
+		}
+
+		levelCreator->Update(dt);
+		//if (tutorialGame->GetWinner() != 0)
+		//{
+		//	winner = tutorialGame->GetWinner();
+		//	playerScore = tutorialGame->GetPlayerScore();
+		//	aiScore = tutorialGame->GetAIScore();
+
+		//	return PushdownResult::Pop; // back to main menu
+		//}
+		return PushdownResult::NoChange;
+	}
+
+	void OnAwake() override
+	{
+		if (GameManager::GetRenderer()->GetUIState() != UIState::MENU)
+		{
+			GameManager::GetWindow()->LockMouseToWindow(true);
+			GameManager::GetWindow()->ShowOSPointer(false);
+			GameManager::GetAudioManager()->StopSound();
+			if (GameManager::GetLevelState() == LevelState::LEVEL1)
+				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
+			else
+				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
+			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
+		}
+		//winner = 0;
+	}
+};
+
 class MainMenu : public PushdownState {
 public:
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override {
@@ -97,32 +142,39 @@ public:
 			break;
 		case UIState::SOLOLEVEL1:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL1);
+			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL1);
 			GameManager::SetLevelState(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::SOLOLEVEL2:
 			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL3);
-			GameManager::SetLevelState(LevelState::LEVEL3);
+			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL2);
+			GameManager::SetLevelState(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
-
 		case UIState::HOSTLEVEL1:
-			/* Code for hosting level 1 */
+			*newState = new MultiplayerLevel();
+			levelCreator->StartAsServer(LevelState::LEVEL1);
+			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL1:
-			/* Code for joining a hosted level 1 */
+			*newState = new MultiplayerLevel();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
+			levelCreator->StartAsClient(LevelState::LEVEL1, IPAddress);
+			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL2:
-			/* Code for hosting level 2 */
+			*newState = new MultiplayerLevel();
+			levelCreator->StartAsServer(LevelState::LEVEL2);
+			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL2:
-			/* Code for joining a hosted level 2 */
+			*newState = new MultiplayerLevel();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
+			levelCreator->StartAsClient(LevelState::LEVEL2, IPAddress);
+			return PushdownResult::Push;
 			break;
 		}
 		return PushdownResult::NoChange;
@@ -134,7 +186,7 @@ private:
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetWindow()->LockMouseToWindow(false);
 		if (levelCreator == nullptr) {
-			levelCreator = new LevelCreator();
+			levelCreator = new NetworkedGame();
 		}
 		else {
 			levelCreator->ResetWorld();

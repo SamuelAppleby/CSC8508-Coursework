@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "NetworkedGame.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -31,6 +32,8 @@ OGLTexture* GameManager::dogeTex = nullptr;
 
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
+
+CameraState GameManager::camState = CameraState::FREE;
 
 GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
@@ -171,18 +174,22 @@ void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity) {
-	GameObject* capsule = new GameObject("Capsule");
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity)
+{
+	GameObject* floor = new GameObject("Floor");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
-	capsule->SetPhysicsObject(new PhysXObject(body, newMat));
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	floor->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
-	world->AddGameObject(capsule);
+	floor->GetTransform().SetScale(halfSizes * 2);
+	if (!friction)
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+	else
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+	world->AddGameObject(floor);
 }
 
 void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
@@ -200,9 +207,9 @@ void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	world->AddGameObject(p);
 }
 
-PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
+GameObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
 {
-	PlayerObject* p = new PlayerObject();
+	GameObject* p = new GameObject("Player");
 
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
@@ -217,6 +224,28 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
+
+	return p;
+}
+
+NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum)
+{
+	NetworkPlayer* p = new NetworkPlayer(game, playerNum);
+
+	float meshSize = MESH_SIZE * scale;
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	body->setMaxLinearVelocity(50);
+	pXPhysics->GetGScene()->addActor(*body);
+
+	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
+	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
+	world->AddGameObject(p);
+
 	return p;
 }
 
@@ -273,7 +302,7 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	world->AddGameObject(cube);
 }
 
-void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity)
+GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity)
 {
 	GameObject* cube = new GameObject("RotatingCube");
 
@@ -291,23 +320,10 @@ void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 ha
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
-}
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity) {
-	GameObject* floor = new GameObject("Floor");
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
-	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
-	floor->SetPhysicsObject(new PhysXObject(body, newMat));
-	pXPhysics->GetGScene()->addActor(*body);
-
-	floor->GetTransform().SetScale(halfSizes * 2);
-	if (!friction)
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
-	world->AddGameObject(floor);
+	return cube;
 }
+
 Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity)
 {
 	Cannonball* cannonBall = new Cannonball();
