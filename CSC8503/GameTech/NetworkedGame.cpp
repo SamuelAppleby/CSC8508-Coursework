@@ -313,36 +313,38 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			it->second = realPacket->lastID;
 		}
 
-		Vector3 rightAxis = realPacket->rightAxis;
+		if (!serverPlayers.empty()) {
+			Vector3 rightAxis = realPacket->rightAxis;
 
-		Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-		fwdAxis.y = 0.0f;
-		fwdAxis.Normalise();
-		float force = 1000000.0f;
+			Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
+			fwdAxis.y = 0.0f;
+			fwdAxis.Normalise();
+			float force = 1000000.0f;
 
-		NetworkPlayer* player = serverPlayers.at(source);
+			NetworkPlayer* player = serverPlayers.at(source);
 
-		player->SetPlayerName(realPacket->playerName);
+			player->SetPlayerName(realPacket->playerName);
 
-		if (player->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
-		{
-			PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
-			body->setLinearDamping(0.4f);
+			if (player->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+			{
+				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
+				body->setLinearDamping(0.4f);
 
-			if (realPacket->buttonstates[0] == 1)
-				body->addForce(PhysxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-			if (realPacket->buttonstates[1] == 1)
-				body->addForce(PhysxConversions::GetVector3(-rightAxis) * force * dt, PxForceMode::eIMPULSE);
-			if (realPacket->buttonstates[2] == 1)
-				body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-			if (realPacket->buttonstates[3] == 1)
-				body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-			if (realPacket->buttonstates[4] == 1 && serverPlayers.at(source)->IsGrounded()) {
-				body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[0] == 1)
+					body->addForce(PhysxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[1] == 1)
+					body->addForce(PhysxConversions::GetVector3(-rightAxis) * force * dt, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[2] == 1)
+					body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[3] == 1)
+					body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[4] == 1 && serverPlayers.at(source)->IsGrounded()) {
+					body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
+				}
+
+				body->setAngularVelocity(PxVec3(0));
+				body->setGlobalPose(PxTransform(body->getGlobalPose().p, PxQuat(Maths::DegreesToRadians(realPacket->cameraYaw), { 0, 1, 0 })));
 			}
-
-			body->setAngularVelocity(PxVec3(0));
-			body->setGlobalPose(PxTransform(body->getGlobalPose().p, PxQuat(Maths::DegreesToRadians(realPacket->cameraYaw), { 0, 1, 0 })));
 		}
 	}
 	//CLIENT version of the game will receive these from the servers
