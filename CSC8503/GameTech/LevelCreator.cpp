@@ -14,10 +14,13 @@ LevelCreator::LevelCreator()
 	GameManager::LoadAssets();
 }
 
+LevelCreator::~LevelCreator() {
+
+}
+
 void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
-	//clearCannons();
 	//WorldCreator::GetPhysicsSystem()->ResetPhysics();
 }
 
@@ -38,10 +41,6 @@ void LevelCreator::UpdateLevel(float dt)
 	if (GameManager::GetPlayer()) {
 		UpdatePlayer(dt);
 	}
-
-	//level2 stuff
-	updateCannons(dt);
-	updateCannonBalls();
 
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
@@ -153,12 +152,10 @@ void LevelCreator::InitCamera()
 /* Initialise all the elements contained within the world */
 void LevelCreator::InitWorld(LevelState state)
 {
-
-	GameManager::SetLevelState(state);
+	InitCamera();
 	InitFloors(state);
 	InitGameExamples(state);
 	InitGameObstacles(state);
-	InitCamera();
 }
 
 void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
@@ -171,11 +168,7 @@ void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
 void LevelCreator::InitFloors(LevelState state)
 {
 	Vector3 respawnSize;
-	PxVec3 zone4Position;
-	PxVec3 zone3Position;
-	PxVec3 zone2Position;
-	PxVec3 zone1Position;
-
+	PxVec3 zone1Position, zone2Position, zone3Position, zone4Position;
 	switch (state)
 	{
 	case LevelState::LEVEL1:
@@ -608,14 +601,17 @@ void LevelCreator::InitFloors(LevelState state)
 /* Initialises all game objects, enemies etc */
 void LevelCreator::InitGameExamples(LevelState state)
 {
-	switch (state) {
+
+	switch (state)
+	{
 	case LevelState::LEVEL1:
 		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
 		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:
-		InitPlayer(PxTransform(PxVec3(0, 1, 0)), 1);
+		//player added to check this is all a reasonable scale
+		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
 		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
@@ -857,10 +853,12 @@ void LevelCreator::LockedObjectMovement(float dt)
 	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
+	Vector3 charForward = Quaternion(GameManager::GetLockedObject()->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 	float force = 500000.0f;
 
-	/*if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
-		PxRigidDynamic* body = (PxRigidDynamic*)GameManager::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
+	if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+	{
+		PxRigidDynamic* body = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
 		body->setLinearDamping(0.4f);
 
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
@@ -871,7 +869,12 @@ void LevelCreator::LockedObjectMovement(float dt)
 			body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
 			body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-	}*/
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && GameManager::GetLockedObject()->IsGrounded())
+		{
+			body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
+		}
+
+	}
 
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{
@@ -885,59 +888,4 @@ void LevelCreator::LockedObjectMovement(float dt)
 			break;
 		}
 	}
-}
-
-void LevelCreator::updateCannons(float dt)
-{
-	/*for (int i = 0; i < cannons.size(); ++i) {
-		cannons[i]->Update(dt);
-		if (cannons[i]->getTimeSinceShot() > 5) {
-			Vector3 position = cannons[i]->GetTransform().GetPosition();
-			WorldCreator::AddPxCannonBallToWorld(PxTransform(*cannons[i]->getCannonBallPosition()), cannons[i], cannons[i]->getShotSize(), cannons[i]->shoot(), cannons[i]->getShotDensity());
-		}
-	}*/
-}
-
-void LevelCreator::updateCannonBalls()
-{
-	/*for (int i = 0; i < cannons.size(); ++i)
-	{
-		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
-		{
-			if ((cannons[i]->getShots()[j]->getDestroy() || (cannons[i]->getShots()[j]->GetTimeAlive() > cannons[i]->getMaxAlive())))
-			{
-				GameManager::GetPhysicsSystem()->GetGScene()->removeActor(*cannons[i]->getShots()[j]->getBody());
-				cannons[i]->getShots()[j]->SetRenderObject(NULL);
-				cannons[i]->getShots()[j]->SetPhysicsObject(NULL);
-				GameManager::GetWorld()->RemoveGameObject(cannons[i]->getShots()[j], false);
-				cannons[i]->removeShot(cannons[i]->getShots()[j]);
-			}
-		}
-	}*/
-}
-
-void LevelCreator::clearCannons()
-{
-	/*for (int i = 0; i < cannons.size(); ++i)
-	{
-		for (int j = 0; j < cannons[i]->getShots().size(); ++j)
-		{
-			if (cannons[i]->getShots()[j]->GetRenderObject() != nullptr)
-			{
-
-				delete cannons[i]->getShots()[j]->GetRenderObject();
-
-			}
-			if (cannons[i]->getShots()[j]->GetPhysicsObject() != nullptr)
-			{
-
-				delete cannons[i]->getShots()[j]->GetPhysicsObject();
-
-			}
-			GameManager::GetWorld()->RemoveGameObject(cannons[i]->getShots()[j], false);
-			cannons[i]->removeShot(cannons[i]->getShots()[j]);
-		}
-	}
-
-	cannons.clear();*/
 }

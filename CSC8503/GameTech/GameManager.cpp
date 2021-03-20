@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "NetworkedGame.h"
 #include "../CSC8503Common/Coin.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
@@ -33,6 +34,8 @@ OGLTexture* GameManager::dogeTex = nullptr;
 
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
+
+CameraState GameManager::camState = CameraState::FREE;
 
 GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
@@ -192,7 +195,7 @@ void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radiu
 }
 
 void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity) {
-	GameObject* capsule = new GameObject("Capsule");
+	GameObject* capsule = new GameObject("BounceStick");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
@@ -237,6 +240,28 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
+
+	return p;
+}
+
+NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum)
+{
+	NetworkPlayer* p = new NetworkPlayer(game, playerNum);
+
+	float meshSize = MESH_SIZE * scale;
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	body->setMaxLinearVelocity(50);
+	pXPhysics->GetGScene()->addActor(*body);
+
+	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
+	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
+	world->AddGameObject(p);
+
 	return p;
 }
 
@@ -293,7 +318,7 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	world->AddGameObject(cube);
 }
 
-void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity)
+GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity)
 {
 	GameObject* cube = new GameObject("RotatingCube");
 
@@ -311,6 +336,7 @@ void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 ha
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
+	return cube;
 }
 
 void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity)

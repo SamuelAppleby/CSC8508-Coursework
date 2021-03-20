@@ -166,12 +166,16 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LevelCreator.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="NetworkedGame.cpp" />
+    <ClCompile Include="NetworkPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameStatesPDA.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="LevelCreator.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="NetworkedGame.h" />
+    <ClInclude Include="NetworkPlayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
