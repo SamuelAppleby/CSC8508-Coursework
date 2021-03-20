@@ -13,8 +13,9 @@ using namespace CSC8503;
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
-GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem* physics) : OGLRenderer(*Window::GetWindow()), gameWorld(world) {
-	pXPhysics = physics;
+GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) : 
+	OGLRenderer(*Window::GetWindow()), gameWorld(world), pXPhysics(physics){
+	
 	glEnable(GL_DEPTH_TEST);
 	shadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
 
@@ -52,7 +53,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem* physics) :
 	skyboxMesh->UploadToGPU();
 
 	LoadSkybox();
-	camState = CameraState::FREE;
 	levelState = UIState::MENU;
 }
 
@@ -209,8 +209,11 @@ void GameTechRenderer::RenderUI()
 			selectedLevel = 2;
 			levelState = UIState::MODESELECT;
 		}
+		if (ImGui::Button("Level 3")) {
+			selectedLevel = 3;
+			levelState = UIState::MODESELECT;
+		}
 		if (ImGui::Button("Options")) {
-			selectedLevel = 2;
 			levelState = UIState::OPTIONS;
 		}
 		if (ImGui::Button("Quit")) {
@@ -240,7 +243,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
 		ImGui::SetWindowFontScale(0.5);
-		ImGui::TextWrapped("(Debug Mode Activated with TAB + INSERT)");
+		ImGui::TextWrapped("(Debug Mode Activated with C + H)");
 		if (ImGui::Button("Back")) {
 			levelState = UIState::PAUSED;
 		}
@@ -253,7 +256,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Play Mode", &p_open, window_flags);
 		if (ImGui::Button("Single Player")) {
-			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : UIState::SOLOLEVEL2;
+			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
 		}
 		if (ImGui::Button("Multiplayer")) {
 			levelState = UIState::MULTIPLAYERMENU;
@@ -356,6 +359,8 @@ void GameTechRenderer::RenderUI()
 			else
 				ImGui::Text("Shuffle Objects(F1):Off");
 		}
+		if (player)
+			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
 		ImGui::End();
@@ -365,7 +370,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Pause(ESC)");
 
-		switch (camState)
+		switch (gameWorld.GetMainCamera()->GetState())
 		{
 		case CameraState::FREE:
 			ImGui::Text("Change to Global Camera[1]");
@@ -394,6 +399,8 @@ void GameTechRenderer::RenderUI()
 			ImGui::Text("Shuffle Objects(F1):On");
 		else
 			ImGui::Text("Shuffle Objects(F1):Off");
+		if(player)
+			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
 		ImGui::End();
@@ -416,7 +423,7 @@ void GameTechRenderer::RenderUI()
 		}
 		ImGui::Text("Change to play mode(Q)");
 		
-		switch (camState)
+		switch (gameWorld.GetMainCamera()->GetState())
 		{
 		case CameraState::FREE:
 			ImGui::Text("Change to Global Camera[1]");
@@ -468,8 +475,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
 		ImGui::Begin("PhysX Information", &p_open, window_flags);
-		ImGui::Text("Static Physics Objects:%d", pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
-		ImGui::Text("Dynamic Physics Objects:%d", pXPhysics->GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
+		ImGui::Text("Static Physics Objects:%d", pXPhysics.GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
+		ImGui::Text("Dynamic Physics Objects:%d", pXPhysics.GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
 		ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
 		ImGui::Text("Current Collisions:%d", gameWorld.GetTotalCollisions());
 		ImGui::PopFont();

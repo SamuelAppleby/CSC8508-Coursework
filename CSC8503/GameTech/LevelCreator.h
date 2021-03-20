@@ -5,7 +5,7 @@
  *			Tutorial Game definition		 */
 #pragma once
 #include "../CSC8503Common/PhysxConversions.h"
-#include "../CSC8503/CSC8503Common/CollisionDetection.h"
+#include "../CSC8503Common/CollisionDetection.h"
 #include "../GameTech/GameManager.h"
 
 namespace NCL
@@ -24,7 +24,8 @@ namespace NCL
 
 			virtual void Update(float dt);
 			void UpdateLevel(float dt);
-
+			void UpdatePlayer(float dt);
+			void InitPlayer(const PxTransform& t, const PxReal scale);
 			void virtual InitWorld(LevelState state);
 
 		protected:
@@ -34,18 +35,11 @@ namespace NCL
 
 			void InitFloors(LevelState state);
 			void InitGameExamples(LevelState state);
-			void virtual InitGameObstacles(LevelState state);
+			void InitGameObstacles(LevelState state);
 
 			bool SelectObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement(float dt);
-
-			PlayerObject* player;
-
-			//Level2 stuff here
-			void updateCannons(float dt);
-			void updateCannonBalls();
-			void clearCannons();
 		};
 	}
 }

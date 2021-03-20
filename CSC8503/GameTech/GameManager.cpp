@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include "NetworkedGame.h"
+#include "../CSC8503Common/Coin.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -14,6 +15,7 @@ OGLMesh* GameManager::charMeshB = nullptr;
 OGLMesh* GameManager::enemyMesh = nullptr;
 OGLMesh* GameManager::bonusMesh = nullptr;
 OGLMesh* GameManager::capsuleMesh = nullptr;
+OGLMesh* GameManager::cylinderMesh = nullptr;
 OGLMesh* GameManager::cubeMesh = nullptr;
 OGLMesh* GameManager::sphereMesh = nullptr;
 
@@ -40,18 +42,19 @@ GameObject* GameManager::selectionObject = nullptr;
 
 LevelState GameManager::levelState = LevelState::LEVEL1;
 
+
+PlayerObject* GameManager::player = nullptr;
+
 void GameManager::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a)
 {
 	pXPhysics = p;
 	world = w;
-	renderer = new GameTechRenderer(*GameManager::GetWorld(), pXPhysics);
+	renderer = new GameTechRenderer(*GameManager::GetWorld(), *pXPhysics);
 	Debug::SetRenderer(renderer);
 	renderer->InitGUI(window->GetHandle());
 	audioManager = a;
 	obstacles = new Obstacles();
 }
-
-
 
 void GameManager::LoadAssets()
 {
@@ -69,6 +72,7 @@ void GameManager::LoadAssets()
 	loadFunc("security.msh", &enemyMesh);
 	loadFunc("coin.msh", &bonusMesh);
 	loadFunc("capsule.msh", &capsuleMesh);
+	loadFunc("cylinder.msh", &cylinderMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	obstacleTex = (OGLTexture*)TextureLoader::LoadAPITexture("obstacle.png");
@@ -130,7 +134,7 @@ void GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes,
 {
 	GameObject* cube = new GameObject("Cube");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -146,7 +150,7 @@ void GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius,
 {
 	GameObject* sphere = new GameObject("Sphere");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -162,7 +166,7 @@ void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius
 {
 	GameObject* capsule = new GameObject("Capsule");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -174,45 +178,57 @@ void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity)
+void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
 {
-	GameObject* floor = new GameObject("Floor");
+	GameObject* cylinder = new GameObject("Cylinder");
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
-	floor->SetPhysicsObject(new PhysXObject(body, newMat));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidBodyExt::updateMassAndInertia(*body, density);
+	cylinder->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	floor->GetTransform().SetScale(halfSizes * 2);
-	if (!friction)
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
-	world->AddGameObject(floor);
+	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
+	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	world->AddGameObject(cylinder);
 }
 
-void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
-{
-	GameObject* p = new GameObject("Pickup");
+void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity) {
+	GameObject* capsule = new GameObject("BounceStick");
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));;
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, halfHeight), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	capsule->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
+	world->AddGameObject(capsule);
+}
+
+void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
+{
+	Coin* p = new Coin();
+
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);;
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
 	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(radius, radius, radius));
+	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	world->AddGameObject(p);
 }
 
-GameObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
+PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
 {
-	GameObject* p = new GameObject("Player");
+	PlayerObject* p = new PlayerObject();
 
 	float meshSize = MESH_SIZE * scale;
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
 		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
@@ -233,7 +249,7 @@ NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, cons
 	NetworkPlayer* p = new NetworkPlayer(game, playerNum);
 
 	float meshSize = MESH_SIZE * scale;
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
 		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
@@ -254,7 +270,7 @@ void GameManager::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale)
 	GameObject* e = new GameObject("Enemy");
 
 	float meshSize = MESH_SIZE * scale;
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
 		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -271,7 +287,7 @@ void GameManager::AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSize
 {
 	GameObject* cube = new GameObject("SeeSaw");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -288,7 +304,7 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 {
 	GameObject* cube = new GameObject("RevolvingDoor");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -306,7 +322,7 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 {
 	GameObject* cube = new GameObject("RotatingCube");
 
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
@@ -320,14 +336,62 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 	world->AddGameObject(cube);
-
 	return cube;
+}
+
+void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity)
+{
+	GameObject* cylinder = new GameObject("RotatingCylinder");
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	body->setAngularVelocity(rotation);
+	body->setAngularDamping(0.f);
+	body->setMass(0.f);
+	body->setMassSpaceInertiaTensor(PxVec3(0.f));
+	cylinder->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
+	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	world->AddGameObject(cylinder);
+}
+
+
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state) {
+	GameObject* floor = new GameObject("Floor");
+
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	floor->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	floor->GetTransform().SetScale(halfSizes * 2);
+	switch (state) {
+		case TextureState::FLOOR:
+			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+			break;
+		case TextureState::ICE:
+			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+			break;
+		case TextureState::INVISIBLE: 
+			break;
+		
+	}
+	/*if (!friction)
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+	else
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));*/
+	world->AddGameObject(floor);
 }
 
 Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity)
 {
 	Cannonball* cannonBall = new Cannonball();
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
@@ -346,7 +410,7 @@ void GameManager::AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajecto
 {
 	Cannon* cannon = new Cannon(trajectory, shotTime, shotSize, translate);
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(30, 15, 15), *pXPhysics->GetGMaterial());
 	cannon->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
@@ -360,7 +424,7 @@ void GameManager::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfS
 {
 	KillPlane* cube = new KillPlane(respawnCentre, respawnSizeRange);
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t.transform(PxTransform(t.p)));
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *pXPhysics->GetGMaterial());
 	cube->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);

@@ -22,7 +22,7 @@ namespace NCL {
 			NetworkPlayer* SpawnPlayer(int playerNum);
 
 			void InitWorld(LevelState state) override;
-			void InitGameObstacles(LevelState state) override;
+			//void InitGameObstacles(LevelState state) override;
 
 			void ReceivePacket(float dt, int type, GamePacket* payload, int source) override;
 

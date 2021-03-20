@@ -75,8 +75,6 @@ namespace NCL {
 				shuffleObjects = state;
 			}
 
-			void ShowFacing();
-
 			virtual void UpdateWorld(float dt);
 
 			static GameObject* FindObjectFromPhysicsBody(PxActor* actor);
@@ -107,7 +105,9 @@ namespace NCL {
 			//{
 			//	//lights[lightCount] = l;
 			//}
-			
+			void SetDebugMode(bool val) {
+				debugMode = val;
+			}
 
 		protected:
 			Camera* mainCamera;
@@ -115,6 +115,8 @@ namespace NCL {
 			int		worldIDCounter;
 			int totalCollisions;
 			int     lightCount;
+
+			bool debugMode;
 		};
 	}
 }

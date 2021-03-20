@@ -103,9 +103,6 @@
     <ClInclude Include="KillPlane.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="RotatingCube.h">
-      <Filter>Game Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Cannonball.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
@@ -121,6 +118,12 @@
     <ClInclude Include="NetworkBase.h">
       <Filter>Networking</Filter>
     </ClInclude>
+    <ClInclude Include="Collectable.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
     <ClInclude Include="NetworkObject.h">
       <Filter>Networking</Filter>
     </ClInclude>
@@ -132,6 +135,9 @@
     </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
+      <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +180,6 @@
     <ClCompile Include="Cannonball.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="RotatingCube.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
     <ClCompile Include="KillPlane.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="GameServer.cpp">
       <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>Game Objects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

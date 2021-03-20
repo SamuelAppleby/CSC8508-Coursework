@@ -21,8 +21,7 @@ namespace NCL
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt);
-			
+			virtual void Update(float dt);	
 
 			void SetName(string val)
 			{
@@ -138,12 +137,9 @@ namespace NCL
 				return isColliding;
 			}
 
-			virtual void setDestroy(bool newDestroy)
-			{
-				destroy = newDestroy;
+			bool CanDestroy() const {
+				return canDestroy;
 			}
-
-
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
 			void SetScale(const PxVec3& newScale);
@@ -164,9 +160,7 @@ namespace NCL
 			bool isGrounded;
 
 			bool isColliding;
-
-			//level2 stuff
-			bool destroy;
+			bool canDestroy;
 		};
 	}
 }

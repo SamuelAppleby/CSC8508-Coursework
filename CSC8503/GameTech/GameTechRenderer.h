@@ -15,34 +15,36 @@
 #include "../../Common/Imgui/imgui_internal.h"
 #include "../../Common/AudioManager.h"
 #include <sstream>
+#include "../CSC8503Common/PlayerObject.h"
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503 {
 		class RenderObject;
-		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, HOSTLEVEL1, JOINLEVEL1,
-			HOSTLEVEL2, JOINLEVEL2, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
+		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, SOLOLEVEL3,
+			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
 
 		class GameTechRenderer : public OGLRenderer	{
 		public:
-			GameTechRenderer(GameWorld& world, PxPhysicsSystem* physics);
+			GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics);
 			~GameTechRenderer();
 			void InitGUI(HWND handle);
 			bool TestValidHost();
+
 			void SetUIState(UIState val) {
 				levelState = val;
 			}
+
 			UIState GetUIState() {
 				return levelState;
 			}
+
 			void SetSelectionObject(GameObject* val) {
 				selectionObject = val;
 			}
+
 			void SetLockedObject(GameObject* val) {
 				lockedObject = val;
-			}
-			void SetCamState(CameraState val) {
-				camState = val;
 			}
 
 			string GetIP() const {
@@ -52,6 +54,11 @@ namespace NCL {
 			string GetPort() const {
 				return portString;
 			}
+
+			void SetPlayer(PlayerObject* val) {
+				player = val;
+			}
+
 		protected:
 			void RenderFrame()	override;
 
@@ -61,7 +68,8 @@ namespace NCL {
 			OGLShader*		defaultShader;
 
 			GameWorld&	gameWorld;
-
+			PxPhysicsSystem& pXPhysics;
+			PlayerObject* player;
 			void RenderUI();
 
 			void BuildObjectList();
@@ -98,8 +106,6 @@ namespace NCL {
 			UIState levelState;
 			GameObject* lockedObject;
 			GameObject* selectionObject;
-			CameraState camState;
-			PxPhysicsSystem* pXPhysics;
 
 			int selectedLevel = 0;
 			bool readyToJoin = false;
@@ -109,7 +115,6 @@ namespace NCL {
 
 			bool enterIP = false;
 			bool enterPort = false;
-
 		};
 	}
 }
