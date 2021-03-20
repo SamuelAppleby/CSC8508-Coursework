@@ -274,9 +274,9 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	world->AddGameObject(cube);
 }
 
-void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity)
+void GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity, string name)
 {
-	GameObject* cube = new GameObject("RotatingCube");
+	GameObject* cube = new GameObject(name);
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
@@ -355,5 +355,28 @@ void GameManager::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfS
 	{
 		cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, lavaTex, basicShader));
 	}
+	world->AddGameObject(cube);
+}
+
+void GameManager::AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity )
+{
+
+	FallingTile* cube = new FallingTile("Floor");
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
+
+
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
+	PxRigidBodyExt::updateMassAndInertia(*body, density);
+	cube->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	cube->GetTransform().SetScale(halfSizes * 2);
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+
+	std::cout << cube->GetPhysicsObject()->GetPXActor()->getGlobalPose().p.y << "\n";
+
+
 	world->AddGameObject(cube);
 }

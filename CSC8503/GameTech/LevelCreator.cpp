@@ -606,13 +606,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		/*
-		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
-		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
-		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
-		*/
-
-
+		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 201, 10)), 1);
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -631,12 +625,16 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		//Floor 1
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, 0, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, "Floor");
 
-		/*
-		GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
-		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
-		GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
-		*/
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, 0, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-70, 0, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, 0, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(70, 0, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+
+		//Floor 2
+		GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3(0, 200, -75)), PxVec3(50, 1, 50), 10, 100);
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
@@ -677,25 +675,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
 		}
 
-		/*
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-
-		for (int i = 0; i < 7; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
-		}
-
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-		*/
-		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
-
-		//GameManager::AddPxCannonBallToWorld(t);
 
 		break;
 

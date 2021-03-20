@@ -154,6 +154,7 @@
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="Cannonball.h" />
     <ClInclude Include="CollisionDetection.h" />
+    <ClInclude Include="FallingTile.h" />
     <ClInclude Include="KillPlane.h" />
     <ClInclude Include="NavigationGrid.h" />
     <ClInclude Include="NavigationMap.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="Cannonball.cpp" />
     <ClCompile Include="CollisionDetection.cpp" />
+    <ClCompile Include="FallingTile.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="KillPlane.cpp" />
