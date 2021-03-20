@@ -112,16 +112,6 @@ namespace NCL
 				return timeAlive;
 			}
 
-			void SetGrounded(bool val)
-			{
-				isGrounded = val;
-			}
-
-			bool IsGrounded() const
-			{
-				return isGrounded;
-			}
-
 			bool IsColliding() const
 			{
 				return isColliding;
@@ -132,10 +122,8 @@ namespace NCL
 				destroy = newDestroy;
 			}
 
-
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
-			void SetScale(const PxVec3& newScale);
 
 		protected:
 			Transform transform;
@@ -149,10 +137,8 @@ namespace NCL
 			float timeInSet;
 			float timeAlive;
 			float powerUpTimer;
-			bool isGrounded;
 
 			bool isColliding;
-
 			//level2 stuff
 			bool destroy;
 		};

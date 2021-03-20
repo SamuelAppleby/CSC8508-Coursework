@@ -15,6 +15,7 @@
 #include "../CSC8503Common/Cannon.h"
 #include "../CSC8503Common/KillPlane.h"
 #include "../CSC8503Common/Obstacles.h"
+#include "../CSC8503Common/PlayerObject.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -40,7 +41,7 @@ public:
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 
 	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
-	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
+	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
 	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
@@ -70,12 +71,12 @@ public:
 	}
 
 	static CameraState GetCameraState() {
-		return camState;
+		return world->GetMainCamera()->GetState();
 	}
 
 	static void SetCamState(CameraState val) {
-		camState = val;
-		renderer->SetCamState(camState);
+		world->GetMainCamera()->SetState(val);
+		renderer->SetCamState(val);
 	}
 
 	static GameObject* GetLockedObject() {
@@ -144,8 +145,6 @@ private:
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
-
-	static CameraState camState;
 
 	static GameObject* selectionObject;
 	static GameObject* lockedObject;

@@ -32,8 +32,6 @@ OGLTexture* GameManager::dogeTex = nullptr;
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
 
-CameraState GameManager::camState = CameraState::FREE;
-
 GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
 
@@ -202,9 +200,9 @@ void GameManager::AddPxPickupToWorld(const PxTransform& t, const PxReal radius)
 	world->AddGameObject(p);
 }
 
-void GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
+PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
 {
-	GameObject* p = new GameObject("Player");
+	PlayerObject* p = new PlayerObject();
 
 	float meshSize = MESH_SIZE * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
@@ -219,6 +217,7 @@ void GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
+	return p;
 }
 
 void GameManager::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale)

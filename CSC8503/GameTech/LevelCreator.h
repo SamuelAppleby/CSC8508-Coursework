@@ -26,7 +26,7 @@ namespace NCL
 			void UpdateLevel(float dt);
 
 			void InitWorld(LevelState state);
-
+			void InitPlayer(const PxTransform& t, const PxReal scale);
 		protected:
 			LevelState currentLevel;
 			void InitCamera();

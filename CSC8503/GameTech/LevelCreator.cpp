@@ -41,7 +41,7 @@ void LevelCreator::UpdateLevel(float dt)
 	updateCannonBalls();
 
 	/* Enter debug mode? */
-	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::TAB) /*&& Window::GetKeyboard()->KeyPressed(KeyboardKeys::INSERT)*/)
+	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
 	{
 		if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG) 		
 			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);
@@ -117,11 +117,15 @@ void LevelCreator::InitCamera()
 {
 	GameManager::GetWorld()->GetMainCamera()->SetNearPlane(0.5f);
 	GameManager::GetWorld()->GetMainCamera()->SetFarPlane(10000.0f);
-	GameManager::GetWorld()->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
-	GameManager::GetWorld()->GetMainCamera()->SetYaw(0);
-	GameManager::GetWorld()->GetMainCamera()->SetPitch(0);
-	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
-	GameManager::SetCamState(CameraState::FREE);
+	if (!player) {
+		GameManager::GetWorld()->GetMainCamera()->SetPosition(Vector3(0, 50, 80));
+		GameManager::GetWorld()->GetMainCamera()->SetYaw(0);
+		GameManager::GetWorld()->GetMainCamera()->SetPitch(0);
+		GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
+	}
+	else {
+		GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+	}
 }
 
 /* Initialise all the elements contained within the world */
@@ -133,6 +137,12 @@ void LevelCreator::InitWorld(LevelState state)
 	InitGameExamples(state);
 	InitGameObstacles(state);
 	InitCamera();
+}
+
+void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
+	player = GameManager::AddPxPlayerToWorld(t, scale);
+	GameManager::SetLockedObject(player);
+	GameManager::SetCamState(CameraState::THIRDPERSON);
 }
 
 /* Place all the levels solid floors */
@@ -562,16 +572,14 @@ void LevelCreator::InitFloors(LevelState state)
 /* Initialises all game objects, enemies etc */
 void LevelCreator::InitGameExamples(LevelState state)
 {
-	switch (state)
-	{
+	switch (state) {
 	case LevelState::LEVEL1:
+		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
 		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
-		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 20, 0)), 1);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:
-		//player added to check this is all a reasonable scale
-		GameManager::AddPxPlayerToWorld(PxTransform(PxVec3(0, 1, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 1, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
 		//player
@@ -824,11 +832,9 @@ void LevelCreator::LockedObjectMovement(float dt)
 	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis.Normalise();
-	Vector3 charForward = Quaternion(GameManager::GetLockedObject()->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 	float force = 500000.0f;
 
-	if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
-	{
+	/*if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
 		PxRigidDynamic* body = (PxRigidDynamic*)GameManager::GetSelectionObject()->GetPhysicsObject()->GetPXActor();
 		body->setLinearDamping(0.4f);
 
@@ -840,13 +846,7 @@ void LevelCreator::LockedObjectMovement(float dt)
 			body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
 			body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && GameManager::GetLockedObject()->IsGrounded())
-		{
-			body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
-			//lockedObject->SetGrounded(false);
-		}
-
-	}
+	}*/
 
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{
