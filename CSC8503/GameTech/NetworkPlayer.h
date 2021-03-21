@@ -10,6 +10,8 @@ namespace NCL {
 			NetworkPlayer(NetworkedGame* game, int num);
 			~NetworkPlayer();
 
+			void Update(float dt) override;
+
 			void OnCollisionBegin(GameObject* otherObject) override;
 
 			int GetPlayerNum() const {
@@ -36,12 +38,26 @@ namespace NCL {
 				return defaultPlayerName;
 			}
 
+			void Disconnect() {
+				connected = false;
+			}
+
+			bool IsConnected() const {
+				return connected;
+			}
+
+			void SetHost() {
+				isHost = true;
+			}
+
 		protected:
 			NetworkedGame* game;
 			int playerNum;
 			int score;
 			string playerName;
 			string defaultPlayerName;
+			bool connected;
+			bool isHost;
 		};
 	}
 }

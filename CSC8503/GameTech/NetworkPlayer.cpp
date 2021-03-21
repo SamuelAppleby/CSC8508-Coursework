@@ -9,10 +9,22 @@ NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num) {
 	playerNum = num;
 	defaultPlayerName = "Player " + std::to_string(num + 2);
 	playerName = defaultPlayerName;
+	connected = true;
+	isHost = false;
 }
 
 NetworkPlayer::~NetworkPlayer() {
 
+}
+
+void NetworkPlayer::Update(float dt) {
+	if (isHost) {
+		PlayerObject::Update(dt);
+	}
+	else {
+		GameObject::Update(dt);
+		raycastTimer -= dt;
+	}
 }
 
 void NetworkPlayer::OnCollisionBegin(GameObject* otherObject) {

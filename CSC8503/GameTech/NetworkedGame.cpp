@@ -41,6 +41,7 @@ void NetworkedGame::StartAsServer(LevelState state, string playerName) {
 	InitWorld(state);
 	localPlayer = SpawnPlayer(-1);
 	localPlayer->SetPlayerName(playerName);
+	localPlayer->SetHost();
 
 	GameManager::SetPlayer(localPlayer);
 	GameManager::SetLockedObject(localPlayer);
