@@ -22,6 +22,7 @@ namespace NCL
 			~GameObject();
 
 			virtual void Update(float dt);	
+			virtual void FixedUpdate(float fixedDT){}
 
 			void SetName(string val)
 			{

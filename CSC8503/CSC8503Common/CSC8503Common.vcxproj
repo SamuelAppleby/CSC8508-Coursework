@@ -167,6 +167,7 @@
     <ClInclude Include="NetworkObject.h" />
     <ClInclude Include="NetworkState.h" />
     <ClInclude Include="Obstacles.h" />
+    <ClInclude Include="Pendulum.h" />
     <ClInclude Include="PhysXConversions.h" />
     <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="PlayerObject.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="NetworkBase.cpp" />
     <ClCompile Include="NetworkObject.cpp" />
     <ClCompile Include="NetworkState.cpp" />
+    <ClCompile Include="Pendulum.cpp" />
     <ClCompile Include="PhysXObject.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PushdownMachine.cpp" />

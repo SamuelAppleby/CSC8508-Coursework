@@ -54,7 +54,7 @@ void GameWorld::OperateOnContents(GameObjectFunc f) {
 	}
 }
 
-void GameWorld::UpdateWorld(float dt) {
+void GameWorld::UpdateWorld(float dt,float fixedDeltaTime) {
 	int tempCols = 0;
 	std::random_device rd;
 	std::mt19937 g(rd());
@@ -62,6 +62,7 @@ void GameWorld::UpdateWorld(float dt) {
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
 	for (auto& i : gameObjects) {
 		i->Update(dt);
+		i->FixedUpdate(fixedDeltaTime);
 		if(debugMode)
 			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);
 		if (i->IsColliding())

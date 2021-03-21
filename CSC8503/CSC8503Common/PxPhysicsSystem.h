@@ -48,7 +48,8 @@ const int IDEAL_FRAMES = 240;
 const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 const int GRAVITTY_SCALE = 4;
 using namespace physx;
-class PxPhysicsSystem {
+class PxPhysicsSystem
+{
 public:
 	PxPhysicsSystem();
 	~PxPhysicsSystem();
@@ -57,17 +58,22 @@ public:
 
 	void StepPhysics(float dt);
 
-	PxPhysics* GetGPhysics() {
+	PxPhysics* GetGPhysics()
+	{
 		return gPhysics;
 	}
 
-	PxMaterial* GetGMaterial() {
+	PxMaterial* GetGMaterial()
+	{
 		return gMaterial;
 	}
 
-	PxScene* GetGScene() {
+	PxScene* GetGScene()
+	{
 		return gScene;
 	}
+
+	  float FixedDeltaTime() const { return fixedDeltaTime; }
 
 
 private:

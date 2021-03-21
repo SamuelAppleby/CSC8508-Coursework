@@ -1,4 +1,6 @@
 #include "GameManager.h"
+
+
 #include "NetworkedGame.h"
 #include "../CSC8503Common/Coin.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
@@ -366,6 +368,26 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
 	world->AddGameObject(cylinder);
 }
+
+void GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft, float friction, float elasticity)
+{
+	Pendulum* pendulum = new Pendulum(timeToSwing, isSwingingLeft);
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	body->setAngularDamping(0.f);
+	body->setMass(0.f);
+	body->setMassSpaceInertiaTensor(PxVec3(0.f));
+	pendulum->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	pendulum->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
+	pendulum->SetRenderObject(new RenderObject(&pendulum->GetTransform(), cylinderMesh, basicTex, toonShader));
+	world->AddGameObject(pendulum);
+}
+
 
 
 void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state)
