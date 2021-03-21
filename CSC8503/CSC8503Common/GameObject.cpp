@@ -18,7 +18,6 @@ GameObject::GameObject(string objectName) {
 	powerUpTimer = 0.0f;
 	isGrounded = false;
 	isColliding = false;
-	canDestroy = false;
 }
 
 GameObject::~GameObject()

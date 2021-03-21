@@ -9,10 +9,14 @@ PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 	PX_UNUSED(filterData1);
 	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(constantBlock);
-
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1)) {
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
 	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND 
-		/*| PxPairFlag::eNOTIFY_TOUCH_PERSISTS*/ | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eDETECT_CCD_CONTACT;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eDETECT_CCD_CONTACT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST /*| PxPairFlag::eNOTIFY_TOUCH_PERSISTS*/
+		| PxPairFlag::eTRIGGER_DEFAULT;
 
 	return PxFilterFlags();
 }

@@ -9,6 +9,7 @@ namespace NCL{
 			PlayerObject();
 
 			void Update(float dt) override;
+			void FixedUpdate(float fixedDT) override;
 
 			void SetIsGrounded(bool val) {
 				isGrounded = val;
@@ -26,6 +27,9 @@ namespace NCL{
 				return coinsCollected;
 			}
 		protected:
+			bool movingForward = false, movingBackwards = false, movingLeft = false, movingRight = false, isJumping = false;
+			Vector3 fwd;
+			Vector3 right;
 			float score;
 			float speed;
 			bool isGrounded;

@@ -222,8 +222,9 @@ void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 {
 	Coin* p = new Coin();
 
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);;
-	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *pXPhysics->GetGMaterial());
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
 	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
 
@@ -408,6 +409,9 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		break;
 	case TextureState::ICE:
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+		break;
+	case TextureState::TRAMPOLINE:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, trampolineTex, toonShader));
 		break;
 	case TextureState::INVISIBLE:
 		break;

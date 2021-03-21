@@ -14,17 +14,25 @@ void PlayerObject::Update(float dt) {
 	GameObject::Update(dt);
 	raycastTimer -= dt;
 
-	Vector3 fwd = Quaternion(transform.GetOrientation()) * Vector3(0, 0, -1);
-	Vector3 right = Vector3::Cross(Vector3(0, 1, 0), -fwd);
+	movingForward = (Window::GetKeyboard()->KeyDown(KeyboardKeys::W));
+	movingLeft = (Window::GetKeyboard()->KeyDown(KeyboardKeys::A));
+	movingBackwards = (Window::GetKeyboard()->KeyDown(KeyboardKeys::S));
+	movingRight = (Window::GetKeyboard()->KeyDown(KeyboardKeys::D));
+	isJumping = (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded);
 
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * dt, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-right) * speed * dt, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-fwd) * speed * dt, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed * dt, PxForceMode::eIMPULSE);
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded) 
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * speed * 500 * dt, PxForceMode::eIMPULSE);
+	fwd = Quaternion(transform.GetOrientation()) * Vector3(0, 0, -1);
+	right = Vector3::Cross(Vector3(0, 1, 0), -fwd);
+}
+
+void PlayerObject::FixedUpdate(float fixedDT) {
+	if (movingForward)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);
+	if (movingLeft)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-right) * speed * fixedDT, PxForceMode::eIMPULSE);
+	if (movingBackwards)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-fwd) * speed * fixedDT, PxForceMode::eIMPULSE);
+	if (movingRight)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed * fixedDT, PxForceMode::eIMPULSE);
+	if (isJumping)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * speed * 500 * fixedDT, PxForceMode::eIMPULSE);
 }

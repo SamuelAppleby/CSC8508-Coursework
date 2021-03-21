@@ -138,12 +138,8 @@ namespace NCL
 				return isColliding;
 			}
 
-			bool CanDestroy() const {
-				return canDestroy;
-			}
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
-			void SetScale(const PxVec3& newScale);
 
 		protected:
 			Transform transform;
@@ -161,7 +157,6 @@ namespace NCL
 			bool isGrounded;
 
 			bool isColliding;
-			bool canDestroy;
 		};
 	}
 }
