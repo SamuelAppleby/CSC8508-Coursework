@@ -68,9 +68,9 @@ namespace NCL
 				return name;
 			}
 
-			virtual void OnCollisionBegin(GameObject* otherObject);
+			virtual void OnCollisionBegin(GameObject* otherObject) {};
 
-			virtual void OnCollisionEnd(GameObject* otherObject);
+			virtual void OnCollisionEnd(GameObject* otherObject) {};
 
 			void SetWorldID(int newID)
 			{
@@ -122,15 +122,10 @@ namespace NCL
 				return timeAlive;
 			}
 
-			void SetGrounded(bool val)
+			/*void SetGrounded(bool val)
 			{
 				isGrounded = val;
-			}
-
-			bool IsGrounded() const
-			{
-				return isGrounded;
-			}
+			}*/
 
 			bool IsColliding() const
 			{
@@ -157,7 +152,7 @@ namespace NCL
 			float timeInSet;
 			float timeAlive;
 			float powerUpTimer;
-			bool isGrounded;
+			//bool isGrounded;
 
 			bool isColliding;
 			bool canDestroy;

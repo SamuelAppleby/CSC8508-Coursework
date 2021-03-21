@@ -77,7 +77,7 @@ bool NetworkObject::ReadFullPacket(FullPacket& p) {
 		player.SetScore(p.score);
 
 		if (p.playerName != player.GetDefaultPlayerName()) {
-			player.SetName(p.playerName);
+			player.SetPlayerName(p.playerName);
 		}
 	}
 

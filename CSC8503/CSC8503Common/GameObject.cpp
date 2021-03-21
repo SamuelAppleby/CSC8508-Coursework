@@ -16,7 +16,7 @@ GameObject::GameObject(string objectName) {
 	timeAlive = 0.0f;
 	timeInSet = 0.0f;
 	powerUpTimer = 0.0f;
-	isGrounded = false;
+	//isGrounded = false;
 	isColliding = false;
 	canDestroy = false;
 }
@@ -38,24 +38,24 @@ void GameObject::Update(float dt)
 
 }
 
-void GameObject::OnCollisionBegin(GameObject* otherObject) {
-	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
-	isColliding = true;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = true;
-	}
-}
-
-void GameObject::OnCollisionEnd(GameObject* otherObject)
-{
-	//std::cout << name << " stopped collision with: " << otherObject->GetName() << std::endl;
-	isColliding = false;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = false;
-	}
-}
+//void GameObject::OnCollisionBegin(GameObject* otherObject) {
+//	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
+//	isColliding = true;
+//	if (otherObject->GetName() == "Floor")
+//	{
+//		isGrounded = true;
+//	}
+//}
+//
+//void GameObject::OnCollisionEnd(GameObject* otherObject)
+//{
+//	//std::cout << name << " stopped collision with: " << otherObject->GetName() << std::endl;
+//	isColliding = false;
+//	if (otherObject->GetName() == "Floor")
+//	{
+//		isGrounded = false;
+//	}
+//}
 
 
 void GameObject::SetPosition(const PxVec3& worldPos)

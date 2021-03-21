@@ -53,6 +53,10 @@ namespace NCL {
 
 			void UpdateStateHistory(int minID);
 
+			GameObject* GetGameObject() const {
+				return &object;
+			}
+
 		protected:
 			NetworkState& GetLatestNetworkState();
 			bool GetNetworkState(int frameID, NetworkState& state);

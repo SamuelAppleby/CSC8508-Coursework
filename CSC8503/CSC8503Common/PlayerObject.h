@@ -13,6 +13,9 @@ namespace NCL{
 			void SetIsGrounded(bool val) {
 				isGrounded = val;
 			}
+			bool IsGrounded() const	{
+				return isGrounded;
+			}
 			void SetRaycastTimer(float val)  {
 				raycastTimer = val;
 			}
@@ -26,7 +29,7 @@ namespace NCL{
 				return coinsCollected;
 			}
 		protected:
-			float score;
+			//float score;
 			float speed;
 			bool isGrounded;
 			float raycastTimer;
