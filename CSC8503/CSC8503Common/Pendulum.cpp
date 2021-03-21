@@ -25,14 +25,15 @@ void Pendulum::FixedUpdate(float fixedDT)
 		if (timer == 0.0f)
 		{
 			Quaternion q = transform.GetOrientation();
-			float xAngle = q.ToEuler().z;
-			tween = tweeny::from(xAngle).to(-45.0f).during(200).onStep([this](float f)
-				{
-					this->SetOrientation(PxQuat(Maths::DegreesToRadians(f), PxVec3(0, 0, 1)));
-					return false;
-				});
+			float zAngle = q.ToEuler().z;
+			tween = tweeny::from(zAngle).to(-45.0f).during(200).onStep([this](float outAngle)
+			{
+				this->SetOrientation(PxQuat(Maths::DegreesToRadians(outAngle), PxVec3(0, 0, 1)));
+				return false;
+			});
 			tween.via(0, tweeny::easing::cubicOut);
 		}
+
 		timer += fixedDT;
 		if (tween.progress() < 1.0f)
 		{
@@ -50,10 +51,10 @@ void Pendulum::FixedUpdate(float fixedDT)
 		if (timer == 0.f)
 		{
 			Quaternion q = transform.GetOrientation();
-			float xAngle = q.ToEuler().z;
-			tween = tweeny::from(xAngle).to(45.0f).during(200).onStep([this](float f)
+			float zAngle = q.ToEuler().z;
+			tween = tweeny::from(zAngle).to(45.0f).during(200).onStep([this](float outAngle)
 				{
-					this->SetOrientation(PxQuat(Maths::DegreesToRadians(f), PxVec3(0, 0, 1))); return false;
+					this->SetOrientation(PxQuat(Maths::DegreesToRadians(outAngle), PxVec3(0, 0, 1))); return false;
 					return false;
 				});
 			tween.via(0, tweeny::easing::cubicOut);
