@@ -364,7 +364,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			it->second = realPacket->lastID;
 		}
 
-		if (!serverPlayers.empty()) {
+		if (serverPlayers.size() >= (source + 1)) {
 			Vector3 rightAxis = realPacket->rightAxis;
 
 			Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
