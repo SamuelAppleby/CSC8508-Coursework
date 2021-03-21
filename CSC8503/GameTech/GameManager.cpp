@@ -235,16 +235,16 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 {
 	PlayerObject* p = new PlayerObject();
 
-	float meshSize = MESH_SIZE * scale;
+	float meshSize = 2.5f * scale;
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize * .85f, meshSize * 0.85f),
-		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(meshSize , meshSize ),
+		*pXPhysics->GetGMaterial())->setLocalPose(PxTransform(PxVec3(0, meshSize * 2.f, 0), PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, 40.0f);
 	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	body->setMaxLinearVelocity(50);
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
+	p->GetTransform().SetScale(PxVec3(meshSize * -2, meshSize * 2, meshSize * 2));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, toonShader));
 	//p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);

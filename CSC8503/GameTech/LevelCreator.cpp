@@ -161,6 +161,7 @@ void LevelCreator::InitWorld(LevelState state)
 void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
 	GameManager::SetPlayer(GameManager::AddPxPlayerToWorld(t, scale));
 	GameManager::SetLockedObject(GameManager::GetPlayer());
+	GameManager::SetSelectionObject(GameManager::GetPlayer());
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 }
 
