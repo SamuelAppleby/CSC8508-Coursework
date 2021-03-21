@@ -16,6 +16,7 @@
 #include "../CSC8503Common/KillPlane.h"
 #include "../CSC8503Common/Obstacles.h"
 #include "NetworkPlayer.h"
+#include "../Common/MeshMaterial.h";
 
 using namespace NCL;
 using namespace CSC8503;
@@ -135,6 +136,8 @@ private:
 	static OGLMesh* charMeshB;
 	static OGLMesh* enemyMesh;
 	static OGLMesh* bonusMesh;
+	static OGLMesh* pbodyMesh;
+
 
 	static OGLTexture* basicTex;
 	static OGLTexture* floorTex;
@@ -148,6 +151,7 @@ private:
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
 	static OGLTexture* dogeTex;
+	static OGLTexture* pBodyTex;
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
@@ -160,5 +164,7 @@ private:
 	static LevelState levelState;
 
 	static PlayerObject* player;
+
+	static MeshMaterial* pBodyMat;
 };
 

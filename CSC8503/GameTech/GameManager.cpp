@@ -18,6 +18,7 @@ OGLMesh* GameManager::capsuleMesh = nullptr;
 OGLMesh* GameManager::cylinderMesh = nullptr;
 OGLMesh* GameManager::cubeMesh = nullptr;
 OGLMesh* GameManager::sphereMesh = nullptr;
+OGLMesh* GameManager::pbodyMesh = nullptr;
 
 OGLTexture* GameManager::basicTex = nullptr;
 OGLTexture* GameManager::floorTex = nullptr;
@@ -31,6 +32,7 @@ OGLTexture* GameManager::menuTex = nullptr;
 OGLTexture* GameManager::plainTex = nullptr;
 OGLTexture* GameManager::wallTex = nullptr;
 OGLTexture* GameManager::dogeTex = nullptr;
+OGLTexture* GameManager::pBodyTex = nullptr;
 
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
@@ -42,7 +44,7 @@ GameObject* GameManager::selectionObject = nullptr;
 
 LevelState GameManager::levelState = LevelState::LEVEL1;
 
-
+MeshMaterial* GameManager::pBodyMat = nullptr;
 PlayerObject* GameManager::player = nullptr;
 
 void GameManager::Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a)
@@ -73,6 +75,7 @@ void GameManager::LoadAssets()
 	loadFunc("coin.msh", &bonusMesh);
 	loadFunc("capsule.msh", &capsuleMesh);
 	loadFunc("cylinder.msh", &cylinderMesh);
+	loadFunc("pbody.msh", &pbodyMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	obstacleTex = (OGLTexture*)TextureLoader::LoadAPITexture("obstacle.png");
@@ -86,6 +89,10 @@ void GameManager::LoadAssets()
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
 	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
+	pBodyTex = (OGLTexture*)TextureLoader::LoadAPITexture("pbody.png");
+
+	pBodyMat = new MeshMaterial("pbody.mat");
+
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
 }
@@ -194,7 +201,8 @@ void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radiu
 	world->AddGameObject(cylinder);
 }
 
-void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity) {
+void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
+{
 	GameObject* capsule = new GameObject("BounceStick");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
@@ -237,8 +245,8 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, toonShader));
-	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, toonShader));
+	//p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
 
 	return p;
@@ -360,7 +368,8 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 }
 
 
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state) {
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state)
+{
 	GameObject* floor = new GameObject("Floor");
 
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
@@ -370,16 +379,17 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	pXPhysics->GetGScene()->addActor(*body);
 
 	floor->GetTransform().SetScale(halfSizes * 2);
-	switch (state) {
-		case TextureState::FLOOR:
-			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
-			break;
-		case TextureState::ICE:
-			floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-			break;
-		case TextureState::INVISIBLE: 
-			break;
-		
+	switch (state)
+	{
+	case TextureState::FLOOR:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+		break;
+	case TextureState::ICE:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
+		break;
+	case TextureState::INVISIBLE:
+		break;
+
 	}
 	/*if (!friction)
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));

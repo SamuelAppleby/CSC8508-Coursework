@@ -19,12 +19,14 @@
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
-	namespace CSC8503 {
+	namespace CSC8503
+	{
 		class RenderObject;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, SOLOLEVEL3,
 			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
 
-		class GameTechRenderer : public OGLRenderer	{
+		class GameTechRenderer : public OGLRenderer
+		{
 		public:
 			GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics);
 			~GameTechRenderer();
@@ -47,17 +49,20 @@ namespace NCL {
 				lockedObject = val;
 			}
 
-			string GetIP() const {
+			string GetIP() const
+			{
 				return ipString;
 			}
 
-			string GetPort() const {
+			string GetPort() const
+			{
 				return portString;
 			}
 
 			void SetPlayer(PlayerObject* val) {
 				player = val;
 			}
+			GLuint playerTex;
 
 		protected:
 			void RenderFrame()	override;
@@ -65,7 +70,7 @@ namespace NCL {
 			Matrix4 SetupDebugLineMatrix()	const override;
 			Matrix4 SetupDebugStringMatrix()const override;
 
-			OGLShader*		defaultShader;
+			OGLShader* defaultShader;
 
 			GameWorld&	gameWorld;
 			PxPhysicsSystem& pXPhysics;
@@ -75,19 +80,19 @@ namespace NCL {
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();
-			void RenderCamera(); 
+			void RenderCamera();
 			void RenderSkybox();
 
 			void LoadSkybox();
 
 			vector<const RenderObject*> activeObjects;
 
-			OGLShader*  skyboxShader;
-			OGLMesh*	skyboxMesh;
+			OGLShader* skyboxShader;
+			OGLMesh* skyboxMesh;
 			GLuint		skyboxTex;
 
 			//shadow mapping things
-			OGLShader*	shadowShader;
+			OGLShader* shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
@@ -96,6 +101,7 @@ namespace NCL {
 			float		lightRadius;
 			Vector3		lightPosition;
 			Vector3		lightDirection;
+
 
 			ImFont* textFont;
 			ImFont* titleFont;

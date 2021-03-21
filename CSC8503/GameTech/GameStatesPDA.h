@@ -5,12 +5,13 @@
 #include "../CSC8503Common/StateTransition.h"
 #include "../CSC8503Common/State.h"
 #include "../../Common/Window.h"
-#include "NetworkedGame.h"
+//#include "NetworkedGame.h"
+#include "LevelCreator.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
-NetworkedGame* levelCreator = nullptr;
+LevelCreator* levelCreator = nullptr;
 //int winner = 0;
 //int playerScore = 0;
 //int aiScore = 0;
@@ -160,26 +161,26 @@ public:
 			break;
 		case UIState::HOSTLEVEL1:
 			*newState = new MultiplayerLevel();
-			levelCreator->StartAsServer(LevelState::LEVEL1);
+			//levelCreator->StartAsServer(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL1:
 			*newState = new MultiplayerLevel();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
-			levelCreator->StartAsClient(LevelState::LEVEL1, IPAddress);
+			//levelCreator->StartAsClient(LevelState::LEVEL1, IPAddress);
 			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL2:
 			*newState = new MultiplayerLevel();
-			levelCreator->StartAsServer(LevelState::LEVEL2);
+			//levelCreator->StartAsServer(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
 		case UIState::JOINLEVEL2:
 			*newState = new MultiplayerLevel();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
-			levelCreator->StartAsClient(LevelState::LEVEL2, IPAddress);
+			//levelCreator->StartAsClient(LevelState::LEVEL2, IPAddress);
 			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL3:
@@ -200,7 +201,7 @@ private:
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetWindow()->LockMouseToWindow(false);
 		if (levelCreator == nullptr) {
-			levelCreator = new NetworkedGame();
+			levelCreator = new LevelCreator();
 		}
 		else {
 			levelCreator->ResetWorld();
