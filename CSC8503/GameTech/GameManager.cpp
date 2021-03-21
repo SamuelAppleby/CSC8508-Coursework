@@ -162,6 +162,7 @@ GameObject* GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal 
 	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, toonShader));
 	world->AddGameObject(sphere);
+
 	return sphere;
 }
 
@@ -179,6 +180,7 @@ GameObject* GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
 	world->AddGameObject(capsule);
+
 	return capsule;
 }
 
@@ -196,6 +198,7 @@ GameObject* GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxRea
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
 	world->AddGameObject(cylinder);
+
 	return cylinder;
 }
 
@@ -226,6 +229,7 @@ GameObject* GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal rad
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	world->AddGameObject(p);
+
 	return p;
 }
 

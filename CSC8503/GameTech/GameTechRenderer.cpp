@@ -4,6 +4,7 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
+#include "NetworkedGame.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -175,8 +176,10 @@ void GameTechRenderer::RenderUI()
 	static float f = 0.0f;
 	static int counter = 0;
 	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-	readyToJoin = TestValidHost();
-	string* activeString = enterIP ? &ipString : &portString;
+	bool validName = nameString.length() > 0 && nameString != "Enter Name";
+	readyToHost = validName;
+	readyToJoin = TestValidHost() && validName;
+	string* activeString = enterIP ? &ipString : enterPort ? &portString : &nameString;
 
 	switch (levelState) {
 	case UIState::PAUSED:
@@ -272,8 +275,16 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Multiplayer Menu", &p_open, window_flags);
-		if (ImGui::Button("Host Game")) {
-			levelState = selectedLevel == 1 ? UIState::HOSTLEVEL1 : UIState::HOSTLEVEL2;
+
+		if (!readyToHost) {
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			ImGui::Button("Host Game");
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+		else if (ImGui::Button("Host Game")) {
+			levelState = selectedLevel == 1 ? UIState::HOSTLEVEL1 : selectedLevel == 2 ? UIState::HOSTLEVEL2 : UIState::HOSTLEVEL3;
 		}
 
 		if (!readyToJoin) {
@@ -283,10 +294,25 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else {
-			if (ImGui::Button("Join Game")) {
-				levelState = selectedLevel == 1 ? UIState::JOINLEVEL1 : UIState::JOINLEVEL2;
-			}
+		else if (ImGui::Button("Join Game")) {
+			levelState = selectedLevel == 1 ? UIState::JOINLEVEL1 : selectedLevel == 2 ? UIState::JOINLEVEL2 : UIState::JOINLEVEL3;
+		}
+
+		ImGui::Text("Player Name:");
+		ImGui::SameLine();
+
+		if (enterName) {
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			ImGui::Button(nameString.c_str(), ImVec2(400, 50));
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+		else if (ImGui::Button(nameString.c_str(), ImVec2(400, 50))) {
+			nameString.clear();
+			enterName = true;
+			enterPort = false;
+			enterIP = false;
 		}
 
 		ImGui::Text("Host I.P:");
@@ -299,13 +325,13 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else {
-			if (ImGui::Button(ipString.c_str(), ImVec2(400,50))) {
-				ipString.clear();
-				enterPort = false;
-				enterIP = true;
-			}
+		else if (ImGui::Button(ipString.c_str(), ImVec2(400,50))) {
+			ipString.clear();
+			enterName = false;
+			enterPort = false;
+			enterIP = true;
 		}
+
 		ImGui::SameLine();
 		ImGui::Text("Port No:");
 		ImGui::SameLine();
@@ -317,21 +343,34 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else {
-			if (ImGui::Button(portString.c_str(), ImVec2(300, 50))) {
-				portString.clear();
-				enterIP = false;
-				enterPort = true;
-			}
+		else if (ImGui::Button(portString.c_str(), ImVec2(300, 50))) {
+			portString.clear();
+			enterName = false;
+			enterIP = false;
+			enterPort = true;
 		}
 
 		/* Using hex to get keyboard inputs */
 		for (int i = 0x30; i <= 0x39; ++i) {
-			if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i)) {
+			if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i) || Window::GetKeyboard()->KeyPressed((KeyboardKeys)(i + 48))) {
 				activeString->append(std::to_string(i - 0x30));
 			}
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::PERIOD) && activeString == &ipString) {
+		
+		if (activeString == &nameString) {
+			for (int i = 0x41; i <= 0x5A; ++i) {
+				if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i)) {
+					char letter = (char)(97 + i - 0x41);
+
+					if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::SHIFT)) {
+						letter -= 32;
+					}
+
+					activeString->append(1, letter);
+				}
+			}
+		}
+		else if (activeString == &ipString && Window::GetKeyboard()->KeyPressed(KeyboardKeys::PERIOD)) {
 			activeString->append(".");
 		}
 
@@ -482,6 +521,28 @@ void GameTechRenderer::RenderUI()
 		ImGui::PopFont();
 		ImGui::End();
 		break;
+	case UIState::SCOREBOARD:
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("PLAYERS", &p_open, window_flags);
+
+		if (nGame) {
+			int levelNetworkObjectsCount = nGame->GetLevelNetworkObjectsCount();
+			std::vector<NetworkObject*> networkObjects = nGame->GetNetworkObjects();
+
+			for (int i = levelNetworkObjectsCount; i < networkObjects.size(); i++) {
+				GameObject* g = networkObjects[i]->GetGameObject();
+
+				if (dynamic_cast<NetworkPlayer*>(g)) {
+					NetworkPlayer* n = (NetworkPlayer*)g;
+					ImGui::Text(n->GetPlayerName().c_str());
+				}
+			}
+		}
+
+		ImGui::PopFont();
+		ImGui::End();
 	}
 
 	ImGui::Render();

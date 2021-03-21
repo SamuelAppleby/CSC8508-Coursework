@@ -22,6 +22,8 @@ NetworkedGame::NetworkedGame() {
 	NetworkBase::Initialise();
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
+
+	GameManager::GetRenderer()->SetNetworkedGame(this);
 }
 
 NetworkedGame::~NetworkedGame() {
@@ -29,7 +31,7 @@ NetworkedGame::~NetworkedGame() {
 	delete thisClient;
 }
 
-void NetworkedGame::StartAsServer(LevelState state) {
+void NetworkedGame::StartAsServer(LevelState state, string playerName) {
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
@@ -38,15 +40,20 @@ void NetworkedGame::StartAsServer(LevelState state) {
 
 	InitWorld(state);
 	localPlayer = SpawnPlayer(-1);
+	localPlayer->SetPlayerName(playerName);
 
-	GameManager::SetSelectionObject(localPlayer);
+	GameManager::SetPlayer(localPlayer);
+	GameManager::SetLockedObject(localPlayer);
+	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+
+	/*GameManager::SetSelectionObject(localPlayer);
 	localPlayer->SetSelected(true);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 	GameManager::SetLockedObject(localPlayer);
-	GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
+	GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
 }
 
-void NetworkedGame::StartAsClient(LevelState state, string ip) {
+void NetworkedGame::StartAsClient(LevelState state, string playerName, string ip) {
 	thisClient = new GameClient();
 	thisClient->Connect(ip, NetworkBase::GetDefaultPort());
 
@@ -57,7 +64,7 @@ void NetworkedGame::StartAsClient(LevelState state, string ip) {
 
 	//std::cout << "Starting as client." << std::endl;
 
-	// Set localPlayerName here from UI input
+	localPlayerName = playerName;
 
 	clientState = state;
 }
@@ -136,6 +143,10 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	newPacket.rightAxis = Vector3(camWorld.GetColumn(0));
 	newPacket.cameraYaw = c->GetYaw();
 
+	if (localPlayer) {
+		newPacket.playerName = localPlayer->GetPlayerName();
+	}
+
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
 		newPacket.buttonstates[0] = 1;
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
@@ -200,9 +211,28 @@ void NetworkedGame::UpdateMinimumState() {
 	//std::cout << "Server min state: " << minID << std::endl;
 }
 
+void NetworkedGame::UpdatePlayer(NetworkPlayer* player, float dt) {
+	if (player->GetRaycastTimer() <= 0.0f) {
+		PxVec3 pos = PhysxConversions::GetVector3(player->GetTransform().GetPosition()) + PxVec3(0, -6, 0);
+		PxVec3 dir = PxVec3(0, -1, 0);
+		float distance = 4.0f;
+		PxRaycastBuffer hit;
+
+		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit)) {
+			GameObject* obj = GameManager::GetWorld()->FindObjectFromPhysicsBody(hit.block.actor);
+			player->SetIsGrounded(obj->GetName() == "Floor");
+		}
+		else {
+			player->SetIsGrounded(false);
+		}
+		player->SetRaycastTimer(.25f);
+	}
+}
+
 NetworkPlayer* NetworkedGame::SpawnPlayer(int playerNum) {
 	NetworkPlayer* p = GameManager::AddPxNetworkPlayerToWorld(PxTransform(PxVec3(-5 * playerNum, 1, 0)), 1, this, playerNum);
 	NetworkObject* n = new NetworkObject(*p, levelNetworkObjectsCount + playerNum + 1);
+	networkObjects.emplace_back(n);
 
 	return p;
 }
@@ -377,10 +407,12 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 			player->SetPlayerName(realPacket->playerName);
 
+			UpdatePlayer(player, dt);
+
 			if (player->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 			{
 				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
-				body->setLinearDamping(0.4f);
+				//body->setLinearDamping(0.4f);
 
 				if (realPacket->buttonstates[0] == 1)
 					body->addForce(PhysxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
@@ -433,26 +465,29 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			InitWorld(clientState);
 
 			for (int i = -1; i < realPacket->playerID; i++) {
-				networkObjects.emplace_back(SpawnPlayer(i)->GetNetworkObject());
+				SpawnPlayer(i);
 			}
 
 			localPlayer = SpawnPlayer(realPacket->playerID);
-			networkObjects.emplace_back(localPlayer->GetNetworkObject());
 
 			if (localPlayerName != "") {
 				localPlayer->SetPlayerName(localPlayerName);
 			}
 
-			GameManager::SetSelectionObject(localPlayer);
+			GameManager::SetPlayer(localPlayer);
+			GameManager::SetLockedObject(localPlayer);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+
+			/*GameManager::SetSelectionObject(localPlayer);
 			localPlayer->SetSelected(true);
 			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 			GameManager::SetLockedObject(localPlayer);
-			GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
+			GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
 
 			initialising = false;
 		}
 		else {
-			networkObjects.emplace_back(SpawnPlayer(realPacket->playerID)->GetNetworkObject());
+			SpawnPlayer(realPacket->playerID);
 		}
 	}
 	else if (type == Player_Disconnected) {

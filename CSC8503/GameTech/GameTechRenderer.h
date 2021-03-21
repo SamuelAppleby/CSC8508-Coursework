@@ -21,8 +21,9 @@ namespace NCL {
 	class Maths::Vector4;
 	namespace CSC8503 {
 		class RenderObject;
+		class NetworkedGame;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, SOLOLEVEL3,
-			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
+			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD };
 
 		class GameTechRenderer : public OGLRenderer	{
 		public:
@@ -55,8 +56,16 @@ namespace NCL {
 				return portString;
 			}
 
+			string GetPlayerName() const {
+				return nameString;
+			}
+
 			void SetPlayer(PlayerObject* val) {
 				player = val;
+			}
+
+			void SetNetworkedGame(NetworkedGame* game) {
+				nGame = game;
 			}
 
 		protected:
@@ -70,6 +79,8 @@ namespace NCL {
 			GameWorld&	gameWorld;
 			PxPhysicsSystem& pXPhysics;
 			PlayerObject* player;
+			NetworkedGame* nGame;
+
 			void RenderUI();
 
 			void BuildObjectList();
@@ -109,10 +120,13 @@ namespace NCL {
 
 			int selectedLevel = 0;
 			bool readyToJoin = false;
+			bool readyToHost = false;
 
 			string ipString = "Enter IP";
 			string portString = "Enter Port";
+			string nameString = "Enter Name";
 
+			bool enterName = false;
 			bool enterIP = false;
 			bool enterPort = false;
 		};

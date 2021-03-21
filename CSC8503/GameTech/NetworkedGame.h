@@ -14,11 +14,12 @@ namespace NCL {
 			NetworkedGame();
 			~NetworkedGame();
 
-			void StartAsServer(LevelState state);
-			void StartAsClient(LevelState state, string ip);
+			void StartAsServer(LevelState state, string playerName);
+			void StartAsClient(LevelState state, string playerName, string ip);
 
 			void Update(float dt) override;
 
+			void UpdatePlayer(NetworkPlayer* player, float dt);
 			NetworkPlayer* SpawnPlayer(int playerNum);
 			void AddLevelNetworkObject(GameObject* object);
 
@@ -28,6 +29,14 @@ namespace NCL {
 			void ReceivePacket(float dt, int type, GamePacket* payload, int source) override;
 
 			void OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b);
+
+			std::vector<NetworkObject*> GetNetworkObjects() const {
+				return networkObjects;
+			}
+
+			int GetLevelNetworkObjectsCount() const {
+				return levelNetworkObjectsCount;
+			}
 
 		protected:
 			void UpdateAsServer(float dt);

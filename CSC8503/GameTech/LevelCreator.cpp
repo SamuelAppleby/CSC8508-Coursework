@@ -845,7 +845,7 @@ void LevelCreator::LockedObjectMovement(float dt)
 {
 	/*if (inSelectionMode && selectionObject)
 		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));*/
-	Matrix4 view = GameManager::GetWorld()->GetMainCamera()->BuildViewMatrix();
+	/*Matrix4 view = GameManager::GetWorld()->GetMainCamera()->BuildViewMatrix();
 	Matrix4 camWorld = view.Inverse();
 	Vector3 rightAxis = Vector3(camWorld.GetColumn(0));
 
@@ -873,7 +873,7 @@ void LevelCreator::LockedObjectMovement(float dt)
 			body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
 		}
 
-	}
+	}*/
 
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{

@@ -1,11 +1,11 @@
 #pragma once
-#include "../CSC8503Common/GameObject.h"
+#include "../CSC8503Common/PlayerObject.h"
 
 namespace NCL {
 	namespace CSC8503 {
 		class NetworkedGame;
 
-		class NetworkPlayer : public GameObject {
+		class NetworkPlayer : public PlayerObject {
 		public:
 			NetworkPlayer(NetworkedGame* game, int num);
 			~NetworkPlayer();
