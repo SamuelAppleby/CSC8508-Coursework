@@ -163,6 +163,7 @@
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="PhysXConversions.h" />
     <ClInclude Include="PhysXObject.h" />
+    <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="PushdownMachine.h" />
     <ClInclude Include="PushdownState.h" />
     <ClInclude Include="PxPhysicsSystem.h" />
@@ -170,7 +171,6 @@
     <ClInclude Include="PxPVD.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameWorld.h" />
-    <ClInclude Include="RotatingCube.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateGameObject.h" />
     <ClInclude Include="StateMachine.h" />
@@ -188,9 +188,9 @@
     <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="PhysXObject.cpp" />
+    <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PushdownMachine.cpp" />
     <ClCompile Include="PxPhysicsSystem.cpp" />
-    <ClCompile Include="RotatingCube.cpp" />
     <ClCompile Include="StateGameObject.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="Transform.cpp" />

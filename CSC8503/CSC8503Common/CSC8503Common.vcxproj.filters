@@ -100,9 +100,6 @@
     <ClInclude Include="KillPlane.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="RotatingCube.h">
-      <Filter>Game Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Cannonball.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
@@ -115,7 +112,7 @@
     <ClInclude Include="Obstacles.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="FallingTile.h">
+    <ClInclude Include="PlayerObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -159,14 +156,9 @@
     <ClCompile Include="Cannonball.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="RotatingCube.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
     <ClCompile Include="KillPlane.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="FallingTile.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
+    <ClCompile Include="PlayerObject.cpp" />
   </ItemGroup>
 </Project>

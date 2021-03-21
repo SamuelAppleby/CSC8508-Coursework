@@ -15,11 +15,13 @@
 #include "../CSC8503Common/Cannon.h"
 #include "../CSC8503Common/KillPlane.h"
 #include "../CSC8503Common/Obstacles.h"
-#include "../CSC8503Common/FallingTile.h"
+#include "../CSC8503Common/PlayerObject.h"
+
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3 };
+enum class TextureState { FLOOR, ICE, INVISIBLE};
 
 class GameManager {
 public:
@@ -32,7 +34,9 @@ public:
 	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
+		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR);
 	
 	static void AddBounceSticks(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -40,15 +44,16 @@ public:
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 
 	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
-	static void AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
+	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
 	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
-	static void AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5, string name = "RotatingCube");
+	static void AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5);
+	static void AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f);
 	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
-	static void AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+
 	static GameWorld* GetWorld() {
 		return world;
 	}
@@ -70,12 +75,12 @@ public:
 	}
 
 	static CameraState GetCameraState() {
-		return camState;
+		return world->GetMainCamera()->GetState();
 	}
 
 	static void SetCamState(CameraState val) {
-		camState = val;
-		renderer->SetCamState(camState);
+		world->GetMainCamera()->SetState(val);
+		renderer->SetCamState(val);
 	}
 
 	static GameObject* GetLockedObject() {
@@ -122,6 +127,7 @@ private:
 	static Obstacles* obstacles;
 
 	static OGLMesh* capsuleMesh;
+	static OGLMesh* cylinderMesh;
 	static OGLMesh* cubeMesh;
 	static OGLMesh* sphereMesh;
 	static OGLMesh* charMeshA;
@@ -144,8 +150,6 @@ private:
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
-
-	static CameraState camState;
 
 	static GameObject* selectionObject;
 	static GameObject* lockedObject;

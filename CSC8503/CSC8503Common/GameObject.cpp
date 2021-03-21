@@ -10,8 +10,7 @@ using namespace NCL::CSC8503;
 
 
 
-GameObject::GameObject(string objectName)
-{
+GameObject::GameObject(string objectName) {
 	name = objectName;
 	worldID = -1;
 	physicsObject = nullptr;
@@ -20,9 +19,7 @@ GameObject::GameObject(string objectName)
 	timeAlive = 0.0f;
 	timeInSet = 0.0f;
 	powerUpTimer = 0.0f;
-	isGrounded = false;
 	isColliding = false;
-	//transform = 
 }
 
 GameObject::~GameObject()
@@ -31,36 +28,23 @@ GameObject::~GameObject()
 	delete renderObject;
 }
 
-void GameObject::Update(float dt)
-{
-
+void GameObject::Update(float dt) {
 	transform.SetOrientation(physicsObject->GetPXActor()->getGlobalPose().q);
 	transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
 	transform.UpdateMatrix();
 	timeAlive += dt;
-
 }
 
 
 
-void GameObject::OnCollisionBegin(GameObject* otherObject)
-{
+void GameObject::OnCollisionBegin(GameObject* otherObject) {
 	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
 	isColliding = true;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = true;
-	}
 }
 
-void GameObject::OnCollisionEnd(GameObject* otherObject)
-{
+void GameObject::OnCollisionEnd(GameObject* otherObject) {
 	//std::cout << name << " stopped collision with: " << otherObject->GetName() << std::endl;
 	isColliding = false;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = false;
-	}
 }
 
 
