@@ -426,7 +426,6 @@ void GameManager::AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 hal
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
 
-	std::cout << cube->GetPhysicsObject()->GetPXActor()->getGlobalPose().p.y << "\n";
 
 
 	world->AddGameObject(cube);

@@ -8,6 +8,7 @@ namespace NCL {
 		public:
 
 			FallingTile(string newName, float newTime = 10, float newResetY = 0, PxVec3 newOriginalPos = PxVec3(0,200,0)) {
+				
 				name = newName;
 				originalTime = newTime;
 				timeAlive = 0;
@@ -15,8 +16,8 @@ namespace NCL {
 				originalPos = newOriginalPos;
 			}
 			void ResetTile(){
-				std::cout << physicsObject->GetPXActor()->getGlobalPose().p.y << "\n";
-				SetPosition(PxVec3(0,200,0));
+				//std::cout << physicsObject->GetPXActor()->getGlobalPose().p.y << "\n";
+				//SetPosition(PxVec3(0,200,0));
 
 				/*
 				timeAlive = 0;
@@ -31,6 +32,9 @@ namespace NCL {
 			}
 
 			void Update(float dt) override {
+
+				std::cout << "Y position = " << physicsObject->GetPXActor()->getGlobalPose().p.y << "\n";
+				this->SetPosition(PxVec3(physicsObject->GetPXActor()->getGlobalPose().p.x, physicsObject->GetPXActor()->getGlobalPose().p.y + 1, physicsObject->GetPXActor()->getGlobalPose().p.y));
 				/*
 				if (started) {
 					timeAlive += dt;
@@ -47,9 +51,12 @@ namespace NCL {
 			}
 
 			void OnCollisionBegin(GameObject* otherObject) override {
-				//if (otherObject->GetName()._Equal("Player")) {
-				//	started = true;
-				//}
+				if (otherObject->GetName()._Equal("Player")) {
+					while (true) {
+						int one = 1;
+					}
+
+				}
 			}
 
 
