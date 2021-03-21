@@ -21,6 +21,7 @@ LevelCreator::~LevelCreator() {
 void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
+	GameManager::GetObstacles()->ClearObstacles();
 	//WorldCreator::GetPhysicsSystem()->ResetPhysics();
 }
 
@@ -632,13 +633,13 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900)*2, PxQuat(1.5701, PxVec3(1, 0, 0))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900)*2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 
 			20, 100, PxVec3(0, 0,1));															
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900      )*2), PxVec3(20, 20, 200));
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 
 			20, 100, PxVec3(0, 0, 1));
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -98, -900     )*2), PxVec3(20, 20, 200));
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(70, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(70, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 
 			20, 100, PxVec3(0, 0, 1));
 
 		//cannons																
@@ -656,7 +657,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -78, -1705) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))),
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -78, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 80, PxVec3(0, 2, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351     )*2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0,25));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351     )*2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
@@ -669,50 +670,30 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		{
 			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)*2), 20));
 		}
-
-		/*
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-
-		for (int i = 0; i < 7; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
-		}
-
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-		*/
-		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
-
-		//GameManager::AddPxCannonBallToWorld(t);
 		break;
 
 	case LevelState::LEVEL3:
 		//OBSTACLE 1
 		//Rotating pillars
 		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -180) *2 ), 10, 25, PxVec3(0, 0, 1));
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -200) *2 ), 10, 25, PxVec3(0, 0, 1));
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -200) *2 ), 10, 25, PxVec3(0, 0, -3));
 		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -220) *2 ), 10, 25, PxVec3(0, 0, 1));
 	
 		//OBSTACLE2 
 		//Jumping platforms with blenders
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -315) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))),
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -315) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
 			3, 12, PxVec3(0, 1, 0));
 
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -315) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -315) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))), 
 			3, 12, PxVec3(0, 1, 0));
 
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 152.5, -360) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 152.5, -360) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))), 
 			3, 24, PxVec3(0, 1, 0));
 				
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -410) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -410) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))), 
 			3, 12, PxVec3(0, 1, 0));
 
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -410) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -410) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))), 
 			3, 12, PxVec3(0, 1, 0));
 
 		//OBSTACLE 3
