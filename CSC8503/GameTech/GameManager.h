@@ -43,7 +43,7 @@ public:
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 
-	static void AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
+	static GameObject* AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
 	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static NetworkPlayer* AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);

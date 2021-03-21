@@ -210,7 +210,7 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
+GameObject* GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 {
 	Coin* p = new Coin();
 
@@ -223,6 +223,7 @@ void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
 	world->AddGameObject(p);
+	return p;
 }
 
 PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)

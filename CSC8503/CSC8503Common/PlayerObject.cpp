@@ -27,4 +27,6 @@ void PlayerObject::Update(float dt) {
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed * dt, PxForceMode::eIMPULSE);
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded) 
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * speed * 500 * dt, PxForceMode::eIMPULSE);
+
+	((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PxVec3(0, -1.1, 0));
 }

@@ -223,6 +223,7 @@ void NetworkedGame::InitGameObstacles(LevelState state) {
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(40, 5, -20)), 2));
 		GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
 		GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
