@@ -224,9 +224,9 @@ void NetworkedGame::InitGameObstacles(LevelState state) {
 	{
 	case LevelState::LEVEL1:
 		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(40, 5, -20)), 2));
-		GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
-		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
-		GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
+		AddLevelNetworkObject(GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2)));
+		AddLevelNetworkObject(GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2));
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES

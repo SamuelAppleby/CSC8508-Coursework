@@ -148,7 +148,7 @@ GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 hal
 	return cube;
 }
 
-void GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius, float density, float friction, float elasticity)
+GameObject* GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius, float density, float friction, float elasticity)
 {
 	GameObject* sphere = new GameObject("Sphere");
 
@@ -164,7 +164,7 @@ void GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal radius,
 	world->AddGameObject(sphere);
 }
 
-void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
+GameObject* GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
 {
 	GameObject* capsule = new GameObject("Capsule");
 
@@ -180,7 +180,7 @@ void GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal radius
 	world->AddGameObject(capsule);
 }
 
-void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
+GameObject* GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radius, const PxReal halfHeight, float density, float friction, float elasticity)
 {
 	GameObject* cylinder = new GameObject("Cylinder");
 

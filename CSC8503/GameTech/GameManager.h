@@ -31,10 +31,10 @@ public:
 
 	~GameManager();
 	static GameObject* AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
+	static GameObject* AddPxSphereToWorld(const PxTransform& t, const PxReal radius, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static GameObject* AddPxCapsuleToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
+	static GameObject* AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR);
 	
