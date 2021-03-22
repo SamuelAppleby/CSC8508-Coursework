@@ -17,7 +17,7 @@
 #include "../CSC8503Common/Obstacles.h"
 #include "NetworkPlayer.h"
 #include "../Common/MeshMaterial.h";
-
+#include "../CSC8503Common/FallingTile.h"
 
 #include "../CSC8503Common/Pendulum.h"
 
@@ -54,13 +54,13 @@ public:
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
 	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
-	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5);
+	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5, string name = "RotatingCube");
 	static void AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f);
 	static void AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft = true, float friction = 0.5f, float elasticity = 0.5f);
 	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
-
+	static void AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.5f);
 	static Obstacles* GetObstacles()
 	{
 		return obstacles;
