@@ -153,7 +153,7 @@ void LevelCreator::UpdatePlayer(float dt)
 	{
 		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition());
 		PxVec3 dir = PxVec3(0, -1, 0);
-		float distance = 0.5f;
+		float distance = 5.0f;
 		PxRaycastBuffer hit;
 		PxQueryFilterData filterData(PxQueryFlag::eSTATIC);
 		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
