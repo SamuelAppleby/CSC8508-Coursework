@@ -730,7 +730,7 @@ void GameTechRenderer::RenderCamera()
 
 				mats.emplace_back(playerTex);
 				//BindTextureToShader((OGLTexture*)mats[j], "mainTex", 0);
-				glActiveTexture(GL_TEXTURE1);
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, mats[j]);
 				DrawSubMesh(j);
 			}
@@ -740,9 +740,7 @@ void GameTechRenderer::RenderCamera()
 				//glBindTexture(GL_TEXTURE_2D, mats[j]);
 				//BindTextureToShader((OGLTexture*)playerTex, "mainTex", 0);
 				//DrawSubMesh(j);
-
 			//}
-
 		}
 		else
 		{

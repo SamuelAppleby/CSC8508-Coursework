@@ -5,10 +5,10 @@
 
 using namespace NCL::Maths;
 
-static class PhysxConversions
+ class PhysxConversions
 {
 public:
-	static PxVec3 GetVector3(Vector3 v)
+	static PxVec3 GetVector3(Vector3 v) 
 	{
 		return PxVec3(v.x, v.y, v.z);
 	}
