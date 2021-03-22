@@ -25,7 +25,7 @@ namespace NCL
 			void ResetWorld();
 
 			virtual void Update(float dt);
-			virtual void UpdatePhysics(float dt);
+			virtual void FixedUpdate(float dt);
 
 			void UpdateLevel(float dt);
 			void UpdatePlayer(float dt);

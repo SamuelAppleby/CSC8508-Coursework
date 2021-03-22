@@ -55,7 +55,7 @@ namespace NCL
 			PxPhysicsSystem();
 			~PxPhysicsSystem();
 
-			//void ResetPhysics();
+			void ResetPhysics();
 
 			void StepPhysics(float dt);
 

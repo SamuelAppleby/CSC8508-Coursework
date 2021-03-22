@@ -12,14 +12,10 @@ namespace NCL
 			Pendulum(float timeToSwing, bool isSwingingLeft = true);
 			void FixedUpdate(float fixedDT) override;
 
-
 		private:
-
 			float speed;
 			float timer;
 			bool isSwingingLeft;
-
-
 			tweeny::tween<float> tween;
 		};
 	}

@@ -65,21 +65,21 @@ PxPhysicsSystem::~PxPhysicsSystem() {
 	PX_RELEASE(gFoundation);
 }
 
-//void PxPhysicsSystem::ResetPhysics() {
-//	PxU32 nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
-//	PxActor** actors = new PxActor * [nbActors];
-//	gScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, actors, nbActors);
-//	while (nbActors--) {
-//		gScene->removeActor(*actors[nbActors]);
-//	}
-//
-//	nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
-//	actors = new PxActor * [nbActors];
-//	gScene->getActors(PxActorTypeFlag::eRIGID_STATIC, actors, nbActors);
-//	while (nbActors--) {
-//		gScene->removeActor(*actors[nbActors]);
-//	}
-//}
+void PxPhysicsSystem::ResetPhysics() {
+	PxU32 nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+	PxActor** actors = new PxActor * [nbActors];
+	gScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, actors, nbActors);
+	while (nbActors--) {
+		gScene->removeActor(*actors[nbActors]);
+	}
+
+	nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+	actors = new PxActor * [nbActors];
+	gScene->getActors(PxActorTypeFlag::eRIGID_STATIC, actors, nbActors);
+	while (nbActors--) {
+		gScene->removeActor(*actors[nbActors]);
+	}
+}
 
 void PxPhysicsSystem::StepPhysics(float fixedDeltaTime) {
 	gScene->simulate(fixedDeltaTime);

@@ -7,6 +7,7 @@
 namespace NCL{
 	namespace CSC8503 {
 		class PlayerObject : public GameObject {
+			float MAX_SPEED = 50.0f;
 		public:
 			PlayerObject();
 
@@ -16,15 +17,19 @@ namespace NCL{
 			void SetIsGrounded(bool val) {
 				isGrounded = val;
 			}
+
 			void SetRaycastTimer(float val)  {
 				raycastTimer = val;
 			}
+
 			float GetRaycastTimer() const {
 				return raycastTimer;
 			}
+
 			void CollectCoin() {
 				coinsCollected++;
 			}
+
 			int GetCoinsCollected() const {
 				return coinsCollected;
 			}
@@ -40,14 +45,18 @@ namespace NCL{
 
 
 		protected:
-			bool movingForward = false, movingBackwards = false, movingLeft = false, movingRight = false, isJumping = false;
-			Vector3 fwd;
-			Vector3 right;
+			bool movingForward;
+			bool movingBackwards;
+			bool movingLeft;
+			bool movingRight;
+			bool isSprinting;
+			bool isJumping;
+			bool isGrounded;
+
+			PxVec3 fwd;
+			PxVec3 right;
 			float score;
 			float speed;
-			float longJump;
-			bool isGrounded;
-			bool isLongJump = false;
 			float raycastTimer;
 			float powerUpTimer;
 

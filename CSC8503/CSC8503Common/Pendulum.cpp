@@ -16,10 +16,8 @@ Pendulum::Pendulum(float timeToSwing, bool isSwingingLeft)
 
 }
 
-
 void Pendulum::FixedUpdate(float fixedDT)
 {
-
 	if (isSwingingLeft)
 	{
 		if (timer == 0.0f)

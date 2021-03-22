@@ -36,22 +36,38 @@ void LevelCreator::Update(float dt)
 	{
 		GameManager::GetAudioManager()->SetPlayerPos(GameManager::GetPlayer()->GetRenderObject()->GetTransform()->GetPosition());
 	}
-
-	UpdatePhysics(dt);
-	UpdateLevel(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
+	UpdateLevel(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
+	FixedUpdate(dt);	
 }
 
-void LevelCreator::UpdatePhysics(float dt)
+void LevelCreator::FixedUpdate(float dt)
 {
 	dTOffset += dt;
 	while (dTOffset >= fixedDeltaTime) {
 		GameManager::GetPhysicsSystem()->StepPhysics(fixedDeltaTime);
 		GameManager::GetWorld()->UpdatePhysics(fixedDeltaTime);
+		
+		/* Change how we move the camera dependng if we have a locked object */
+		if (GameManager::GetLockedObject() != nullptr)
+		{
+			PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
+			if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+			float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+			yaw = Maths::DegreesToRadians(yaw);
+			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+			GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
+		}
+
+		else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
+			GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 ||
+			GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
+			GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
+
 		dTOffset -= fixedDeltaTime;
 	}
 	NCL::GameTimer t;
@@ -122,22 +138,6 @@ void LevelCreator::UpdateLevel(float dt)
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 	}
 
-	/* Change how we move the camera dependng if we have a locked object */
-	if (GameManager::GetLockedObject() != nullptr)
-	{
-		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-		if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
-		yaw = Maths::DegreesToRadians(yaw);
-		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
-	}
-
-	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 ||
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
-		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
-
 	else if (GameManager::GetSelectionObject())
 	{
 		DebugObjectMovement();
@@ -150,7 +150,7 @@ void LevelCreator::UpdatePlayer(float dt)
 	{
 		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition());
 		PxVec3 dir = PxVec3(0, -1, 0);
-		float distance = 3.0f;
+		float distance = 0.5f;
 		PxRaycastBuffer hit;
 		PxQueryFilterData filterData(PxQueryFlag::eSTATIC);
 		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
@@ -454,7 +454,7 @@ void LevelCreator::InitFloors(LevelState state)
 
 	case LevelState::LEVEL3:
 		//floor
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 80, 22) * 2), PxVec3(100, 1, 240));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 0, -25) * 2), PxVec3(100, 1, 150));
 
 		//back wall															 *2
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 4.5, 50) * 2), PxVec3(100, 10, 1));
@@ -463,25 +463,32 @@ void LevelCreator::InitFloors(LevelState state)
 		//side wall right													 *2
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 4.5, -25) * 2), PxVec3(1, 10, 150));
 		//Climping wall														 *2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(100, 70, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 75, -100) * 2), PxVec3(100, 150, 1));
 		//Wall Trambolines		
 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 88, 35) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 97, 15) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 106, -5) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -25) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 124, -45) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 133, -65) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 142, -85) * 2), PxVec3(25, 1, 25), 0.5F, 8.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 10, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 30, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 60, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 110, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		
-
-
 		//buffer zone 1 (where contestants respawn on failing the first obstacle, this needs to be sorted on the individual kill plane)
 		respawnSize = Vector3(100, 0, 45);
-		zone1Position = PxVec3(0, 81, 60);
+		zone1Position = PxVec3(0, 10, 60);
 
 		//Kill PLlanes for out of bounce 
-		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60, 30) * 2), PxVec3(500, 1, 300), zone1Position, respawnSize, false);
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -20, -25) * 2), PxVec3(500, 1, 300), zone1Position, respawnSize, false);
 
 		//Kill PLlanes for out of bounce 
 
@@ -520,8 +527,6 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -20, -25) * 2), PxVec3(500, 1, 300), zone1Position, respawnSize);
 		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, -25)), PxVec3(500, 1, 300));
-
-
 
 		//buffer zone 2
 		zone2Position = PxVec3(0, 153, -112);
@@ -638,7 +643,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
-		InitPlayer(PxTransform(PxVec3(0, 160, 135)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	}
 }
