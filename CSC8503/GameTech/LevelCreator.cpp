@@ -457,41 +457,56 @@ void LevelCreator::InitFloors(LevelState state)
 
 	case LevelState::LEVEL3:
 		//floor
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 0, -25) * 2), PxVec3(100, 1, 150));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 80, 25) * 2), PxVec3(100, 1, 250));
 
 		//back wall															 *2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 4.5, 50) * 2), PxVec3(100, 10, 1));
-		//side wall left													 *2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-50, 4.5, -25) * 2), PxVec3(1, 10, 150));
-		//side wall right													 *2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 4.5, -25) * 2), PxVec3(1, 10, 150));
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 4.5, 50) * 2), PxVec3(100, 10, 1));
+		////side wall left													 *2
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-50, 4.5, -25) * 2), PxVec3(1, 10, 150));
+		////side wall right													 *2
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 4.5, -25) * 2), PxVec3(1, 10, 150));
 		//Climping wall														 *2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 75, -100) * 2), PxVec3(100, 150, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(100, 70, 1));
+
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(500, 70, 1),0.5f, 0.1f, TextureState::INVISIBLE);
 		//Wall Trambolines		
 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 5, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 30, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 60, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 110, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, 30) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 95, 0) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, 105, -30) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, 115, -60) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, 125, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 95, 0) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 105, -30) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, 115, -60) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 125, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 5, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 30, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 60, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 110, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		
 		//buffer zone 1 (where contestants respawn on failing the first obstacle, this needs to be sorted on the individual kill plane)
 		respawnSize = Vector3(100, 0, 45);
-		zone1Position = PxVec3(0, 10, 60);
+		zone1Position = PxVec3(0, 81, 100);
 
 		//Kill PLlanes for out of bounce 
-		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -20, -25) * 2), PxVec3(500, 1, 300), zone1Position, respawnSize, false);
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60, 50) * 2), PxVec3(500, 1, 400), zone1Position, respawnSize, false);
 
 		//Kill PLlanes for out of bounce 
 
@@ -647,7 +662,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
-		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 160, 150)), 1);
 		break;
 	}
 }
