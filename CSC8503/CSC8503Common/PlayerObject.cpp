@@ -5,7 +5,7 @@ using namespace CSC8503;
 PlayerObject::PlayerObject() {
 	name = "Player";
 	isGrounded = false;
-	speed = 500000.0f;
+	speed = 5000.0f;
 	//longJump = 500000.0f;
 	raycastTimer = .25f;
 	coinsCollected = 0;
@@ -37,14 +37,17 @@ void PlayerObject::Update(float dt) {
 void PlayerObject::FixedUpdate(float fixedDT) {
 	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (movingForward)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed, PxForceMode::eIMPULSE);
 	if (movingLeft)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-right) * speed * fixedDT, PxForceMode::eIMPULSE);
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-right) * speed, PxForceMode::eIMPULSE);
 	if (movingBackwards)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-fwd) * speed * fixedDT, PxForceMode::eIMPULSE);
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(-fwd) * speed, PxForceMode::eIMPULSE);
 	if (movingRight)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed * fixedDT, PxForceMode::eIMPULSE);
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed, PxForceMode::eIMPULSE);
 	if (isJumping)
 		playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
+	//if (!isGrounded)
+		//playerVel.y *= -2;
+	
 	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }
