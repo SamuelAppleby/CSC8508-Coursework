@@ -659,7 +659,8 @@ void LevelCreator::InitGameExamples(LevelState state)
 {
 	switch (state) {
 	case LevelState::LEVEL1:
-		//InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 302, 90)), 1);
+		//InitPlayer(PxTransform(PxVec3(0, 0, 90)), 1);
 		GameManager::AddPxPickupToWorld(PxTransform(PxVec3(-20, 20, 0)), 1);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
@@ -686,12 +687,15 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
 
-
-		//Positions for seesaws and falling tiles are broken for some reason. I can't fix it, so I'm just using floors as a placeholder
-		//GameManager::AddPxSeeSawToWorld(PxTransform(PxVec3(-50, 650, 0)), PxVec3(125, 1, 50));
-
 		//Floor 2
-		//GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3(0, 500, -75)), PxVec3(50, 1, 50), 10, 100);
+		for (int z = 0; z < 4; ++z) {
+			for (int x = 0; x< 5 - (z%2); ++x) {
+				GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z%2))) + (x * 80) , 300, 40 - (z * 80))), PxVec3(20, 1, 20), 10, 0.5);
+
+			}
+		}
+
+
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
@@ -733,26 +737,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		{
 			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)*2), 20));
 		}
-
-		/*
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-
-		for (int i = 0; i < 7; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
-		}
-
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-		*/
-		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
-
-		//GameManager::AddPxCannonBallToWorld(t);
 		break;
 
 	case LevelState::LEVEL3:

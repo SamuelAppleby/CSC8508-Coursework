@@ -411,22 +411,19 @@ void GameManager::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfS
 
 void GameManager::AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity )
 {
-
-	FallingTile* cube = new FallingTile("Floor");
-
-	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t.transform(PxTransform(t.p)));
-
-
+	FallingTile* cube = new FallingTile("Floor", 0.5, 40, t.p);
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
-	PxRigidBodyExt::updateMassAndInertia(*body, density);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	body->setAngularVelocity(PxVec3(0,0,0));
+	body->setAngularDamping(0.f);
+	body->setMass(0.f);
+	body->setMassSpaceInertiaTensor(PxVec3(0.f));
 	cube->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
-	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
 	cube->GetTransform().SetScale(halfSizes * 2);
 	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
-
-
-
 	world->AddGameObject(cube);
 }
