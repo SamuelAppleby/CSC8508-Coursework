@@ -41,8 +41,6 @@ namespace NCL
 				PxActor* actor2 = pairHeader.actors[1];
 				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
 
-				if (obj1->GetName() == "Coin" || obj2->GetName() == "Coin")
-					std::cout << "here";
 				if (obj1 && obj2)
 				{
 					for (PxU32 i = 0; i < nbPairs; i++)
