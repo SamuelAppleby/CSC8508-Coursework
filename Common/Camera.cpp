@@ -5,6 +5,7 @@
  *			Camera Implementation			 */
 #include "Camera.h"
 #include "Window.h"
+#include "../CSC8503/GameTech/GameManager.h"
 #include <algorithm>
 
 using namespace NCL;
@@ -56,16 +57,21 @@ void Camera::UpdateCamera(float dt) {
 
 /* Lock the camera to an object */
 void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o) {
-	pitch -= (Window::GetMouse()->GetRelativePosition().y);
-	yaw -= (Window::GetMouse()->GetRelativePosition().x);
+	UIState ui = GameManager::GetRenderer()->GetUIState();
 
-	pitch = std::min(pitch, 90.0f);
-	pitch = std::max(pitch, -90.0f);
+	if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
+		pitch -= (Window::GetMouse()->GetRelativePosition().y);
+		yaw -= (Window::GetMouse()->GetRelativePosition().x);
 
-	if (yaw < 0)
-		yaw += 360.0f;
-	if (yaw > 360.0f)
-		yaw -= 360.0f;
+		pitch = std::min(pitch, 90.0f);
+		pitch = std::max(pitch, -90.0f);
+
+		if (yaw < 0)
+			yaw += 360.0f;
+		if (yaw > 360.0f)
+			yaw -= 360.0f;
+
+	}
 
 	/* Make sure our cameras position stays within our camera sphere */
 	float radius = 24;
