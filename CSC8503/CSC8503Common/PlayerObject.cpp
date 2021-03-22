@@ -9,15 +9,15 @@ PlayerObject::PlayerObject() : GameObject("Player") {
 	speed = 500000.0f;
 	raycastTimer = .25f;
 	coinsCollected = 0;
+	finishTime = 0.0f;
+	finished = false;
 }
 
 void PlayerObject::Update(float dt) {
 	GameObject::Update(dt);
 	raycastTimer -= dt;
 
-	UIState ui = GameManager::GetRenderer()->GetUIState();
-
-	if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
+	if (!finished) {
 		Vector3 fwd = Quaternion(transform.GetOrientation()) * Vector3(0, 0, -1);
 		Vector3 right = Vector3::Cross(Vector3(0, 1, 0), -fwd);
 
@@ -34,4 +34,21 @@ void PlayerObject::Update(float dt) {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded)
 			body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * speed * 500 * dt, PxForceMode::eIMPULSE);
 	}
+}
+
+bool PlayerObject::CheckHasFinished(LevelState state) {
+	if (state == LevelState::LEVEL2) {
+		if (transform.GetPosition().z < -3600) {
+			finished = true;
+			finishTime = timeAlive;
+		}
+	}
+	else if (state == LevelState::LEVEL3) {
+		if (transform.GetPosition().z < -1800) {
+			finished = true;
+			finishTime = timeAlive;
+		}
+	}
+
+	return finished;
 }

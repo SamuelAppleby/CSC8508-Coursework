@@ -9,6 +9,7 @@ namespace NCL {
 			NetworkState fullState;
 			int score = -1;
 			string playerName = "";
+			float finishTime = 0;
 
 			FullPacket() {
 				type = Full_State;
@@ -34,6 +35,7 @@ namespace NCL {
 			Vector3 rightAxis;
 			int cameraYaw;
 			string playerName;
+			float finishTime = 0.0f;
 
 			ClientPacket() {
 				type = Received_State;

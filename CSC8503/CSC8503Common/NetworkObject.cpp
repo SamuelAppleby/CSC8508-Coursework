@@ -135,6 +135,10 @@ bool NetworkObject::WriteFullPacket(GamePacket** p) {
 		NetworkPlayer& player = (NetworkPlayer&)object;
 		fp->score = player.GetScore();
 		fp->playerName = player.GetPlayerName();
+
+		if (player.HasFinished()) {
+			fp->finishTime = player.GetFinishTime();
+		}
 	}
 
 	*p = fp;
