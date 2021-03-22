@@ -49,10 +49,12 @@ namespace NCL{
 
 			void LongJumpColelction() {
 				powerUpTimer = 5.0f;
+				state = PowerUpState::LONGJUMP;
 			}
 
 			void SpeedPowerColelction() {
 				powerUpTimer = 5.0f;
+				state = PowerUpState::SPEEDPOWER;
 			}
 
 		protected:

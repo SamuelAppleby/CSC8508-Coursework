@@ -45,18 +45,18 @@ void PlayerObject::Update(float dt)
 		{
 		case PowerUpState::LONGJUMP:
 			jumpHeight = 20.0f;
-			powerUpTimer -= dt;
 			break;
 		case PowerUpState::SPEEDPOWER:
-			speed = speed * 10;
-			powerUpTimer -= dt;
+			//speed = speed * 10;
 			break;
 
 		}
+		powerUpTimer -= dt;
+
 	}
 	else
 	{
-		speed = 2000.0f;
+		//speed = 2000.0f;
 		jumpHeight = 10.0f;
 	}
 	raycastTimer -= dt;
@@ -74,7 +74,12 @@ void PlayerObject::Update(float dt)
 
 void PlayerObject::FixedUpdate(float fixedDT) {
 	speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
-	MAX_SPEED = isSprinting ? 80.0f : 50.0f;
+	if (isSprinting) {
+		MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f;
+	}
+	else {
+		MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f;
+	}
 	if (movingForward)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(fwd * speed, PxForceMode::eIMPULSE);
 	if (movingLeft)
@@ -94,7 +99,7 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
 	}
 	float ySpeed = playerVel.y;
-	float excessYSpeed = std::clamp(ySpeed - 120, 0.0f, 0.1f);
+	float excessYSpeed = std::clamp(ySpeed - 50, 0.0f, 0.1f);
 	if (excessYSpeed) {
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-PxVec3(0, ySpeed, 0) * excessYSpeed, PxForceMode::eVELOCITY_CHANGE);
 	}

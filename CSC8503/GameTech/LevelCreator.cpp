@@ -159,7 +159,7 @@ void LevelCreator::UpdatePlayer(float dt)
 		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
 			GetGScene()->raycast(pos, dir, distance, hit, PxHitFlag::eDEFAULT, filterData));
 
-		GameManager::GetPlayer()->SetRaycastTimer(.1f);
+		GameManager::GetPlayer()->SetRaycastTimer(0.1F);
 	}
 }
 
@@ -469,7 +469,7 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 75, -100) * 2), PxVec3(100, 150, 1));
 		//Wall Trambolines		
 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 10, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 5, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 30, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
