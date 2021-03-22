@@ -39,6 +39,29 @@ class Pause : public PushdownState
 	}
 };
 
+class MultiplayerPause : public PushdownState
+{
+	PushdownResult OnUpdate(float dt, PushdownState** newState) override
+	{
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) ||
+			GameManager::GetRenderer()->GetUIState() == UIState::MENU ||
+			GameManager::GetRenderer()->GetUIState() == UIState::INGAME)
+		{
+			return PushdownResult::Pop;
+		}
+
+		levelCreator->Update(dt);
+
+		return PushdownResult::NoChange;
+	}
+	void OnAwake() override
+	{
+		GameManager::GetWindow()->LockMouseToWindow(false);
+		GameManager::GetWindow()->ShowOSPointer(true);
+		GameManager::GetRenderer()->SetUIState(UIState::PAUSED);
+	}
+};
+
 class Level : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
@@ -96,7 +119,7 @@ class MultiplayerLevel : public PushdownState
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
 		{
-			*newState = new Pause();
+			*newState = new MultiplayerPause();
 			return PushdownResult::Push;
 		}
 

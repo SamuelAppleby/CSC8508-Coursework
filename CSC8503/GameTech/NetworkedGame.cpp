@@ -108,14 +108,19 @@ void NetworkedGame::UpdateAsServer(float dt) {
 			}
 		}
 	}
-	else if (serverPlayers.size() < thisServer->players.size()) {
-		for (auto i : serverPlayers) {
+	else if (serverPlayers.size() > thisServer->players.size()) {
+		for (auto i = serverPlayers.begin(); i != serverPlayers.end(); ) {
+		//for (auto i : serverPlayers) {
 			std::map<int, ENetPeer*>::iterator it;
-			it = thisServer->players.find(i.first);
+			it = thisServer->players.find((*i).first);
 
 			if (it == thisServer->players.end()) {
-				serverPlayers.erase(i.first);
-				stateIDs.erase(i.first);
+				(*i).second->Disconnect();
+				stateIDs.erase((*i).first);
+				i = serverPlayers.erase(i);
+			}
+			else {
+				i++;
 			}
 		}
 	}
@@ -148,33 +153,39 @@ void NetworkedGame::UpdateAsClient(float dt) {
 		newPacket.playerName = localPlayer->GetPlayerName();
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-		newPacket.buttonstates[0] = 1;
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-		newPacket.buttonstates[1] = 1;
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-		newPacket.buttonstates[2] = 1;
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-		newPacket.buttonstates[3] = 1;
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
-		newPacket.buttonstates[4] = 1;
+	UIState ui = GameManager::GetRenderer()->GetUIState();
+
+	if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+			newPacket.buttonstates[0] = 1;
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+			newPacket.buttonstates[1] = 1;
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+			newPacket.buttonstates[2] = 1;
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+			newPacket.buttonstates[3] = 1;
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
+			newPacket.buttonstates[4] = 1;
+		}
 	}
+
 	newPacket.lastID = thisClient->lastPacketID;
 	thisClient->SendPacket(newPacket);
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
-	std::vector<GameObject*>::const_iterator first;
+	/*std::vector<GameObject*>::const_iterator first;
 	std::vector<GameObject*>::const_iterator last;
 
-	GameManager::GetWorld()->GetObjectIterators(first, last);
+	GameManager::GetWorld()->GetObjectIterators(first, last);*/
 
 	for (auto p : serverPlayers) {
-		for (auto i = first; i != last; ++i) { // Change to loop through networkObjects?
-			NetworkObject* o = (*i)->GetNetworkObject();
+		//for (auto i = first; i != last; ++i) { // Change to loop through networkObjects?
+		for (auto o : networkObjects) {
+			/*NetworkObject* o = (*i)->GetNetworkObject();
 			if (!o) {
 				continue;
-			}
+			}*/
 
 			int playerState = stateIDs.at(p.first);
 			GamePacket* newPacket = nullptr;
@@ -406,7 +417,9 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 			NetworkPlayer* player = serverPlayers.at(source);
 
-			player->SetPlayerName(realPacket->playerName);
+			if (realPacket->playerName != "") {
+				player->SetPlayerName(realPacket->playerName);
+			}
 
 			UpdatePlayer(player, dt);
 
@@ -494,6 +507,12 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 	else if (type == Player_Disconnected) {
 		PlayerDisconnectPacket* realPacket = (PlayerDisconnectPacket*)payload;
 		std::cout << "Client: Player Disconnected!" << std::endl;
+		GameObject* g = networkObjects[levelNetworkObjectsCount + realPacket->playerID + 1]->GetGameObject();
+
+		if (dynamic_cast<NetworkPlayer*>(g)) {
+			NetworkPlayer* player = (NetworkPlayer*)g;
+			player->Disconnect();
+		}
 	}
 }
 

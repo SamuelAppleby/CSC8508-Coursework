@@ -536,7 +536,10 @@ void GameTechRenderer::RenderUI()
 
 				if (dynamic_cast<NetworkPlayer*>(g)) {
 					NetworkPlayer* n = (NetworkPlayer*)g;
-					ImGui::Text(n->GetPlayerName().c_str());
+
+					if (n->IsConnected()) {
+						ImGui::Text(n->GetPlayerName().c_str());
+					}
 				}
 			}
 		}
