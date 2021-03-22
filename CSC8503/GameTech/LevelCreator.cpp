@@ -108,8 +108,6 @@ void LevelCreator::UpdateLevel(float dt)
 		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
 		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
-	if (GameManager::GetLockedObject())
-		LockedObjectMovement(dt);
 	else if (GameManager::GetSelectionObject())
 	{
 		DebugObjectMovement();
@@ -120,21 +118,15 @@ void LevelCreator::UpdatePlayer(float dt)
 {
 	if (GameManager::GetPlayer()->GetRaycastTimer() <= 0.0f)
 	{
-		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition()) + PxVec3(0, -6, 0);
+		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition());
 		PxVec3 dir = PxVec3(0, -1, 0);
-		float distance = 4.0f;
+		float distance = 3.0f;
 		PxRaycastBuffer hit;
+		PxQueryFilterData filterData(PxQueryFlag::eSTATIC);
+		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
+			GetGScene()->raycast(pos, dir, distance, hit, PxHitFlag::eDEFAULT, filterData));
 
-		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
-		{
-			GameObject* obj = GameManager::GetWorld()->FindObjectFromPhysicsBody(hit.block.actor);
-			GameManager::GetPlayer()->SetIsGrounded(obj->GetName() == "Floor");
-		}
-		else
-		{
-			GameManager::GetPlayer()->SetIsGrounded(false);
-		}
-		GameManager::GetPlayer()->SetRaycastTimer(.25f);
+		GameManager::GetPlayer()->SetRaycastTimer(.1f);
 	}
 }
 
@@ -821,54 +813,5 @@ void LevelCreator::DebugObjectMovement()
 			body->addTorque(PxVec3(0, -10, 0), PxForceMode::eIMPULSE);
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8))
 			body->addTorque(PxVec3(0, 10, 0), PxForceMode::eIMPULSE);
-	}
-}
-
-/* If we have control of an object we can move it around and perform certain actions */
-void LevelCreator::LockedObjectMovement(float dt)
-{
-	/*if (inSelectionMode && selectionObject)
-		selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));*/
-	Matrix4 view = GameManager::GetWorld()->GetMainCamera()->BuildViewMatrix();
-	Matrix4 camWorld = view.Inverse();
-	Vector3 rightAxis = Vector3(camWorld.GetColumn(0));
-
-	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-	fwdAxis.y = 0.0f;
-	fwdAxis.Normalise();
-	Vector3 charForward = Quaternion(GameManager::GetLockedObject()->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
-	float force = 500000.0f;
-
-	if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
-	{
-		PxRigidDynamic* body = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-		body->setLinearDamping(0.4f);
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-			body->addForce(PhysxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-			body->addForce(PhysxConversions::GetVector3(-rightAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-			body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-			body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && GameManager::GetLockedObject()->IsGrounded())
-		{
-			body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
-		}
-
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
-	{
-		switch (GameManager::GetWorld()->GetMainCamera()->GetState())
-		{
-		case CameraState::THIRDPERSON:
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::TOPDOWN);
-			break;
-		case CameraState::TOPDOWN:
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-			break;
-		}
 	}
 }

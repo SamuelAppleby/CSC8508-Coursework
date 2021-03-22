@@ -8,6 +8,7 @@ PlayerObject::PlayerObject() {
 	speed = 500000.0f;
 	raycastTimer = .25f;
 	coinsCollected = 0;
+	jumpHeight = 12.0f;
 }
 
 void PlayerObject::Update(float dt) {
@@ -25,6 +26,7 @@ void PlayerObject::Update(float dt) {
 }
 
 void PlayerObject::FixedUpdate(float fixedDT) {
+	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (movingForward)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);
 	if (movingLeft)
@@ -34,5 +36,6 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 	if (movingRight)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(right) * speed * fixedDT, PxForceMode::eIMPULSE);
 	if (isJumping)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * speed * 500 * fixedDT, PxForceMode::eIMPULSE);
+		playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
+	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }

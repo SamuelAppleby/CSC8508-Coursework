@@ -39,7 +39,6 @@ namespace NCL
 
 			bool SelectObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement(float dt);
 		};
 	}
 }

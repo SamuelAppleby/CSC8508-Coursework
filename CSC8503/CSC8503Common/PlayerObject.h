@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "../../Common/Win32Window.h"
 #include "../CSC8503Common/PhysxConversions.h"
+#include "../CSC8503Common/PxPhysicsSystem.h"
+
 namespace NCL{
 	namespace CSC8503 {
 		class PlayerObject : public GameObject {
@@ -35,6 +37,7 @@ namespace NCL{
 			bool isGrounded;
 			float raycastTimer;
 			int coinsCollected;
+			float jumpHeight;
 		};
 	}
 }

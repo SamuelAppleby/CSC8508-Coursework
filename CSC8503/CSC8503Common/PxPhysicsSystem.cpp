@@ -1,6 +1,7 @@
 #include "PxPhysicsSystem.h"
 #include <iostream>
-
+using namespace NCL;
+using namespace NCL::CSC8503;
 PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, 
 	PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize) {
 	PX_UNUSED(attributes0);
@@ -37,7 +38,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
 
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITTY_SCALE, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, GRAVITTY, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = ContactReportFilterShader;

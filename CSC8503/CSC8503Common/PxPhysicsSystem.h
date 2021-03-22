@@ -41,58 +41,62 @@
 #include "PxPVD.h"
 #include "GameObject.h"
 #include "GameWorld.h"
-
 #define PX_RELEASE(x)	if(x)	{ x->release(); x = NULL;	}
 
-const int IDEAL_FRAMES = 240;
-const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
-const int GRAVITTY_SCALE = 4;
-using namespace physx;
-class PxPhysicsSystem
+namespace NCL
 {
-public:
-	PxPhysicsSystem();
-	~PxPhysicsSystem();
-
-	//void ResetPhysics();
-
-	void StepPhysics(float dt);
-
-	PxPhysics* GetGPhysics()
+	namespace CSC8503
 	{
-		return gPhysics;
+		const int IDEAL_FRAMES = 240;
+		const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
+		const int GRAVITTY = -9.81 * 4;
+		using namespace physx;
+		class PxPhysicsSystem
+		{
+		public:
+			PxPhysicsSystem();
+			~PxPhysicsSystem();
+
+			//void ResetPhysics();
+
+			void StepPhysics(float dt);
+
+			PxPhysics* GetGPhysics()
+			{
+				return gPhysics;
+			}
+
+			PxMaterial* GetGMaterial()
+			{
+				return gMaterial;
+			}
+
+			PxScene* GetGScene()
+			{
+				return gScene;
+			}
+
+			float FixedDeltaTime() const { return fixedDeltaTime; }
+
+		private:
+			float	dTOffset;
+			int realFrames;
+			float fixedDeltaTime;
+			PxDefaultAllocator		gAllocator;
+			PxDefaultErrorCallback	gErrorCallback;
+
+			PxFoundation* gFoundation = NULL;
+			PxPhysics* gPhysics = NULL;
+
+			PxDefaultCpuDispatcher* gDispatcher = NULL;
+			PxScene* gScene = NULL;
+
+			PxMaterial* gMaterial = NULL;
+
+			PxPvd* gPvd = NULL;
+
+			PxReal stackZ = 10.0f;
+		};
 	}
-
-	PxMaterial* GetGMaterial()
-	{
-		return gMaterial;
-	}
-
-	PxScene* GetGScene()
-	{
-		return gScene;
-	}
-
-	  float FixedDeltaTime() const { return fixedDeltaTime; }
-
-
-private:
-	float	dTOffset;
-	int realFrames;
-	float fixedDeltaTime;
-	PxDefaultAllocator		gAllocator;
-	PxDefaultErrorCallback	gErrorCallback;
-
-	PxFoundation* gFoundation = NULL;
-	PxPhysics* gPhysics = NULL;
-
-	PxDefaultCpuDispatcher* gDispatcher = NULL;
-	PxScene* gScene = NULL;
-
-	PxMaterial* gMaterial = NULL;
-
-	PxPvd* gPvd = NULL;
-
-	PxReal stackZ = 10.0f;
-};
+}
 
