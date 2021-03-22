@@ -35,7 +35,6 @@ void PlayerObject::Update(float dt) {
 }
 
 void PlayerObject::FixedUpdate(float fixedDT) {
-	std::cout << fixedDT << std::endl;
 	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (movingForward)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);

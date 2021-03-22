@@ -35,7 +35,6 @@ namespace NCL{
 			}
 
 			void LongJumpColelction() {
-				jumpHeight *= 2;
 				powerUpTimer = 5.0f;
 			}
 

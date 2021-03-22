@@ -221,32 +221,38 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 
 void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 {
-	Coin* p = new Coin();
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	Coin* coin = new Coin();
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
-	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	PxRigidBodyExt::updateMassAndInertia(*body, FLT_MIN);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	coin->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
-	p->GetRenderObject()->SetColour(Debug::YELLOW);
-	world->AddGameObject(p);
+	coin->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
+	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), bonusMesh, basicTex, toonShader));
+	coin->GetRenderObject()->SetColour(Debug::YELLOW);
+	world->AddGameObject(coin);
 }
 
 void GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius)
 {
-	LongJump* p = new LongJump();
-	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	LongJump* jump = new LongJump();
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
-	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	PxRigidBodyExt::updateMassAndInertia(*body, FLT_MIN);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	jump->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
-	p->GetRenderObject()->SetColour(Debug::RED);
-	world->AddGameObject(p);
+	jump->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
+	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, toonShader));
+	jump->GetRenderObject()->SetColour(Debug::RED);
+	world->AddGameObject(jump);
 }
 
 PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
