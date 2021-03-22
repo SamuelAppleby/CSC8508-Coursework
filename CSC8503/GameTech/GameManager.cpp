@@ -268,7 +268,7 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 	body->setMaxLinearVelocity(100);
 	pXPhysics->GetGScene()->addActor(*body);
 
-	p->GetTransform().SetScale(PxVec3(meshSize * -2, meshSize * 2, meshSize * 2));
+	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, toonShader));
 	//p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);

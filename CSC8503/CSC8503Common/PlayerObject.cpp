@@ -2,7 +2,8 @@
 
 using namespace NCL;
 using namespace CSC8503;
-PlayerObject::PlayerObject() {
+PlayerObject::PlayerObject()
+{
 	name = "Player";
 	isGrounded = false;
 	speed = 500000.0f;
@@ -13,13 +14,24 @@ PlayerObject::PlayerObject() {
 	jumpHeight = 12.0f;
 }
 
-void PlayerObject::Update(float dt) {
-	GameObject::Update(dt);
-	if (powerUpTimer > 0.0f) {
+void PlayerObject::Update(float dt)
+{
+
+	Vector3 q = Quaternion(physicsObject->GetPXActor()->getGlobalPose().q).ToEuler() + Vector3(0, 180, 0);
+	transform.SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(q.x, q.y, q.z)));
+	transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
+	transform.UpdateMatrix();
+	timeAlive += dt;
+
+
+
+	if (powerUpTimer > 0.0f)
+	{
 		jumpHeight = 12.0f;
 		powerUpTimer -= dt;
 	}
-	else {
+	else
+	{
 		jumpHeight = 6.0f;
 	}
 	raycastTimer -= dt;
@@ -30,7 +42,7 @@ void PlayerObject::Update(float dt) {
 	movingRight = (Window::GetKeyboard()->KeyDown(KeyboardKeys::D));
 	isJumping = (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded);
 
-	fwd = Quaternion(transform.GetOrientation()) * Vector3(0, 0, -1);
+	fwd = Quaternion(transform.GetOrientation()) * Vector3(0, 0, 1);
 	right = Vector3::Cross(Vector3(0, 1, 0), -fwd);
 }
 
