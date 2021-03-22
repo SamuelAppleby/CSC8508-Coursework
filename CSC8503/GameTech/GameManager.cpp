@@ -3,6 +3,7 @@
 
 #include "NetworkedGame.h"
 #include "../CSC8503Common/Coin.h"
+#include "../CSC8503Common/LongJump.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -221,7 +222,6 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 {
 	Coin* p = new Coin();
-
 	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
@@ -231,6 +231,21 @@ void GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal radius)
 	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
 	p->GetRenderObject()->SetColour(Debug::YELLOW);
+	world->AddGameObject(p);
+}
+
+void GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius)
+{
+	LongJump* p = new LongJump();
+	PxRigidStatic* body = pXPhysics->GetGPhysics()->createRigidStatic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
+	p->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	p->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), bonusMesh, basicTex, toonShader));
+	p->GetRenderObject()->SetColour(Debug::RED);
 	world->AddGameObject(p);
 }
 

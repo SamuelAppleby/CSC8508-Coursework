@@ -28,13 +28,21 @@ namespace NCL{
 			int GetCoinsCollected() const {
 				return coinsCollected;
 			}
+
+			void LongJumpColelction() {
+				jumpHeight = jumpHeight *2;
+			}
+
+
 		protected:
 			bool movingForward = false, movingBackwards = false, movingLeft = false, movingRight = false, isJumping = false;
 			Vector3 fwd;
 			Vector3 right;
 			float score;
 			float speed;
+			float longJump;
 			bool isGrounded;
+			bool isLongJump = false;
 			float raycastTimer;
 			int coinsCollected;
 			float jumpHeight;

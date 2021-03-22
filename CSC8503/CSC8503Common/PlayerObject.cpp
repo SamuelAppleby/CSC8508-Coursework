@@ -6,9 +6,10 @@ PlayerObject::PlayerObject() {
 	name = "Player";
 	isGrounded = false;
 	speed = 500000.0f;
+	//longJump = 500000.0f;
 	raycastTimer = .25f;
 	coinsCollected = 0;
-	jumpHeight = 12.0f;
+	jumpHeight = 6.0f;
 }
 
 void PlayerObject::Update(float dt) {
@@ -26,6 +27,8 @@ void PlayerObject::Update(float dt) {
 }
 
 void PlayerObject::FixedUpdate(float fixedDT) {
+
+	//std::cout << fixedDT;
 	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (movingForward)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);

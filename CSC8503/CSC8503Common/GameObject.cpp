@@ -40,20 +40,14 @@ void GameObject::Update(float dt)
 void GameObject::OnCollisionBegin(GameObject* otherObject) {
 	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
 	isColliding = true;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = true;
-	}
+	
 }
 
 void GameObject::OnCollisionEnd(GameObject* otherObject)
 {
 	//std::cout << name << " stopped collision with: " << otherObject->GetName() << std::endl;
 	isColliding = false;
-	if (otherObject->GetName() == "Floor")
-	{
-		isGrounded = false;
-	}
+
 }
 
 
