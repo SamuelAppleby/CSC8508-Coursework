@@ -83,7 +83,9 @@ namespace NCL
 				shuffleObjects = state;
 			}
 
-			virtual void UpdateWorld(float dt, float fixedDeltaTime);
+			virtual void UpdateWorld(float dt);
+
+			void UpdatePhysics(float fixedDeltaTime);
 
 			static GameObject* FindObjectFromPhysicsBody(PxActor* actor);
 

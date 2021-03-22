@@ -12,6 +12,8 @@ namespace NCL
 {
 	namespace CSC8503
 	{
+		const int IDEAL_FRAMES = 240;
+		const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 		class PlayerObject;
 		enum class FinishType { INGAME, TIMEOUT, WIN, LOSE };
 		class LevelCreator
@@ -23,12 +25,17 @@ namespace NCL
 			void ResetWorld();
 
 			virtual void Update(float dt);
+			virtual void UpdatePhysics(float dt);
+
 			void UpdateLevel(float dt);
 			void UpdatePlayer(float dt);
 			void InitPlayer(const PxTransform& t, const PxReal scale);
 			void virtual InitWorld(LevelState state);
 
 		protected:
+			float	dTOffset;
+			int realFrames;
+			float fixedDeltaTime;
 			LevelState currentLevel;
 			void InitCamera();
 			void UpdateKeys();

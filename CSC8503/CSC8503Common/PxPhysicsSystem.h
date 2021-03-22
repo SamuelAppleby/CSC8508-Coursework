@@ -47,8 +47,6 @@ namespace NCL
 {
 	namespace CSC8503
 	{
-		const int IDEAL_FRAMES = 240;
-		const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 		const int GRAVITTY = -9.81 * 4;
 		using namespace physx;
 		class PxPhysicsSystem
@@ -76,12 +74,7 @@ namespace NCL
 				return gScene;
 			}
 
-			float FixedDeltaTime() const { return fixedDeltaTime; }
-
 		private:
-			float	dTOffset;
-			int realFrames;
-			float fixedDeltaTime;
 			PxDefaultAllocator		gAllocator;
 			PxDefaultErrorCallback	gErrorCallback;
 

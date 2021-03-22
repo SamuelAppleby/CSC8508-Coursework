@@ -86,11 +86,12 @@ void NetworkedGame::Update(float dt)
 
 	if (thisServer)
 	{
-		GameManager::GetPhysicsSystem()->StepPhysics(dt);
+		UpdatePhysics(dt);
 	}
 
+
 	UpdateLevel(dt);
-	GameManager::GetWorld()->UpdateWorld(dt, GameManager::GetPhysicsSystem()->FixedDeltaTime());
+	GameManager::GetWorld()->UpdateWorld(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();

@@ -10,6 +10,10 @@ using namespace CSC8503;
 
 LevelCreator::LevelCreator()
 {
+	realFrames = IDEAL_FRAMES;
+	fixedDeltaTime = IDEAL_DT;
+	dTOffset = 0.0f;
+
 	GameManager::Create(new PxPhysicsSystem(), new GameWorld(), new AudioManager());
 	GameManager::LoadAssets();
 }
@@ -33,13 +37,39 @@ void LevelCreator::Update(float dt)
 		GameManager::GetAudioManager()->SetPlayerPos(GameManager::GetPlayer()->GetRenderObject()->GetTransform()->GetPosition());
 	}
 
-	GameManager::GetPhysicsSystem()->StepPhysics(dt);
+	UpdatePhysics(dt);
 	UpdateLevel(dt);
-	GameManager::GetWorld()->UpdateWorld(dt, GameManager::GetPhysicsSystem()->FixedDeltaTime());
+	GameManager::GetWorld()->UpdateWorld(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
+}
+
+void LevelCreator::UpdatePhysics(float dt)
+{
+	dTOffset += dt;
+	while (dTOffset >= fixedDeltaTime) {
+		GameManager::GetPhysicsSystem()->StepPhysics(fixedDeltaTime);
+		GameManager::GetWorld()->UpdatePhysics(fixedDeltaTime);
+		dTOffset -= fixedDeltaTime;
+	}
+	NCL::GameTimer t;
+	t.Tick();
+	float updateTime = t.GetTimeDeltaSeconds();
+	if (updateTime > fixedDeltaTime) {
+		realFrames /= 2;
+		fixedDeltaTime *= 2;
+	}
+	else if (dt * 2 < fixedDeltaTime) {
+		realFrames *= 2;
+		fixedDeltaTime /= 2;
+
+		if (realFrames > IDEAL_FRAMES) {
+			realFrames = IDEAL_FRAMES;
+			fixedDeltaTime = IDEAL_DT;
+		}
+	}
 }
 
 /* Logic for updating level 1 or level 2 */

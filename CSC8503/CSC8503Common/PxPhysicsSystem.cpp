@@ -23,9 +23,6 @@ PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 }
 
 PxPhysicsSystem::PxPhysicsSystem() {
-	realFrames = IDEAL_FRAMES;
-	fixedDeltaTime = IDEAL_DT;
-	dTOffset = 0.0f;
 
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
@@ -84,29 +81,9 @@ PxPhysicsSystem::~PxPhysicsSystem() {
 //	}
 //}
 
-void PxPhysicsSystem::StepPhysics(float dt) {
-	dTOffset += dt;
-	while (dTOffset >= fixedDeltaTime) {
-		gScene->simulate(fixedDeltaTime);
-		gScene->fetchResults(true);
-		dTOffset -= fixedDeltaTime;
-	}
-	NCL::GameTimer t;
-	t.Tick();
-	float updateTime = t.GetTimeDeltaSeconds();
-	if (updateTime > fixedDeltaTime) {
-		realFrames /= 2;
-		fixedDeltaTime *= 2;
-	}
-	else if (dt * 2 < fixedDeltaTime) {
-		realFrames *= 2;
-		fixedDeltaTime /= 2;
-
-		if (realFrames > IDEAL_FRAMES) {
-			realFrames = IDEAL_FRAMES;
-			fixedDeltaTime = IDEAL_DT;
-		}
-	}
+void PxPhysicsSystem::StepPhysics(float fixedDeltaTime) {
+	gScene->simulate(fixedDeltaTime);
+	gScene->fetchResults(true);
 }
 
 
