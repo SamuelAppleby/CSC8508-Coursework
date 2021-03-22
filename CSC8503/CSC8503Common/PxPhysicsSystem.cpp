@@ -1,6 +1,7 @@
 #include "PxPhysicsSystem.h"
 #include <iostream>
-
+using namespace NCL;
+using namespace NCL::CSC8503;
 PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, 
 	PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize) {
 	PX_UNUSED(attributes0);
@@ -9,18 +10,19 @@ PxFilterFlags ContactReportFilterShader(PxFilterObjectAttributes attributes0, Px
 	PX_UNUSED(filterData1);
 	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(constantBlock);
-
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1)) {
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
 	// all initial and persisting reports for everything, with per-point data
-	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eNOTIFY_TOUCH_FOUND 
-		/*| PxPairFlag::eNOTIFY_TOUCH_PERSISTS*/ | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eDETECT_CCD_CONTACT;
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eDETECT_CCD_CONTACT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST /*| PxPairFlag::eNOTIFY_TOUCH_PERSISTS*/
+		| PxPairFlag::eTRIGGER_DEFAULT;
 
 	return PxFilterFlags();
 }
 
 PxPhysicsSystem::PxPhysicsSystem() {
-	realFrames = IDEAL_FRAMES;
-	fixedDeltaTime = IDEAL_DT;
-	dTOffset = 0.0f;
 
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
@@ -33,7 +35,7 @@ PxPhysicsSystem::PxPhysicsSystem() {
 	PxSceneDesc sceneDesc = PxSceneDesc(gPhysics->getTolerancesScale());
 
 	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;		
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f * GRAVITTY_SCALE, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, GRAVITTY, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = ContactReportFilterShader;
@@ -63,45 +65,25 @@ PxPhysicsSystem::~PxPhysicsSystem() {
 	PX_RELEASE(gFoundation);
 }
 
-//void PxPhysicsSystem::ResetPhysics() {
-//	PxU32 nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
-//	PxActor** actors = new PxActor * [nbActors];
-//	gScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, actors, nbActors);
-//	while (nbActors--) {
-//		gScene->removeActor(*actors[nbActors]);
-//	}
-//
-//	nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
-//	actors = new PxActor * [nbActors];
-//	gScene->getActors(PxActorTypeFlag::eRIGID_STATIC, actors, nbActors);
-//	while (nbActors--) {
-//		gScene->removeActor(*actors[nbActors]);
-//	}
-//}
+void PxPhysicsSystem::ResetPhysics() {
+	PxU32 nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+	PxActor** actors = new PxActor * [nbActors];
+	gScene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, actors, nbActors);
+	while (nbActors--) {
+		gScene->removeActor(*actors[nbActors]);
+	}
 
-void PxPhysicsSystem::StepPhysics(float dt) {
-	dTOffset += dt;
-	while (dTOffset >= fixedDeltaTime) {
-		gScene->simulate(fixedDeltaTime);
-		gScene->fetchResults(true);
-		dTOffset -= fixedDeltaTime;
+	nbActors = gScene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+	actors = new PxActor * [nbActors];
+	gScene->getActors(PxActorTypeFlag::eRIGID_STATIC, actors, nbActors);
+	while (nbActors--) {
+		gScene->removeActor(*actors[nbActors]);
 	}
-	NCL::GameTimer t;
-	t.Tick();
-	float updateTime = t.GetTimeDeltaSeconds();
-	if (updateTime > fixedDeltaTime) {
-		realFrames /= 2;
-		fixedDeltaTime *= 2;
-	}
-	else if (dt * 2 < fixedDeltaTime) {
-		realFrames *= 2;
-		fixedDeltaTime /= 2;
+}
 
-		if (realFrames > IDEAL_FRAMES) {
-			realFrames = IDEAL_FRAMES;
-			fixedDeltaTime = IDEAL_DT;
-		}
-	}
+void PxPhysicsSystem::StepPhysics(float fixedDeltaTime) {
+	gScene->simulate(fixedDeltaTime);
+	gScene->fetchResults(true);
 }
 
 

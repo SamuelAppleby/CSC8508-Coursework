@@ -14,14 +14,15 @@ namespace NCL
 {
 	namespace CSC8503
 	{
+		class NetworkObject;
 		class GameObject
 		{
 		public:
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt);
-			
+			virtual void Update(float dt);	
+			virtual void FixedUpdate(float fixedDT){}
 
 			void SetName(string val)
 			{
@@ -43,6 +44,11 @@ namespace NCL
 				return physicsObject;
 			}
 
+			NetworkObject* GetNetworkObject() const
+			{
+				return networkObject;
+			}
+
 			virtual void SetRenderObject(RenderObject* newObject)
 			{
 				renderObject = newObject;
@@ -51,6 +57,11 @@ namespace NCL
 			virtual void SetPhysicsObject(PhysXObject* newObject)
 			{
 				physicsObject = newObject;
+			}
+
+			virtual void SetNetworkObject(NetworkObject* newObject)
+			{
+				networkObject = newObject;
 			}
 
 			const string& GetName() const
@@ -97,29 +108,24 @@ namespace NCL
 				return timeInSet;
 			}
 
-			void SetPowerUpTimer(float val)
-			{
-				powerUpTimer = val;
-			}
-
-			float GetPowerUpTimer() const
-			{
-				return powerUpTimer;
-			}
-
 			float GetTimeAlive() const
 			{
 				return timeAlive;
 			}
 
+			void SetGrounded(bool val)
+			{
+				isGrounded = val;
+			}
+
+			bool IsGrounded() const
+			{
+				return isGrounded;
+			}
+
 			bool IsColliding() const
 			{
 				return isColliding;
-			}
-
-			virtual void setDestroy(bool newDestroy)
-			{
-				destroy = newDestroy;
 			}
 
 			void SetPosition(const PxVec3& worldPos);
@@ -130,17 +136,16 @@ namespace NCL
 
 			PhysXObject* physicsObject;
 			RenderObject* renderObject;
+			NetworkObject* networkObject;
 
 			int	worldID;
 			string	name;
 			bool selectedObject;
 			float timeInSet;
 			float timeAlive;
-			float powerUpTimer;
+			bool isGrounded;
 
 			bool isColliding;
-			//level2 stuff
-			bool destroy;
 		};
 	}
 }

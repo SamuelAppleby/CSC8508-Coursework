@@ -15,13 +15,17 @@
 #include "../CSC8503Common/Cannon.h"
 #include "../CSC8503Common/KillPlane.h"
 #include "../CSC8503Common/Obstacles.h"
-#include "../CSC8503Common/PlayerObject.h"
-#include "../CSC8503Common/FallingTile.h"
+#include "NetworkPlayer.h"
+#include "../Common/MeshMaterial.h";
+
+
+#include "../CSC8503Common/Pendulum.h"
+
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3 };
-enum class TextureState { FLOOR, ICE, INVISIBLE};
+enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE};
 
 class GameManager {
 public:
@@ -43,20 +47,19 @@ public:
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 
-	static void AddPxPickupToWorld(const PxTransform& t, const PxReal radius);
+	static void AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
+	static void AddPxLongJump(const PxTransform& t, const PxReal radius);
 	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
+	static NetworkPlayer* AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
 	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
-	static void AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f, string name = "Floor");
+	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5);
 	static void AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f);
+	static void AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft = true, float friction = 0.5f, float elasticity = 0.5f);
 	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
-	static void AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.5f);
-	static GameWorld* GetWorld() {
-		return world;
-	}
 
 	static Obstacles* GetObstacles()
 	{
@@ -66,21 +69,16 @@ public:
 		return pXPhysics;
 	}
 
+	static GameWorld* GetWorld() {
+		return world;
+	}
+
 	static GameTechRenderer* GetRenderer() {
 		return renderer;
 	}
 
 	static AudioManager* GetAudioManager() {
 		return audioManager;
-	}
-
-	static CameraState GetCameraState() {
-		return world->GetMainCamera()->GetState();
-	}
-
-	static void SetCamState(CameraState val) {
-		world->GetMainCamera()->SetState(val);
-		renderer->SetCamState(val);
 	}
 
 	static GameObject* GetLockedObject() {
@@ -117,6 +115,15 @@ public:
 		return window;
 	}
 
+	static void SetPlayer(PlayerObject* val) {
+		player = val;
+		renderer->SetPlayer(player);
+	}
+
+	static PlayerObject* GetPlayer() {
+		return player;
+	}
+
 private:
 	static Win32Code::Win32Window* window;
 
@@ -134,6 +141,8 @@ private:
 	static OGLMesh* charMeshB;
 	static OGLMesh* enemyMesh;
 	static OGLMesh* bonusMesh;
+	static OGLMesh* pbodyMesh;
+
 
 	static OGLTexture* basicTex;
 	static OGLTexture* floorTex;
@@ -147,13 +156,20 @@ private:
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
 	static OGLTexture* dogeTex;
+	static OGLTexture* pBodyTex;
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
+
+	static CameraState camState;
 
 	static GameObject* selectionObject;
 	static GameObject* lockedObject;
 
 	static LevelState levelState;
+
+	static PlayerObject* player;
+
+	static MeshMaterial* pBodyMat;
 };
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "NetworkBase.h"
 #include <stdint.h>
-#include <thread>
-#include <atomic>
+//#include <thread>
+//#include <atomic>
 
 namespace NCL {
 	namespace CSC8503 {
@@ -12,17 +12,20 @@ namespace NCL {
 			GameClient();
 			~GameClient();
 
-			bool Connect(uint8_t a, uint8_t b, uint8_t c, uint8_t d, int portNum);
+			bool Connect(std::string ip, int portNum);
 
-			void SendPacket(GamePacket&  payload);
+			void SendPacket(GamePacket& payload);
 
-			void UpdateClient();
-		protected:	
+			void UpdateClient(float dt);
+
 			//void ThreadedUpdate();
 
-			ENetPeer*	netPeer;
-			//std::atomic<bool>	threadAlive;
-			//std::thread			updateThread;
+			int lastPacketID = 0;
+
+		protected:
+			ENetPeer* netPeer;
+			/*std::atomic<bool> threadAlive;
+			std::thread	updateThread;*/
 		};
 	}
 }

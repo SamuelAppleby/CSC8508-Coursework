@@ -19,17 +19,15 @@ void Cannon::Shoot()
 {
 	for (auto& i : GameManager::GetObstacles()->cannons)
 	{
-		if (!i->isActive)
+		if (!i->IsActive())
 		{
 			currentBall = i;
-
 			break;
 		}
 	}
 
 	if (currentBall != nullptr)
 	{
-		//;
 		currentBall->ResetBall(transform.GetPosition() + translate, trajectory);
 	}
 	timeSinceShot = 0;

@@ -37,9 +37,6 @@ namespace NCL {
 					PxTransform t = PxTransform(getRespawnPoint());
 					otherObject->GetPhysicsObject()->GetPXActor()->setGlobalPose(t.transform(PxTransform(t.p)));
 				}
-				if (otherObject->GetName() == "Cannonball") {
-					otherObject->setDestroy(true);
-				}
 
 			}
 		protected:

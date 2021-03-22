@@ -13,6 +13,7 @@ GameWorld::GameWorld() {
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
 	totalCollisions = 0;
+	debugMode = false;
 }
 
 GameWorld::~GameWorld() {
@@ -61,10 +62,18 @@ void GameWorld::UpdateWorld(float dt) {
 		std::shuffle(gameObjects.begin(), gameObjects.end(), g);
 	for (auto& i : gameObjects) {
 		i->Update(dt);
+		if(debugMode)
+			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);
 		if (i->IsColliding())
 			tempCols++;
 	}
 	totalCollisions = tempCols;
+}
+
+void GameWorld::UpdatePhysics(float fixedDeltaTime) {	
+	for (auto& i : gameObjects) {
+		i->FixedUpdate(fixedDeltaTime);
+	}
 }
 
 GameObject* GameWorld::FindObjectFromPhysicsBody(PxActor* actor) {
@@ -74,12 +83,6 @@ GameObject* GameWorld::FindObjectFromPhysicsBody(PxActor* actor) {
 		}
 	}
 	return nullptr;
-}
-
-void GameWorld::ShowFacing() {
-	for (auto& i : gameObjects) {
-		Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);		// Show the axes of all active game objects
-	}
 }
 
 

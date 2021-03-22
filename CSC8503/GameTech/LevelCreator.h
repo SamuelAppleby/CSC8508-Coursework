@@ -5,13 +5,15 @@
  *			Tutorial Game definition		 */
 #pragma once
 #include "../CSC8503Common/PhysxConversions.h"
-#include "../CSC8503/CSC8503Common/CollisionDetection.h"
+#include "../CSC8503Common/CollisionDetection.h"
 #include "../GameTech/GameManager.h"
 
 namespace NCL
 {
 	namespace CSC8503
 	{
+		const int IDEAL_FRAMES = 240;
+		const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 		class PlayerObject;
 		enum class FinishType { INGAME, TIMEOUT, WIN, LOSE };
 		class LevelCreator
@@ -22,13 +24,20 @@ namespace NCL
 
 			void ResetWorld();
 
-			void Update(float dt);
+			virtual void Update(float dt);
+			virtual void UpdateTimeStep(float dt);
+
+			void FixedUpdate(float dt);
+
 			void UpdateLevel(float dt);
 			void UpdatePlayer(float dt);
-
-			void InitWorld(LevelState state);
 			void InitPlayer(const PxTransform& t, const PxReal scale);
+			void virtual InitWorld(LevelState state);
+
 		protected:
+			float	dTOffset;
+			int realFrames;
+			float fixedDeltaTime;
 			LevelState currentLevel;
 			void InitCamera();
 			void UpdateKeys();
@@ -39,14 +48,6 @@ namespace NCL
 
 			bool SelectObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement(float dt);
-
-			PlayerObject* player;
-
-			//Level2 stuff here
-			void updateCannons(float dt);
-			void updateCannonBalls();
-			void clearCannons();
 		};
 	}
 }

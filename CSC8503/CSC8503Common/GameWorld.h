@@ -18,41 +18,48 @@
 #include "../../Common/TextureLoader.h"
 #include "../../Common/Matrix4.h"
 #include "../../Common/Light.h"
-namespace NCL {
+namespace NCL
+{
 	class Camera;
 	namespace CSC8503
 	{
 		class GameObject;
 		typedef std::function<void(GameObject*)> GameObjectFunc;
 		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
-		class GameWorld : public PxSimulationEventCallback {
+		class GameWorld : public PxSimulationEventCallback
+		{
 		public:
 			GameWorld();
 			~GameWorld();
 
 			/* PhysX callback methods */
-			void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
+			void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
+			{
 				PxActor* actor1 = pairHeader.actors[0];
 				GameObject* obj1 = FindObjectFromPhysicsBody(actor1);
 
 				PxActor* actor2 = pairHeader.actors[1];
 				GameObject* obj2 = FindObjectFromPhysicsBody(actor2);
 
-				if (obj1 && obj2) {
-					for (PxU32 i = 0; i < nbPairs; i++) {
+				if (obj1 && obj2)
+				{
+					for (PxU32 i = 0; i < nbPairs; i++)
+					{
 						const PxContactPair& cp = pairs[i];
 
-						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+						{
 							obj1->OnCollisionBegin(obj2);
 							obj2->OnCollisionBegin(obj1);
 						}
-						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
+						if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST)
+						{
 							obj1->OnCollisionEnd(obj2);
 							obj2->OnCollisionEnd(obj1);
 						}
 					}
 				}
-						
+
 			}
 			void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) {}
 			void onWake(PxActor** actors, PxU32 count) {}
@@ -65,8 +72,9 @@ namespace NCL {
 
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
-		
-			Camera* GetMainCamera() const {
+
+			Camera* GetMainCamera() const
+			{
 				return mainCamera;
 			}
 
@@ -75,9 +83,9 @@ namespace NCL {
 				shuffleObjects = state;
 			}
 
-			void ShowFacing();
-
 			virtual void UpdateWorld(float dt);
+
+			void UpdatePhysics(float fixedDeltaTime);
 
 			static GameObject* FindObjectFromPhysicsBody(PxActor* actor);
 
@@ -85,12 +93,14 @@ namespace NCL {
 
 			void GetObjectIterators(GameObjectIterator& first, GameObjectIterator& last) const;
 
-			bool GetShuffleObjects() const {
+			bool GetShuffleObjects() const
+			{
 				return shuffleObjects;
 			}
 			static std::vector<GameObject*> gameObjects;
 
-			int GetTotalCollisions() const {
+			int GetTotalCollisions() const
+			{
 				return totalCollisions;
 			}
 
@@ -107,7 +117,10 @@ namespace NCL {
 			//{
 			//	//lights[lightCount] = l;
 			//}
-			
+			void SetDebugMode(bool val)
+			{
+				debugMode = val;
+			}
 
 		protected:
 			Camera* mainCamera;
@@ -115,6 +128,8 @@ namespace NCL {
 			int		worldIDCounter;
 			int totalCollisions;
 			int     lightCount;
+
+			bool debugMode;
 		};
 	}
 }

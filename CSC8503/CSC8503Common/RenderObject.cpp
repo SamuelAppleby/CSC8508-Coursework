@@ -15,6 +15,7 @@ RenderObject::RenderObject(Transform* parentTransform, MeshGeometry* mesh, Textu
 	this->texture	= tex;
 	this->shader	= shader;
 	this->colour	= Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	this->mat       = nullptr;
 }
 
 RenderObject::~RenderObject() {
