@@ -108,16 +108,6 @@ namespace NCL
 				return timeInSet;
 			}
 
-			void SetPowerUpTimer(float val)
-			{
-				powerUpTimer = val;
-			}
-
-			float GetPowerUpTimer() const
-			{
-				return powerUpTimer;
-			}
-
 			float GetTimeAlive() const
 			{
 				return timeAlive;
@@ -153,7 +143,6 @@ namespace NCL
 			bool selectedObject;
 			float timeInSet;
 			float timeAlive;
-			float powerUpTimer;
 			bool isGrounded;
 
 			bool isColliding;

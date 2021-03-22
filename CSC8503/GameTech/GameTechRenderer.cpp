@@ -403,8 +403,12 @@ void GameTechRenderer::RenderUI()
 			else
 				ImGui::Text("Shuffle Objects(F1):Off");
 		}
-		if (player)
+		if (player) {
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
+			if(player->GetPowerUpTimer() > 0.0f)
+				ImGui::Text("Powered Up!");
+		}
+		
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
 		ImGui::End();

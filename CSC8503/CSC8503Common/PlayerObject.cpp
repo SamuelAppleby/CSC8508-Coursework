@@ -9,11 +9,19 @@ PlayerObject::PlayerObject() {
 	//longJump = 500000.0f;
 	raycastTimer = .25f;
 	coinsCollected = 0;
-	jumpHeight = 6.0f;
+	powerUpTimer = 0.0f;
+	jumpHeight = 12.0f;
 }
 
 void PlayerObject::Update(float dt) {
 	GameObject::Update(dt);
+	if (powerUpTimer > 0.0f) {
+		jumpHeight = 12.0f;
+		powerUpTimer -= dt;
+	}
+	else {
+		jumpHeight = 6.0f;
+	}
 	raycastTimer -= dt;
 
 	movingForward = (Window::GetKeyboard()->KeyDown(KeyboardKeys::W));
@@ -27,8 +35,7 @@ void PlayerObject::Update(float dt) {
 }
 
 void PlayerObject::FixedUpdate(float fixedDT) {
-
-	//std::cout << fixedDT;
+	std::cout << fixedDT << std::endl;
 	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (movingForward)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(PhysxConversions::GetVector3(fwd) * speed * fixedDT, PxForceMode::eIMPULSE);

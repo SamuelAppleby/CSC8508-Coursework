@@ -15,7 +15,6 @@ GameObject::GameObject(string objectName) {
 	selectedObject = false;
 	timeAlive = 0.0f;
 	timeInSet = 0.0f;
-	powerUpTimer = 0.0f;
 	isGrounded = false;
 	isColliding = false;
 }
@@ -29,12 +28,10 @@ GameObject::~GameObject()
 
 void GameObject::Update(float dt)
 {
-
 	transform.SetOrientation(physicsObject->GetPXActor()->getGlobalPose().q);
 	transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
 	transform.UpdateMatrix();
 	timeAlive += dt;
-
 }
 
 void GameObject::OnCollisionBegin(GameObject* otherObject) {
@@ -57,9 +54,6 @@ void GameObject::SetPosition(const PxVec3& worldPos)
 	actor->setGlobalPose(PxTransform(worldPos));
 	transform.UpdateMatrix();
 }
-
-
-
 
 void GameObject::SetOrientation(const PxQuat& worldOrientation)
 {

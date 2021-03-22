@@ -29,8 +29,14 @@ namespace NCL{
 				return coinsCollected;
 			}
 
+			float GetPowerUpTimer() const
+			{
+				return powerUpTimer;
+			}
+
 			void LongJumpColelction() {
-				jumpHeight = jumpHeight *2;
+				jumpHeight *= 2;
+				powerUpTimer = 5.0f;
 			}
 
 
@@ -44,6 +50,8 @@ namespace NCL{
 			bool isGrounded;
 			bool isLongJump = false;
 			float raycastTimer;
+			float powerUpTimer;
+
 			int coinsCollected;
 			float jumpHeight;
 		};
