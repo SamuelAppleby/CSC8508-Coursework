@@ -38,36 +38,18 @@ void LevelCreator::Update(float dt)
 	}
 	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateLevel(dt);
+	UpdateTimeStep(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
-	FixedUpdate(dt);	
 }
 
-void LevelCreator::FixedUpdate(float dt)
+void LevelCreator::UpdateTimeStep(float dt)
 {
 	dTOffset += dt;
 	while (dTOffset >= fixedDeltaTime) {
-		GameManager::GetPhysicsSystem()->StepPhysics(fixedDeltaTime);
-		GameManager::GetWorld()->UpdatePhysics(fixedDeltaTime);
-		
-		/* Change how we move the camera dependng if we have a locked object */
-		if (GameManager::GetLockedObject() != nullptr)
-		{
-			PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-			if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-			float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
-			yaw = Maths::DegreesToRadians(yaw);
-			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-			GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
-		}
-
-		else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
-			GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 ||
-			GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
-			GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
-
+		FixedUpdate(fixedDeltaTime);
 		dTOffset -= fixedDeltaTime;
 	}
 	NCL::GameTimer t;
@@ -86,6 +68,12 @@ void LevelCreator::FixedUpdate(float dt)
 			fixedDeltaTime = IDEAL_DT;
 		}
 	}
+}
+
+void LevelCreator::FixedUpdate(float dt)
+{
+	GameManager::GetPhysicsSystem()->StepPhysics(dt);
+	GameManager::GetWorld()->UpdatePhysics(dt);
 }
 
 /* Logic for updating level 1 or level 2 */
@@ -137,6 +125,21 @@ void LevelCreator::UpdateLevel(float dt)
 		}
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 	}
+
+	if (GameManager::GetLockedObject() != nullptr)
+	{
+		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
+		if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+		yaw = Maths::DegreesToRadians(yaw);
+		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
+	}
+
+	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
+		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 ||
+		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
+		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	else if (GameManager::GetSelectionObject())
 	{

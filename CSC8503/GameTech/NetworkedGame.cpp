@@ -86,7 +86,7 @@ void NetworkedGame::Update(float dt)
 
 	if (thisServer)
 	{
-		FixedUpdate(dt);
+		UpdateTimeStep(dt);
 	}
 
 
