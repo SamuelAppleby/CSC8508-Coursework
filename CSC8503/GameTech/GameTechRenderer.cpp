@@ -186,7 +186,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
-		ImGui::Begin("PAUSED", &p_open, window_flags);
+		ImGui::Begin("PAUSED", NULL, window_flags);
 		if (ImGui::Button("Resume")) {
 			levelState = UIState::INGAME;
 		}
@@ -203,7 +203,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
-		ImGui::Begin("Title Screen", &p_open, window_flags);
+		ImGui::Begin("Title Screen", NULL, window_flags);
 		if (ImGui::Button("Level 1")) {
 			selectedLevel = 1;
 			levelState = UIState::MODESELECT;
@@ -229,7 +229,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
-		ImGui::Begin("Options", &p_open, window_flags);
+		ImGui::Begin("Options", NULL, window_flags);
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
 		if (ImGui::Button("Back")) {
@@ -242,7 +242,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
-		ImGui::Begin("Options", &p_open, window_flags);
+		ImGui::Begin("Options", NULL, window_flags);
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
 		ImGui::SetWindowFontScale(0.5);
@@ -257,7 +257,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
-		ImGui::Begin("Play Mode", &p_open, window_flags);
+		ImGui::Begin("Play Mode", NULL, window_flags);
 		if (ImGui::Button("Single Player")) {
 			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
 		}
@@ -274,7 +274,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
-		ImGui::Begin("Multiplayer Menu", &p_open, window_flags);
+		ImGui::Begin("Multiplayer Menu", NULL, window_flags);
 
 		if (!readyToHost) {
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
@@ -325,7 +325,7 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else if (ImGui::Button(ipString.c_str(), ImVec2(400,50))) {
+		else if (ImGui::Button(ipString.c_str(), ImVec2(400, 50))) {
 			ipString.clear();
 			enterName = false;
 			enterPort = false;
@@ -356,7 +356,7 @@ void GameTechRenderer::RenderUI()
 				activeString->append(std::to_string(i - 0x30));
 			}
 		}
-		
+
 		if (activeString == &nameString) {
 			for (int i = 0x41; i <= 0x5A; ++i) {
 				if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i)) {
@@ -438,7 +438,7 @@ void GameTechRenderer::RenderUI()
 			ImGui::Text("Shuffle Objects(F1):On");
 		else
 			ImGui::Text("Shuffle Objects(F1):Off");
-		if(player)
+		if (player)
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
@@ -461,7 +461,7 @@ void GameTechRenderer::RenderUI()
 				ImGui::Text("Unlock Object (L)");
 		}
 		ImGui::Text("Change to play mode(Q)");
-		
+
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
 		case CameraState::FREE:
@@ -525,7 +525,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
-		ImGui::Begin("PLAYERS", &p_open, window_flags);
+		ImGui::Begin("PLAYERS", NULL, window_flags);
 
 		if (nGame) {
 			int levelNetworkObjectsCount = nGame->GetLevelNetworkObjectsCount();
@@ -539,11 +539,25 @@ void GameTechRenderer::RenderUI()
 
 					if (n->IsConnected()) {
 						ImGui::Text(n->GetPlayerName().c_str());
+
+						if (n->HasFinished()) {
+							ImGui::SameLine(ImGui::GetWindowWidth() - 200);
+							ImGui::Text("%.2f", n->GetFinishTime());
+						}
 					}
 				}
 			}
 		}
 
+		ImGui::PopFont();
+		ImGui::End();
+		break;
+	case UIState::FINISH:
+		ImGui::PushFont(titleFont);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 8), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 6), ImGuiCond_Always);
+		ImGui::Begin("FINISHED!", NULL, window_flags);
+		ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
 		ImGui::PopFont();
 		ImGui::End();
 	}

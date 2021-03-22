@@ -31,6 +31,14 @@ NetworkedGame::~NetworkedGame() {
 	delete thisClient;
 }
 
+void NetworkedGame::ResetWorld() {
+	networkObjects.clear();
+	serverPlayers.clear();
+	stateIDs.clear();
+
+	LevelCreator::ResetWorld();
+}
+
 void NetworkedGame::StartAsServer(LevelState state, string playerName) {
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
@@ -151,21 +159,25 @@ void NetworkedGame::UpdateAsClient(float dt) {
 
 	if (localPlayer) {
 		newPacket.playerName = localPlayer->GetPlayerName();
-	}
 
-	UIState ui = GameManager::GetRenderer()->GetUIState();
+		if (localPlayer->HasFinished()) {
+			newPacket.finishTime = localPlayer->GetFinishTime();
+		}
 
-	if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
-			newPacket.buttonstates[0] = 1;
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
-			newPacket.buttonstates[1] = 1;
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
-			newPacket.buttonstates[2] = 1;
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
-			newPacket.buttonstates[3] = 1;
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
-			newPacket.buttonstates[4] = 1;
+		UIState ui = GameManager::GetRenderer()->GetUIState();
+
+		if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W))
+				newPacket.buttonstates[0] = 1;
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A))
+				newPacket.buttonstates[1] = 1;
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S))
+				newPacket.buttonstates[2] = 1;
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
+				newPacket.buttonstates[3] = 1;
+			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
+				newPacket.buttonstates[4] = 1;
+			}
 		}
 	}
 
@@ -419,6 +431,11 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 			if (realPacket->playerName != "") {
 				player->SetPlayerName(realPacket->playerName);
+			}
+
+			if (realPacket->finishTime > 0) {
+				player->SetFinishTime(realPacket->finishTime);
+				player->SetFinished(true);
 			}
 
 			UpdatePlayer(player, dt);

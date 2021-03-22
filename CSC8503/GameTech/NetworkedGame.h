@@ -14,6 +14,8 @@ namespace NCL {
 			NetworkedGame();
 			~NetworkedGame();
 
+			void ResetWorld();
+
 			void StartAsServer(LevelState state, string playerName);
 			void StartAsClient(LevelState state, string playerName, string ip);
 

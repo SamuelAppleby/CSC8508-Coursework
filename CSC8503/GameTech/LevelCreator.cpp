@@ -38,24 +38,33 @@ void LevelCreator::Update(float dt)
 /* Logic for updating level 1 or level 2 */
 void LevelCreator::UpdateLevel(float dt)
 {
-	if (GameManager::GetPlayer()) {
+	GameTechRenderer* renderer = GameManager::GetRenderer();
+	Camera* camera = GameManager::GetWorld()->GetMainCamera();
+
+	PlayerObject* player = GameManager::GetPlayer();
+
+	if (player && !player->HasFinished()) {
+		if (player->CheckHasFinished(GameManager::GetLevelState())) {
+			renderer->SetUIState(UIState::FINISH);
+		}
+
 		UpdatePlayer(dt);
 	}
 
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
 	{
-		if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG) 		
-			GameManager::GetRenderer()->SetUIState(UIState::DEBUG);
+		if (renderer->GetUIState() != UIState::DEBUG) 		
+			renderer->SetUIState(UIState::DEBUG);
 		else 
-			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
-		GameManager::GetWorld()->SetDebugMode(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
-		Window::GetWindow()->ShowOSPointer(GameManager::GetRenderer()->GetUIState() == UIState::DEBUG);
-		Window::GetWindow()->LockMouseToWindow(GameManager::GetRenderer()->GetUIState() != UIState::DEBUG);
+			renderer->SetUIState(UIState::INGAME);
+		GameManager::GetWorld()->SetDebugMode(renderer->GetUIState() == UIState::DEBUG);
+		Window::GetWindow()->ShowOSPointer(renderer->GetUIState() == UIState::DEBUG);
+		Window::GetWindow()->LockMouseToWindow(renderer->GetUIState() != UIState::DEBUG);
 	}
 
 	/* Debug mode selection */
-	if (GameManager::GetRenderer()->GetUIState() == UIState::DEBUG)
+	if (renderer->GetUIState() == UIState::DEBUG)
 	{
 		UpdateKeys();
 		SelectObject();
@@ -64,24 +73,24 @@ void LevelCreator::UpdateLevel(float dt)
 	/* Change Camera */
 	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::NUM1))
 	{
-		switch (GameManager::GetWorld()->GetMainCamera()->GetState())
+		switch (camera->GetState())
 		{
 		case CameraState::FREE:
 			if (GameManager::GetLevelState() == LevelState::LEVEL1)
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::GLOBAL1);
+				camera->SetState(CameraState::GLOBAL1);
 			else
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::GLOBAL2);
+				camera->SetState(CameraState::GLOBAL2);
 			break;
 		case CameraState::GLOBAL1:
 			InitCamera();
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
+			camera->SetState(CameraState::FREE);
 			break;
 		case CameraState::GLOBAL2:
 			InitCamera();
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
+			camera->SetState(CameraState::FREE);
 			break;
 		}
-		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
+		camera->SetState(camera->GetState());
 	}
 
 	/* Change how we move the camera dependng if we have a locked object */
@@ -89,16 +98,16 @@ void LevelCreator::UpdateLevel(float dt)
 	{
 		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
 		if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+		float yaw = camera->GetYaw();
 		yaw = Maths::DegreesToRadians(yaw);
 		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
+		camera->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
 	}
 
-	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 || 
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
-		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
+	else if (renderer->GetUIState() != UIState::DEBUG ||
+		camera->GetState() == CameraState::GLOBAL1 || 
+		camera->GetState() == CameraState::GLOBAL2)
+		camera->UpdateCamera(dt);
 
 	if (GameManager::GetLockedObject())
 		LockedObjectMovement(dt);

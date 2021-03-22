@@ -18,7 +18,9 @@ NetworkPlayer::~NetworkPlayer() {
 }
 
 void NetworkPlayer::Update(float dt) {
-	if (isHost) {
+	UIState ui = GameManager::GetRenderer()->GetUIState();
+
+	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD)) {
 		PlayerObject::Update(dt);
 	}
 	else {

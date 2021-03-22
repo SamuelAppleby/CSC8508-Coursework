@@ -111,6 +111,8 @@ class MultiplayerLevel : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
+		GameTechRenderer* r = GameManager::GetRenderer();
+
 		if (GameManager::GetRenderer()->GetUIState() == UIState::MENU)
 		{
 			GameManager::ResetMenu();
@@ -123,12 +125,19 @@ class MultiplayerLevel : public PushdownState
 			return PushdownResult::Push;
 		}
 
+		UIState ui = GameManager::GetRenderer()->GetUIState();
+
 		if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::TAB))
 		{
-			GameManager::GetRenderer()->SetUIState(UIState::SCOREBOARD);
+			if (ui != UIState::SCOREBOARD)
+			{
+				prevState = ui;
+				GameManager::GetRenderer()->SetUIState(UIState::SCOREBOARD);
+			}
 		}
-		else {
-			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
+		else if (ui == UIState::SCOREBOARD)
+		{
+			GameManager::GetRenderer()->SetUIState(prevState);
 		}
 
 		levelCreator->Update(dt);
@@ -158,6 +167,8 @@ class MultiplayerLevel : public PushdownState
 		}
 		//winner = 0;
 	}
+
+	UIState prevState;
 };
 
 class MainMenu : public PushdownState {
