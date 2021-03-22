@@ -4,6 +4,7 @@
 #include "NetworkedGame.h"
 #include "../CSC8503Common/Coin.h"
 #include "../CSC8503Common/LongJump.h"
+#include "../CSC8503Common/SpeedPower.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -253,6 +254,24 @@ void GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius)
 	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, toonShader));
 	jump->GetRenderObject()->SetColour(Debug::RED);
 	world->AddGameObject(jump);
+}
+
+void GameManager::AddPxSpeedPower(const PxTransform& t, const PxReal radius)
+{
+	SpeedPower* speed = new SpeedPower();
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
+	PxRigidBodyExt::updateMassAndInertia(*body, FLT_MIN);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	speed->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	speed->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
+	speed->SetRenderObject(new RenderObject(&speed->GetTransform(), bonusMesh, basicTex, toonShader));
+	speed->GetRenderObject()->SetColour(Debug::GREEN);
+	world->AddGameObject(speed);
 }
 
 PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)

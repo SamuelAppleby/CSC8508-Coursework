@@ -179,6 +179,7 @@
     <ClInclude Include="PxPVD.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameWorld.h" />
+    <ClInclude Include="SpeedPower.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateGameObject.h" />
     <ClInclude Include="StateMachine.h" />

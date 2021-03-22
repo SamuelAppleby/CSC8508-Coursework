@@ -639,6 +639,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
 		//GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
 		GameManager::AddPxLongJump(PxTransform(PxVec3(-20, -5, 0)), 3);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-20, -5, 0)), 3);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:

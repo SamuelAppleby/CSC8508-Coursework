@@ -19,6 +19,7 @@ PlayerObject::PlayerObject()
 	jumpHeight = 10.0f;
 }
 
+
 void PlayerObject::Update(float dt)
 {
 
@@ -28,7 +29,7 @@ void PlayerObject::Update(float dt)
 	transform.UpdateMatrix();
 	timeAlive += dt;
 
-	if (powerUpTimer > 0.0f)
+	/*if (powerUpTimer > 0.0f)
 	{
 		jumpHeight = 40.0f;
 		powerUpTimer -= dt;
@@ -36,6 +37,27 @@ void PlayerObject::Update(float dt)
 	else
 	{
 		jumpHeight = 20.0f;
+	}*/
+
+	if (powerUpTimer > 0.0f)
+	{
+		switch (state)
+		{
+		case PowerUpState::LONGJUMP:
+			jumpHeight = 20.0f;
+			powerUpTimer -= dt;
+			break;
+		case PowerUpState::SPEEDPOWER:
+			speed = speed * 10;
+			powerUpTimer -= dt;
+			break;
+
+		}
+	}
+	else
+	{
+		speed = 2000.0f;
+		jumpHeight = 10.0f;
 	}
 	raycastTimer -= dt;
 
@@ -78,3 +100,4 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 	}
 	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }
+

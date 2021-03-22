@@ -49,6 +49,7 @@ public:
 
 	static void AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
 	static void AddPxLongJump(const PxTransform& t, const PxReal radius);
+	static void AddPxSpeedPower(const PxTransform& t, const PxReal radius);
 	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static NetworkPlayer* AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
