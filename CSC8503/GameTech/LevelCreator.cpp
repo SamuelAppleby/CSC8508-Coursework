@@ -21,6 +21,7 @@ LevelCreator::~LevelCreator() {
 void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
+	GameManager::GetObstacles()->cannons.clear();
 	//WorldCreator::GetPhysicsSystem()->ResetPhysics();
 }
 
