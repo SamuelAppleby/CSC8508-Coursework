@@ -37,14 +37,16 @@ void PlayerObject::Update(float dt) {
 }
 
 bool PlayerObject::CheckHasFinished(LevelState state) {
+	Vector3 pos = transform.GetPosition();
+
 	if (state == LevelState::LEVEL2) {
-		if (transform.GetPosition().z < -3600) {
+		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20) {
 			finished = true;
 			finishTime = timeAlive;
 		}
 	}
 	else if (state == LevelState::LEVEL3) {
-		if (transform.GetPosition().z < -1800) {
+		if (pos.z < -1800 && pos.y > 181 && pos.x > -101 && pos.x < 101) {
 			finished = true;
 			finishTime = timeAlive;
 		}
