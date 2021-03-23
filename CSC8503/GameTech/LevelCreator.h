@@ -41,7 +41,6 @@ namespace NCL
 			float fixedDeltaTime;
 			LevelState currentLevel;
 			void InitCamera();
-			void UpdateKeys();
 
 			void InitFloors(LevelState state);
 			void InitGameExamples(LevelState state);

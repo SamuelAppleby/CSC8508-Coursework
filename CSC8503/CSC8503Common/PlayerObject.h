@@ -49,7 +49,7 @@ namespace NCL{
 
 			void LongJumpColelction() {
 				powerUpTimer = 5.0f;
-				jumpHeight = 20.0f;
+				jumpHeight = 30.0f;
 				state = PowerUpState::LONGJUMP;
 			}
 

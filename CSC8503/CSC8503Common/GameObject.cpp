@@ -12,7 +12,6 @@ GameObject::GameObject(string objectName) {
 	physicsObject = nullptr;
 	renderObject = nullptr;
 	networkObject = nullptr;
-	selectedObject = false;
 	timeAlive = 0.0f;
 	timeInSet = 0.0f;
 	isGrounded = false;

@@ -43,19 +43,6 @@ void Camera::UpdateCamera(float dt)
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT))
 			position.y -= frameSpeed;
 	}
-	/* Otherwise set the global positions */
-	else if (currentState == CameraState::GLOBAL1)
-	{
-		position = Vector3(0, 800, 0);
-		yaw = 0;
-		pitch = -90;
-	}
-	else if (currentState == CameraState::GLOBAL2)
-	{
-		position = Vector3(0, 650, -240);
-		yaw = 0;
-		pitch = -90;
-	}
 }
 
 void Camera::RotateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
@@ -101,8 +88,6 @@ void Camera::RotateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
 /* Lock the camera to an object */
 void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
 {
-	
-
 	/* Set our play camera */
 	if (currentState == CameraState::TOPDOWN)
 	{
@@ -112,12 +97,9 @@ void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
 	}
 	else if (currentState == CameraState::THIRDPERSON)
 	{
-
-
 		PxRigidDynamic* actor = (PxRigidDynamic*)o->GetPhysicsObject()->GetPXActor();
 		PxTransform pose = actor->getGlobalPose();
 		float mag = abs(actor->getLinearVelocity().magnitude());	
-
 
 		if (mag >= 50)
 		{
@@ -147,7 +129,6 @@ void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
 		{
 			tween.step(1);
 		}
-
 		SetPosition(Quaternion(pose.q) * Vector3(0, 20, currentDist) + pose.p);
 	}
 }

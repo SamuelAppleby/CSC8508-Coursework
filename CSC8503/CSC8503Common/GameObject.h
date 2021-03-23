@@ -83,16 +83,6 @@ namespace NCL
 				return worldID;
 			}
 
-			int GetSelected() const
-			{
-				return selectedObject;
-			}
-
-			void SetSelected(bool val)
-			{
-				selectedObject = val;
-			}
-
 			void IncreaseTimeInSet(float dt)
 			{
 				timeInSet += dt;
@@ -140,7 +130,6 @@ namespace NCL
 
 			int	worldID;
 			string	name;
-			bool selectedObject;
 			float timeInSet;
 			float timeAlive;
 			bool isGrounded;

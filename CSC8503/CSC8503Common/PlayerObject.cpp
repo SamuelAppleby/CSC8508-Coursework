@@ -16,7 +16,7 @@ PlayerObject::PlayerObject()
 	raycastTimer = .25f;
 	powerUpTimer = 0.0f;
 	coinsCollected = 0;
-	jumpHeight = 10.0f;
+	jumpHeight = 15.0f;
 	state = PowerUpState::NORMAL;
 }
 
@@ -49,7 +49,7 @@ void PlayerObject::Update(float dt)
 		switch (state)
 		{
 		case PowerUpState::LONGJUMP:
-			jumpHeight = 10.0f;
+			jumpHeight = 15.0f;
 			break;
 		case PowerUpState::SPEEDPOWER:
 			//speed = speed * 10;
@@ -95,11 +95,6 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 	float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
 	if (excessSpeed) {
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
-	}
-	float ySpeed = playerVel.y;
-	float excessYSpeed = std::clamp(ySpeed - 50, 0.0f, 0.1f);
-	if (excessYSpeed) {
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-PxVec3(0, ySpeed, 0) * excessYSpeed, PxForceMode::eVELOCITY_CHANGE);
 	}
 	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }

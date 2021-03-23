@@ -20,7 +20,7 @@ namespace NCL
 		Orthographic,
 		Perspective
 	};
-	enum class CameraState { FREE, TOPDOWN, GLOBAL1, GLOBAL2, THIRDPERSON };
+	enum class CameraState { FREE, TOPDOWN, THIRDPERSON };
 	class Camera
 	{
 	public:

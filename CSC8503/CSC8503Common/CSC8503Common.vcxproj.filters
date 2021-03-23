@@ -189,9 +189,6 @@
     <ClCompile Include="Cannonball.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="KillPlane.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkBase.cpp">
       <Filter>Networking</Filter>
     </ClCompile>

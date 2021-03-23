@@ -427,15 +427,6 @@ void GameTechRenderer::RenderUI()
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;
@@ -463,8 +454,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
-		ImGui::Text("Exit to Menu (ESC)");
-		ImGui::Text("Pause(P)");
+		ImGui::Text("Pause(ESC)");
 
 		if (!selectionObject)
 		{
@@ -473,24 +463,13 @@ void GameTechRenderer::RenderUI()
 		else
 		{
 			ImGui::Text("De-Select Object (RM Click)");
-			if (!lockedObject)
-				ImGui::Text("Lock Selected Object (L)");
-			else
-				ImGui::Text("Unlock Object (L)");
+			if (selectionObject == player)
+				ImGui::Text("Lock/Unlock Player (L)");
 		}
 		ImGui::Text("Change to play mode(Q)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;
