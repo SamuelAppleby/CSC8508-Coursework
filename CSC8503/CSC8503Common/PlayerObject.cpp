@@ -17,6 +17,7 @@ PlayerObject::PlayerObject()
 	powerUpTimer = 0.0f;
 	coinsCollected = 0;
 	jumpHeight = 10.0f;
+	state = PowerUpState::NORMAL;
 }
 
 
@@ -41,23 +42,20 @@ void PlayerObject::Update(float dt)
 
 	if (powerUpTimer > 0.0f)
 	{
+		powerUpTimer -= dt;
+	}
+	else
+	{
 		switch (state)
 		{
 		case PowerUpState::LONGJUMP:
-			jumpHeight = 20.0f;
+			jumpHeight = 10.0f;
 			break;
 		case PowerUpState::SPEEDPOWER:
 			//speed = speed * 10;
 			break;
-
 		}
-		powerUpTimer -= dt;
-
-	}
-	else
-	{
-		//speed = 2000.0f;
-		jumpHeight = 10.0f;
+		state = PowerUpState::NORMAL;
 	}
 	raycastTimer -= dt;
 

@@ -4,7 +4,7 @@
 #include "../CSC8503Common/PhysxConversions.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 
-enum class PowerUpState { LONGJUMP, SPEEDPOWER };
+enum class PowerUpState { NORMAL, LONGJUMP, SPEEDPOWER };
 
 namespace NCL{
 	namespace CSC8503 {
@@ -49,6 +49,7 @@ namespace NCL{
 
 			void LongJumpColelction() {
 				powerUpTimer = 5.0f;
+				jumpHeight = 20.0f;
 				state = PowerUpState::LONGJUMP;
 			}
 

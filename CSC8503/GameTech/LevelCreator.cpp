@@ -33,11 +33,11 @@ void LevelCreator::ResetWorld()
 void LevelCreator::Update(float dt)
 {
 	if (GameManager::GetPlayer())
-	{
-		GameManager::GetAudioManager()->SetPlayerPos(GameManager::GetPlayer()->GetRenderObject()->GetTransform()->GetPosition());
-	}
+		UpdatePlayer(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
+	UpdateCamera(dt);
 	UpdateLevel(dt);
+
 	UpdateTimeStep(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
@@ -46,23 +46,34 @@ void LevelCreator::Update(float dt)
 
 }
 
-void LevelCreator::UpdateTimeStep(float dt)
-{
-	/* Change how we move the camera dependng if we have a locked object */
-	if (GameManager::GetLockedObject() != nullptr)
+void LevelCreator::UpdateCamera(float dt)
+{	
+	if (GameManager::GetPlayer())
 	{
-		GameManager::GetWorld()->GetMainCamera()->RotateCameraWithObject(dt, GameManager::GetLockedObject());
-		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-		//if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
-		yaw = Maths::DegreesToRadians(yaw);
-		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-		//GameManager::GetLockedObject()->SetOrientation(PxQuat(yaw, { 0, 1, 0 }))
+		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetPlayer()->GetPhysicsObject()->GetPXActor();
+		if (GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::THIRDPERSON) {
+			GameManager::GetWorld()->GetMainCamera()->RotateCameraWithObject(dt, GameManager::GetPlayer());
+			if (GameManager::GetPlayer()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+			float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+			yaw = Maths::DegreesToRadians(yaw);
+			actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+			GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetPlayer());
+		}
+		else {
+			actor->setLinearVelocity(PxVec3(0, 0, 0));
+			actor->setAngularVelocity(PxVec3(0, 0, 0));
+			if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG)
+				GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
+		}
 	}
 
+	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG)
+		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
+		
+}
 
-
-
+void LevelCreator::UpdateTimeStep(float dt)
+{
 	dTOffset += dt;
 	while (dTOffset >= fixedDeltaTime) {
 		FixedUpdate(fixedDeltaTime);
@@ -93,16 +104,12 @@ void LevelCreator::FixedUpdate(float dt)
 {
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	GameManager::GetWorld()->UpdatePhysics(dt);
+	
 }
 
 /* Logic for updating level 1 or level 2 */
 void LevelCreator::UpdateLevel(float dt)
 {
-	if (GameManager::GetPlayer())
-	{
-		UpdatePlayer(dt);
-	}
-
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
 	{
@@ -145,20 +152,7 @@ void LevelCreator::UpdateLevel(float dt)
 		GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 	}
 
-	if (GameManager::GetLockedObject() != nullptr)
-	{
-		//PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-		//if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		//float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
-		//yaw = Maths::DegreesToRadians(yaw);
-		//actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
-		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
-	}
 
-	else if (GameManager::GetRenderer()->GetUIState() != UIState::DEBUG ||
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL1 ||
-		GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::GLOBAL2)
-		GameManager::GetWorld()->GetMainCamera()->UpdateCamera(dt);
 
 	else if (GameManager::GetSelectionObject())
 	{
@@ -168,6 +162,7 @@ void LevelCreator::UpdateLevel(float dt)
 
 void LevelCreator::UpdatePlayer(float dt)
 {
+	GameManager::GetAudioManager()->SetPlayerPos(GameManager::GetPlayer()->GetRenderObject()->GetTransform()->GetPosition());
 	if (GameManager::GetPlayer()->GetRaycastTimer() <= 0.0f)
 	{
 		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition());
@@ -218,7 +213,6 @@ void LevelCreator::InitWorld(LevelState state)
 void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale)
 {
 	GameManager::SetPlayer(GameManager::AddPxPlayerToWorld(t, scale));
-	GameManager::SetLockedObject(GameManager::GetPlayer());
 	GameManager::SetSelectionObject(GameManager::GetPlayer());
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 }
@@ -228,6 +222,7 @@ void LevelCreator::InitFloors(LevelState state)
 {
 	Vector3 respawnSize;
 	PxVec3 zone1Position, zone2Position, zone3Position, zone4Position;
+	PxQuat q;
 	switch (state)
 	{
 	case LevelState::LEVEL1:
@@ -252,11 +247,11 @@ void LevelCreator::InitFloors(LevelState state)
 		//it should be slippery as well (possibly do some stuff with coefficients?) so that players don't have as much control
 
 		//first ramp down (maybe some stuff to make it slippery after, it's designed to be like the total wipe out slide
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -44.122, -192.85) * 2, PxQuat(-0.3, PxVec3(1, 0, 0))), PxVec3(200, 1, 300), 0, 0, TextureState::ICE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -44.122, -192.85) * 2, PxQuat(Maths::DegreesToRadians(-17), PxVec3(1, 0, 0))), PxVec3(200, 1, 300), 0, 0, TextureState::ICE);
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -40.3, -193.8) * 2, PxQuat(-0.3, PxVec3(1, 0, 0))), PxVec3(1, 10, 305));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -40.3, -193.8) * 2, PxQuat(Maths::DegreesToRadians(-17), PxVec3(1, 0, 0))), PxVec3(1, 10, 305));
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -40.3, -193.8) * 2, PxQuat(-0.3, PxVec3(1, 0, 0))), PxVec3(1, 10, 305));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -40.3, -193.8) * 2, PxQuat(Maths::DegreesToRadians(-17), PxVec3(1, 0, 0))), PxVec3(1, 10, 305));
 
 		//buffer zone 1 (where contestants respawn on failing the first obstacle, this needs to be sorted on the individual kill plane)
 		respawnSize = Vector3(180, 0, 80);
@@ -372,28 +367,30 @@ void LevelCreator::InitFloors(LevelState state)
 		//so basically it's like that one bit of mario kart, but also indiana jones, takeshi's castle, and probably some other stuff
 		//media tends to be surprisingly boulder centric
 		//I thought it'd be fun if they were bowling balls rolling down a hill, and you were trying not to get hit 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -17, -1232) * 2, PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(200, 1, 300), 1);
+		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(17, 0, 0));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -1232) * 2, q), PxVec3(200, 1, 300), 1);
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -17, -1225) * 2, PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(1, 12, 310));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -17, -1225) * 2, PxQuat(0.5, PxVec3(1, 0, 0))), PxVec3(1, 12, 310));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
 
 		//pegs as obstacles/hiding places for the bowling balls
 		//row 1
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -20, -1180) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, -1180) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -20, -1180) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
+		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
 
 		//row 2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 10, -1235) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 10, -1235) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
 
 		//row 3
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 40, -1290) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 40, -1290) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, 40, -1290) * 2, PxQuat(-0.95, PxVec3(1, 0, 0))), PxVec3(10, 10, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
 
 		//buffer zone 4 (where contestants respawn on failing the fourth obstacle, this needs to be sorted on the individual kill plane)
 		zone4Position = PxVec3(0, 56, -1411);
@@ -501,23 +498,6 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, 115, -60) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 125, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 5, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 20, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 30, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 45, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 60, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 75, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 100, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 110, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 120, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
-		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 135, -85) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
 		
 		//buffer zone 1 (where contestants respawn on failing the first obstacle, this needs to be sorted on the individual kill plane)
 		respawnSize = Vector3(100, 0, 45);
@@ -579,7 +559,8 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 90, -370) * 2), PxVec3(500, 1, 190), zone3Position, respawnSize);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -272) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
 		//slippery ramp
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 120, -580) * 2, PxQuat(-0.3, PxVec3(1, 0, 0))), PxVec3(100, 1, 200), 0, 0, TextureState::ICE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 120, -580) * 2, 
+			PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(-17, 0, 0))), PxVec3(100, 1, 200), 0, 0, TextureState::ICE);
 
 		//buffer zone 4
 		zone4Position = PxVec3(0, 153, -460);
@@ -672,12 +653,12 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
 		//GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
 		GameManager::AddPxLongJump(PxTransform(PxVec3(-20, -5, 0)), 3);
-		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-20, -5, 0)), 3);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-30, -5, 0)), 3);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
-		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 10, -2000)), 1);
 		break;
 	case LevelState::LEVEL3:
 		InitPlayer(PxTransform(PxVec3(0, 160, 150)), 1);
@@ -722,7 +703,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -78, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -85, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 80, PxVec3(0, 2, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
@@ -805,7 +786,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 /* If in debug mode we can select an object with the cursor, displaying its properties and allowing us to take control */
 bool LevelCreator::SelectObject()
 {
-	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT) && !GameManager::GetLockedObject())
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT))
 	{
 		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetWorld()->GetMainCamera()->GetPosition());
 		PxVec3 dir = PhysxConversions::GetVector3(CollisionDetection::GetMouseDirection(*GameManager::GetWorld()->GetMainCamera()));
@@ -832,7 +813,7 @@ bool LevelCreator::SelectObject()
 		return false;
 	}
 
-	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::RIGHT) && !GameManager::GetLockedObject())
+	if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::RIGHT))
 	{
 		if (GameManager::GetSelectionObject())
 		{
@@ -844,25 +825,18 @@ bool LevelCreator::SelectObject()
 	}
 
 	/* We can lock the object and move it around */
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::L))
+	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::L) && GameManager::GetSelectionObject() == GameManager::GetPlayer())
 	{
-		if (GameManager::GetSelectionObject())
-		{
-			if (GameManager::GetLockedObject() == GameManager::GetSelectionObject())
-			{
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
-				GameManager::SetLockedObject(nullptr);
-				Window::GetWindow()->ShowOSPointer(true);
-				Window::GetWindow()->LockMouseToWindow(false);
-			}
-			else
-			{
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-				GameManager::SetLockedObject(GameManager::GetSelectionObject());
-				Window::GetWindow()->ShowOSPointer(false);
-				Window::GetWindow()->LockMouseToWindow(true);
-			}
+		if (GameManager::GetWorld()->GetMainCamera()->GetState() == CameraState::THIRDPERSON) {
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::FREE);
+			Window::GetWindow()->ShowOSPointer(true);
+			Window::GetWindow()->LockMouseToWindow(false);
 		}
+		else {
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+			Window::GetWindow()->ShowOSPointer(false);
+			Window::GetWindow()->LockMouseToWindow(true);
+		}		
 	}
 	return false;
 }

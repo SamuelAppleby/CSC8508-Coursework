@@ -17,8 +17,6 @@
 #include "../CSC8503Common/Obstacles.h"
 #include "NetworkPlayer.h"
 #include "../Common/MeshMaterial.h";
-
-
 #include "../CSC8503Common/Pendulum.h"
 
 using namespace NCL;
@@ -82,17 +80,8 @@ public:
 		return audioManager;
 	}
 
-	static GameObject* GetLockedObject() {
-		return lockedObject;
-	}
-
 	static GameObject* GetSelectionObject() {
 		return selectionObject;
-	}
-
-	static void SetLockedObject(GameObject* val) {
-		lockedObject = val;
-		renderer->SetLockedObject(lockedObject);
 	}
 
 	static void SetSelectionObject(GameObject* val) {
@@ -165,7 +154,6 @@ private:
 	static CameraState camState;
 
 	static GameObject* selectionObject;
-	static GameObject* lockedObject;
 
 	static LevelState levelState;
 

@@ -43,7 +43,7 @@ OGLShader* GameManager::toonShader = nullptr;
 
 CameraState GameManager::camState = CameraState::FREE;
 
-GameObject* GameManager::lockedObject = nullptr;
+//GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
 
 LevelState GameManager::levelState = LevelState::LEVEL1;
@@ -105,7 +105,7 @@ void GameManager::ResetMenu()
 {
 	levelState = LevelState::LEVEL1;
 	selectionObject = nullptr;
-	lockedObject = nullptr;
+	//lockedObject = nullptr;
 	renderer->SetSelectionObject(nullptr);
 	renderer->SetLockedObject(nullptr);
 }
@@ -195,7 +195,7 @@ void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radiu
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - (radius / 2)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
 	cylinder->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
@@ -394,7 +394,7 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - (radius / 2)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	body->setAngularVelocity(rotation);
 	body->setAngularDamping(0.f);
@@ -414,7 +414,7 @@ void GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal radius
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	body->setAngularDamping(0.f);
 	body->setMass(0.f);

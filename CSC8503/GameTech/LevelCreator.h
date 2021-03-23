@@ -25,6 +25,7 @@ namespace NCL
 			void ResetWorld();
 
 			virtual void Update(float dt);
+			void UpdateCamera(float dt);
 			virtual void UpdateTimeStep(float dt);
 
 			void FixedUpdate(float dt);

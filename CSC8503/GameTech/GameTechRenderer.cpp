@@ -405,20 +405,16 @@ void GameTechRenderer::RenderUI()
 		}
 		if (player) {
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
-			if (player->GetPowerUpTimer() > 0.0f)
+			switch (player->GetPowerUpState())
 			{
-				switch (player->GetPowerUpState())
-				{
-				case::PowerUpState::LONGJUMP:
-					ImGui::Text("Long Jumnp Power Up!");
-					break;
-				case::PowerUpState::SPEEDPOWER:
-					ImGui::Text("Speed Boost Power Up!");
-					break;
-				}
+			case::PowerUpState::LONGJUMP:
+				ImGui::Text("Long Jumnp Power Up!");
+				break;
+			case::PowerUpState::SPEEDPOWER:
+				ImGui::Text("Speed Boost Power Up!");
+				break;
 			}
-				//ImGui::Text("Powered Up!");
-		}
+			}
 		
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
