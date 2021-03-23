@@ -45,6 +45,7 @@ namespace NCL
 			void InitFloors(LevelState state);
 			void InitGameExamples(LevelState state);
 			void InitGameObstacles(LevelState state);
+			void InitGameMusic(LevelState state);
 
 			bool SelectObject();
 			void DebugObjectMovement();

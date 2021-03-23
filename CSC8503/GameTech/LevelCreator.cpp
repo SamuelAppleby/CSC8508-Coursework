@@ -34,6 +34,8 @@ void LevelCreator::Update(float dt)
 {
 	if (GameManager::GetPlayer())
 		UpdatePlayer(dt);
+		
+
 	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateCamera(dt);
 	UpdateLevel(dt);
@@ -186,12 +188,29 @@ void LevelCreator::InitWorld(LevelState state)
 {
 	InitCamera();
 	InitFloors(state);
+	InitGameMusic(state);
 	InitGameExamples(state);
 	InitGameObstacles(state);
 }
 
-void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale)
-{
+void LevelCreator::InitGameMusic(LevelState state) {
+	switch (state)
+	{
+	case LevelState::LEVEL1:
+		
+		break;
+	case LevelState::LEVEL2:
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(-70, -98, -900) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(0, -98, -900) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(70, -98, -900) * 2), true);
+		break;
+
+	case LevelState::LEVEL3:
+		break;
+	}
+}
+
+void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
 	GameManager::SetPlayer(GameManager::AddPxPlayerToWorld(t, scale));
 	GameManager::SetSelectionObject(GameManager::GetPlayer());
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
@@ -213,6 +232,7 @@ void LevelCreator::InitFloors(LevelState state)
 		//(that way, it also allows time for other players to catch up and makes each individual obstacle more chaotic, so it's a double win)
 		//first we'll do the floors
 		//starting zone
+		
 		//floor
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 0, 0) * 2), PxVec3(200, 1, 100));
 		//back wall													   
