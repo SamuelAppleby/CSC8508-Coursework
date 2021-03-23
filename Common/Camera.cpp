@@ -59,7 +59,7 @@ void Camera::UpdateCamera(float dt) {
 void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o) {
 	UIState ui = GameManager::GetRenderer()->GetUIState();
 
-	if (ui == UIState::INGAME || ui == UIState::SCOREBOARD) {
+	if (ui == UIState::INGAME || ui == UIState::FINISH || ui == UIState::SCOREBOARD) {
 		pitch -= (Window::GetMouse()->GetRelativePosition().y);
 		yaw -= (Window::GetMouse()->GetRelativePosition().x);
 
