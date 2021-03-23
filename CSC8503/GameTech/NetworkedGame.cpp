@@ -56,7 +56,7 @@ void NetworkedGame::ResetWorld() {
 }
 
 void NetworkedGame::StartAsServer(LevelState state, string playerName) {
-	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
+	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4, state);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
 
@@ -523,29 +523,34 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 		std::cout << "Client: New player connected! ID: " << realPacket->playerID << std::endl;
 
 		if (initialising) {
-			InitWorld(clientState);
+			if ((int)clientState == realPacket->serverLevel) {
+				InitWorld(clientState);
 
-			for (int i = -1; i < realPacket->playerID; i++) {
-				SpawnPlayer(i);
+				for (int i = -1; i < realPacket->playerID; i++) {
+					SpawnPlayer(i);
+				}
+
+				localPlayer = SpawnPlayer(realPacket->playerID);
+
+				if (localPlayerName != "") {
+					localPlayer->SetPlayerName(localPlayerName);
+				}
+
+				GameManager::SetPlayer(localPlayer);
+				GameManager::SetLockedObject(localPlayer);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+
+				/*GameManager::SetSelectionObject(localPlayer);
+				localPlayer->SetSelected(true);
+				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+				GameManager::SetLockedObject(localPlayer);
+				GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
+
+				initialising = false;
 			}
-
-			localPlayer = SpawnPlayer(realPacket->playerID);
-
-			if (localPlayerName != "") {
-				localPlayer->SetPlayerName(localPlayerName);
+			else {
+				GameManager::GetRenderer()->SetUIState(UIState::MENU);
 			}
-
-			GameManager::SetPlayer(localPlayer);
-			GameManager::SetLockedObject(localPlayer);
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-
-			/*GameManager::SetSelectionObject(localPlayer);
-			localPlayer->SetSelected(true);
-			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-			GameManager::SetLockedObject(localPlayer);
-			GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
-
-			initialising = false;
 		}
 		else {
 			SpawnPlayer(realPacket->playerID);
