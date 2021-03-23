@@ -5,12 +5,13 @@
 using namespace NCL;
 using namespace CSC8503;
 
-GameServer::GameServer(int onPort, int maxClients) {
+GameServer::GameServer(int onPort, int maxClients, LevelState level) {
 	port = onPort;
 	clientMax = maxClients;
 	clientCount = 0;
 	netHandle = nullptr;
 	//threadAlive = false;
+	this->level = level;
 
 	Initialise();
 }
@@ -74,7 +75,7 @@ void GameServer::UpdateServer(float dt) {
 
 		if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
 			std::cout << "Server: New client connected" << std::endl;
-			NewPlayerPacket player(peer);
+			NewPlayerPacket player(peer, (int)level);
 			SendGlobalPacket(player);
 			players.insert(std::pair<int, ENetPeer*>(peer, p));
 			clientCount++;

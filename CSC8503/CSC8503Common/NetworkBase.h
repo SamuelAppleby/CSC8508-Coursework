@@ -54,10 +54,13 @@ struct StringPacket : public GamePacket {
 
 struct NewPlayerPacket : public GamePacket {
 	int playerID;
-	NewPlayerPacket(int p) {
+	int serverLevel;
+
+	NewPlayerPacket(int p, int l) {
 		type = BasicNetworkMessages::Player_Connected;
 		playerID = p;
-		size = sizeof(int);
+		serverLevel = l;
+		size = sizeof(int) * 2;
 	}
 };
 
