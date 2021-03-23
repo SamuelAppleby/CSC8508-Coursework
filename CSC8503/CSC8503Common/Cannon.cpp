@@ -9,7 +9,7 @@ void Cannon::Update(float dt)
 	timeSinceShot += dt;
 
 
-	if (timeSinceShot >= 5)
+	if (timeSinceShot >= shotTimes)
 	{
 		Shoot();
 	}

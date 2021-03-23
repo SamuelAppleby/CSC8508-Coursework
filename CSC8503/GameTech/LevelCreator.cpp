@@ -32,6 +32,7 @@ void LevelCreator::ResetWorld()
 
 void LevelCreator::Update(float dt)
 {
+
 	if (GameManager::GetPlayer())
 	{
 		GameManager::GetAudioManager()->SetPlayerPos(GameManager::GetPlayer()->GetRenderObject()->GetTransform()->GetPosition());
@@ -149,6 +150,9 @@ void LevelCreator::UpdateLevel(float dt)
 
 void LevelCreator::UpdatePlayer(float dt)
 {
+
+	
+	
 	if (GameManager::GetPlayer()->GetRaycastTimer() <= 0.0f)
 	{
 		PxVec3 pos = PhysxConversions::GetVector3(GameManager::GetPlayer()->GetTransform().GetPosition());
@@ -156,11 +160,15 @@ void LevelCreator::UpdatePlayer(float dt)
 		float distance = 0.5f;
 		PxRaycastBuffer hit;
 		PxQueryFilterData filterData(PxQueryFlag::eSTATIC);
+		
+		
 		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
 			GetGScene()->raycast(pos, dir, distance, hit, PxHitFlag::eDEFAULT, filterData));
+		
 
 		GameManager::GetPlayer()->SetRaycastTimer(.1f);
 	}
+	
 }
 
 /* In debug mode we can change some of the backend physics engine with some key presses */
@@ -241,19 +249,37 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(0, 320, 220), PxVec3(200, 20, 1));
 		GameManager::AddPxFloorToWorld(PxTransform(-25, 350, 125), PxVec3(175, 50, 1));
 
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 400, 145), PxQuat(-0.5, PxVec3(0, 0, 1))), PxVec3(200, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(150, 525, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(240, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-10, 604, 145), PxQuat(-0.35, PxVec3(0, 0, 1))), PxVec3(150, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, 665, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(110, 1, 20));
+
+
+
 		//Floor 3
-		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -125), PxVec3(200, 1, 250));
-		GameManager::AddPxFloorToWorld(PxTransform(-200, 900, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(200, 900, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 950, 125), PxVec3(200, 150, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 950, -275), PxVec3(200, 150, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(-25, 750, -275), PxVec3(175, 50, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, 95), PxVec3(200, 1, 32.5));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -325), PxVec3(200, 1, 50));
+
+
+
+		GameManager::AddPxFloorToWorld(PxTransform(-160, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(-80, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(80, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(160, 700, -105), PxVec3(20, 1, 170));
+
+
+
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 900, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 900, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 950, 125), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 950, -275), PxVec3(200, 150, 1));
 		GameManager::AddPxFloorToWorld(PxTransform(-200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 720, -375), PxVec3(200, 20, 1));
 
 		//Floor 4
-		GameManager::AddPxFloorToWorld(PxTransform(125, 1100, -75), PxVec3(75, 1, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(125, 1100, -75), PxVec3(75, 1, 200));
 
 
 		//These should be seesaws
@@ -684,7 +710,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		InitPlayer(PxTransform(PxVec3(0, 302, 90)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 0, -250)), 1);
 		//GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
 		GameManager::AddPxLongJump(PxTransform(PxVec3(-20, -5, 0)), 3);
 		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
@@ -705,6 +731,10 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+
+		//Killplane
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(400, 1, 400), PxVec3(0, -50, 50), PxVec3(90, 1, 20));
+
 		//Floor 1
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, "Floor");
 
@@ -712,6 +742,41 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+
+		//Floor 1-2 connection
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 10);
 
 		//Floor 2
 		for (int z = 0; z < 4; ++z) {
@@ -721,7 +786,42 @@ void LevelCreator::InitGameObstacles(LevelState state)
 			}
 		}
 
-		//Floor 3
+		//Floor 2-3 connection
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-180, 700, 145)), PxVec3(50, 0, 0), 15, 15, PxVec3(50, 0, 0));
+		for (int i = 0; i < 30; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(-200, 700, 145) * 2), 10, new PxVec3(25,0,0), 37));
+		}
+
+		//floor 3 (pendulums)
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5);
+
 
 		break;
 	case LevelState::LEVEL2:

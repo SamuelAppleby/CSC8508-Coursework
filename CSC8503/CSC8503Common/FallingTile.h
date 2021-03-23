@@ -49,9 +49,16 @@ namespace NCL {
 			}
 
 			void OnCollisionBegin(GameObject* otherObject) override {
-				
+
+
 				if (otherObject->GetName()._Equal("Player")) {
+
+
+
+
 					otherObject->SetGrounded(true);
+
+
 					started = true;
 				}
 				
@@ -59,6 +66,7 @@ namespace NCL {
 			void OnCollisionEnd(GameObject* otherObject) override {
 
 				if (otherObject->GetName()._Equal("Player")) {
+
 					otherObject->SetGrounded(false);
 				}
 

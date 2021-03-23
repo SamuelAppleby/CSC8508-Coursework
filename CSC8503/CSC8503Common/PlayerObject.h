@@ -14,10 +14,11 @@ namespace NCL{
 			void Update(float dt) override;
 			void FixedUpdate(float fixedDT) override;
 
+			
 			void SetIsGrounded(bool val) {
 				isGrounded = val;
 			}
-
+			
 			void SetRaycastTimer(float val)  {
 				raycastTimer = val;
 			}
@@ -42,6 +43,21 @@ namespace NCL{
 			void LongJumpColelction() {
 				powerUpTimer = 5.0f;
 			}
+
+
+			//TEMPORARY FIX FOR OBSTACLES
+			void OnCollisionBegin(GameObject* otherObject) {
+				if (otherObject->GetName()._Equal("Floor")) {
+					isGrounded = true;
+				}
+			}
+
+			void OnCollisionEnd(GameObject* otherObject) {
+				if (otherObject->GetName()._Equal("Floor")) {
+					isGrounded = false;
+				}
+			}
+
 
 
 		protected:

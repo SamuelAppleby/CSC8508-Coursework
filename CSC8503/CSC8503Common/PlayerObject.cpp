@@ -22,6 +22,7 @@ PlayerObject::PlayerObject()
 void PlayerObject::Update(float dt)
 {
 
+
 	Vector3 q = Quaternion(physicsObject->GetPXActor()->getGlobalPose().q).ToEuler() + Vector3(0, 180, 0);
 	transform.SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(q.x, q.y, q.z)));
 	transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
@@ -48,6 +49,7 @@ void PlayerObject::Update(float dt)
 
 	fwd = PhysxConversions::GetVector3(Quaternion(transform.GetOrientation()) * Vector3(0, 0, 1));
 	right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
+
 }
 
 void PlayerObject::FixedUpdate(float fixedDT) {
@@ -78,3 +80,5 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 	}
 	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }
+
+

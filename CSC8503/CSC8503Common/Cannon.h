@@ -9,7 +9,7 @@ namespace NCL
 		class Cannon : public GameObject
 		{
 		public:
-			Cannon(PxVec3 newTrajectory, int newShotTimes = 10, int newShotSize = 5, PxVec3 newTranslate = PxVec3(0,100,0))
+			Cannon(PxVec3 newTrajectory, int newShotTimes = 5, int newShotSize = 5, PxVec3 newTranslate = PxVec3(0,100,0))
 			{
 
 				translate = newTranslate;

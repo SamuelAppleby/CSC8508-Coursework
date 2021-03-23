@@ -443,9 +443,9 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	world->AddGameObject(floor);
 }
 
-Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, float density, float friction, float elasticity)
+Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxReal radius, const PxVec3* force, int time, float density, float friction, float elasticity)
 {
-	Cannonball* cannonBall = new Cannonball();
+	Cannonball* cannonBall = new Cannonball(time);
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
@@ -494,7 +494,7 @@ void GameManager::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfS
 
 void GameManager::AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity)
 {
-	FallingTile* cube = new FallingTile("Floor", 1000, 0, t.p);
+	FallingTile* cube = new FallingTile("Floor", 1, 0, t.p);
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);

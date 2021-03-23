@@ -12,7 +12,7 @@ void Cannonball::Disable()
 void Cannonball::ResetBall(const PxVec3& newPos, const PxVec3& force)
 {
 	isActive = true;
-	timeLeft = 10.f;
+	timeLeft = refTimeLeft;
 	PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
 	actor->setLinearVelocity(PxVec3(0, 0, 0));
 	actor->setAngularVelocity(PxVec3(0, 0, 0));

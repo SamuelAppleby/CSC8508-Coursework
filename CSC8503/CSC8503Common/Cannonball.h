@@ -10,10 +10,11 @@ namespace NCL
 			public GameObject
 		{
 		public:
-			Cannonball() {
+			Cannonball(int newTime) {
 				name = "Cannonball";
 				isActive = false;
-				timeLeft = 10.f;
+				timeLeft = newTime;
+				refTimeLeft = newTime;
 				//Disable();
 			}
 
@@ -25,6 +26,7 @@ namespace NCL
 			void ResetBall(const PxVec3& newPos, const PxVec3& force);
 
 		protected:
+			float refTimeLeft;
 			float timeLeft;
 			void Disable();
 			PxVec3 initialPos;
