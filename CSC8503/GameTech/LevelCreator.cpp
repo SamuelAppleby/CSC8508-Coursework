@@ -43,10 +43,26 @@ void LevelCreator::Update(float dt)
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
+
 }
 
 void LevelCreator::UpdateTimeStep(float dt)
 {
+	/* Change how we move the camera dependng if we have a locked object */
+	if (GameManager::GetLockedObject() != nullptr)
+	{
+		GameManager::GetWorld()->GetMainCamera()->RotateCameraWithObject(dt, GameManager::GetLockedObject());
+		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
+		//if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+		yaw = Maths::DegreesToRadians(yaw);
+		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+		//GameManager::GetLockedObject()->SetOrientation(PxQuat(yaw, { 0, 1, 0 }))
+	}
+
+
+
+
 	dTOffset += dt;
 	while (dTOffset >= fixedDeltaTime) {
 		FixedUpdate(fixedDeltaTime);
@@ -55,15 +71,18 @@ void LevelCreator::UpdateTimeStep(float dt)
 	NCL::GameTimer t;
 	t.Tick();
 	float updateTime = t.GetTimeDeltaSeconds();
-	if (updateTime > fixedDeltaTime) {
+	if (updateTime > fixedDeltaTime)
+	{
 		realFrames /= 2;
 		fixedDeltaTime *= 2;
 	}
-	else if (dt * 2 < fixedDeltaTime) {
+	else if (dt * 2 < fixedDeltaTime)
+	{
 		realFrames *= 2;
 		fixedDeltaTime /= 2;
 
-		if (realFrames > IDEAL_FRAMES) {
+		if (realFrames > IDEAL_FRAMES)
+		{
 			realFrames = IDEAL_FRAMES;
 			fixedDeltaTime = IDEAL_DT;
 		}
@@ -128,11 +147,11 @@ void LevelCreator::UpdateLevel(float dt)
 
 	if (GameManager::GetLockedObject() != nullptr)
 	{
-		PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
-		if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
-		float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
-		yaw = Maths::DegreesToRadians(yaw);
-		actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
+		//PxRigidDynamic* actor = (PxRigidDynamic*)GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor();
+		//if (GameManager::GetLockedObject()->GetPhysicsObject()->GetPXActor()->is<PxRigidBody>()) actor->setAngularVelocity(PxVec3(0));
+		//float yaw = GameManager::GetWorld()->GetMainCamera()->GetYaw();
+		//yaw = Maths::DegreesToRadians(yaw);
+		//actor->setGlobalPose(PxTransform(actor->getGlobalPose().p, PxQuat(yaw, { 0, 1, 0 })));
 		GameManager::GetWorld()->GetMainCamera()->UpdateCameraWithObject(dt, GameManager::GetLockedObject());
 	}
 
@@ -156,8 +175,7 @@ void LevelCreator::UpdatePlayer(float dt)
 		float distance = 5.0f;
 		PxRaycastBuffer hit;
 		PxQueryFilterData filterData(PxQueryFlag::eSTATIC);
-		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->
-			GetGScene()->raycast(pos, dir, distance, hit, PxHitFlag::eDEFAULT, filterData));
+		GameManager::GetPlayer()->SetIsGrounded(GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit, PxHitFlag::eDEFAULT, filterData));
 
 		GameManager::GetPlayer()->SetRaycastTimer(0.1F);
 	}
