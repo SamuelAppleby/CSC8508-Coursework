@@ -24,6 +24,10 @@ void LevelCreator::ResetWorld()
 
 void LevelCreator::Update(float dt)
 {
+	if (player) {
+		vec3df playerPos(player->GetRenderObject()->GetTransform()->GetPosition().x, player->GetRenderObject()->GetTransform()->GetPosition().y, player->GetRenderObject()->GetTransform()->GetPosition().z);
+		GameManager::GetAudioManager()->SetPlayerPos(playerPos);
+	}
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	UpdateLevel(dt);
 	GameManager::GetWorld()->UpdateWorld(dt);
@@ -156,9 +160,27 @@ void LevelCreator::InitWorld(LevelState state)
 
 	GameManager::SetLevelState(state);
 	InitFloors(state);
+	InitGameMusic(state);
 	InitGameExamples(state);
 	InitGameObstacles(state);
 	InitCamera();
+}
+
+void LevelCreator::InitGameMusic(LevelState state) {
+	switch (state)
+	{
+	case LevelState::LEVEL1:
+		
+		break;
+	case LevelState::LEVEL2:
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(-70, -98, -900) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(0, -98, -900) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(70, -98, -900) * 2), true);
+		break;
+
+	case LevelState::LEVEL3:
+		break;
+	}
 }
 
 void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale) {
@@ -186,6 +208,7 @@ void LevelCreator::InitFloors(LevelState state)
 		//(that way, it also allows time for other players to catch up and makes each individual obstacle more chaotic, so it's a double win)
 		//first we'll do the floors
 		//starting zone
+		
 		//floor
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 0, 0     )*2), PxVec3(200, 1, 100));
 		//back wall													   
@@ -645,7 +668,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(70, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 
 			20, 100, PxVec3(0, 0, 1));
 
-		//cannons																
+		//cannons
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -850     )*2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -900     )*2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -950     )*2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));

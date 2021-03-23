@@ -73,7 +73,7 @@ class Level : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-			GameManager::GetAudioManager()->StopSound();
+			//GameManager::GetAudioManager()->StopSound();
 			if (GameManager::GetLevelState() == LevelState::LEVEL1) 
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
 			else 
@@ -97,18 +97,21 @@ public:
 			break;
 		case UIState::SOLOLEVEL1:
 			*newState = new Level();
+			GameManager::GetAudioManager()->StopSound();
 			levelCreator->InitWorld(LevelState::LEVEL1);
 			GameManager::SetLevelState(LevelState::LEVEL1);
 			return PushdownResult::Push;
 			break;
 		case UIState::SOLOLEVEL2:
 			*newState = new Level();
+			GameManager::GetAudioManager()->StopSound();
 			levelCreator->InitWorld(LevelState::LEVEL2);
 			GameManager::SetLevelState(LevelState::LEVEL2);
 			return PushdownResult::Push;
 			break;
 		case UIState::SOLOLEVEL3:
 			*newState = new Level();
+			GameManager::GetAudioManager()->StopSound();
 			levelCreator->InitWorld(LevelState::LEVEL3);
 			GameManager::SetLevelState(LevelState::LEVEL3);
 			return PushdownResult::Push;
