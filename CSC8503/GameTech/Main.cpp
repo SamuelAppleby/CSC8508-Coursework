@@ -43,8 +43,6 @@ void GamePushdownAutomata(Window* w)
 			w->ShowConsole(true);
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NEXT))
 			w->ShowConsole(false);
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T))
-			w->SetWindowPosition(0, 0);
 		if (!machine.Update(dt))
 			return;
 	}
