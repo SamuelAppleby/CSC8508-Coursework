@@ -32,6 +32,17 @@ bool GameClient::Connect(std::string ip, int portNum) {
 	return netPeer != nullptr;
 }
 
+bool GameClient::Disconnect() {
+	if (netPeer != nullptr) {
+		enet_peer_disconnect_now(netPeer, 0);
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void GameClient::UpdateClient(float dt) {
 	if (netHandle == nullptr)
 	{

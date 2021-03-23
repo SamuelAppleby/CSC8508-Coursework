@@ -26,11 +26,11 @@ bool NetworkBase::ProcessPacket(float dt, GamePacket* packet, int peerID) {
 
 	bool canHandle = GetPacketHandlers(packet->type, firstHandler, lastHandler);
 
-	if (firstHandler == lastHandler) {
-		lastHandler++;
-	}
-
 	if (canHandle) {
+		if (firstHandler == lastHandler) {
+			lastHandler++;
+		}
+
 		for (auto i = firstHandler; i != lastHandler; ++i) {
 			i->second->ReceivePacket(dt, packet->type, packet, peerID);
 		}

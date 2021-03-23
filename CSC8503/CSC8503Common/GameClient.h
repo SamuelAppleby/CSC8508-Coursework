@@ -13,6 +13,7 @@ namespace NCL {
 			~GameClient();
 
 			bool Connect(std::string ip, int portNum);
+			bool Disconnect();
 
 			void SendPacket(GamePacket& payload);
 

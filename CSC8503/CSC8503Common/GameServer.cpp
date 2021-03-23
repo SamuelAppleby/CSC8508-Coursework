@@ -9,7 +9,7 @@ GameServer::GameServer(int onPort, int maxClients) {
 	port = onPort;
 	clientMax = maxClients;
 	clientCount = 0;
-	//netHandle = nullptr;
+	netHandle = nullptr;
 	//threadAlive = false;
 
 	Initialise();
@@ -21,6 +21,7 @@ GameServer::~GameServer() {
 
 void GameServer::Shutdown() {
 	SendGlobalPacket(BasicNetworkMessages::Shutdown);
+	UpdateServer(0);
 
 	//threadAlive = false;
 	//updateThread.join();
