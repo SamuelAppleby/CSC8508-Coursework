@@ -29,12 +29,28 @@ NetworkedGame::NetworkedGame() {
 NetworkedGame::~NetworkedGame() {
 	delete thisServer;
 	delete thisClient;
+	NetworkBase::Destroy();
 }
 
 void NetworkedGame::ResetWorld() {
 	networkObjects.clear();
 	serverPlayers.clear();
 	stateIDs.clear();
+
+	delete thisServer;
+	thisServer = nullptr;
+
+	if (thisClient) {
+		thisClient->Disconnect();
+	}
+
+	timeToNextPacket = 0.0f;
+	packetsToSnapshot = 0;
+	clientState = LevelState::LEVEL1;
+	localPlayer = nullptr;
+	localPlayerName = "";
+	levelNetworkObjectsCount = 0;
+	initialising = true;
 
 	LevelCreator::ResetWorld();
 }
@@ -63,13 +79,22 @@ void NetworkedGame::StartAsServer(LevelState state, string playerName) {
 }
 
 void NetworkedGame::StartAsClient(LevelState state, string playerName, string ip) {
-	thisClient = new GameClient();
+	bool clientExists = true;
+
+	if (!thisClient) {
+		thisClient = new GameClient();
+		clientExists = false;
+	}
+
 	thisClient->Connect(ip, NetworkBase::GetDefaultPort());
 
-	thisClient->RegisterPacketHandler(Delta_State, this);
-	thisClient->RegisterPacketHandler(Full_State, this);
-	thisClient->RegisterPacketHandler(Player_Connected, this);
-	thisClient->RegisterPacketHandler(Player_Disconnected, this);
+	if (!clientExists) {
+		thisClient->RegisterPacketHandler(Delta_State, this);
+		thisClient->RegisterPacketHandler(Full_State, this);
+		thisClient->RegisterPacketHandler(Player_Connected, this);
+		thisClient->RegisterPacketHandler(Player_Disconnected, this);
+		thisClient->RegisterPacketHandler(Shutdown, this);
+	}
 
 	//std::cout << "Starting as client." << std::endl;
 
@@ -144,6 +169,11 @@ void NetworkedGame::UpdateAsServer(float dt) {
 	}
 	else {
 		BroadcastSnapshot(true);
+	}
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::DELETEKEY)) {
+		thisServer->Shutdown();
+		//GameManager::GetRenderer()->SetUIState(UIState::MENU);
 	}
 }
 
@@ -530,6 +560,9 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			NetworkPlayer* player = (NetworkPlayer*)g;
 			player->Disconnect();
 		}
+	}
+	else if (type == Shutdown) {
+		GameManager::GetRenderer()->SetUIState(UIState::MENU);
 	}
 }
 
