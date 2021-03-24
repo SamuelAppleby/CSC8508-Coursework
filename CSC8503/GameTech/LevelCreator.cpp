@@ -238,27 +238,27 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, 75)), PxVec3(200, 1, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, -275)), PxVec3(200, 1, 100));
-		GameManager::AddPxFloorToWorld(PxTransform(200, 100, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(-200, 100, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 100, 125), PxVec3(200, 200, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 150, -275), PxVec3(200, 150, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(25, -50, -275), PxVec3(175, 50, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(-200, -80, -325), PxVec3(1, 20, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(200, -80, -325), PxVec3(1, 20, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(0, -80, -375), PxVec3(200, 20, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 100, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 100, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 100, 125), PxVec3(200, 200, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 150, -275), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(25, -50, -275), PxVec3(175, 50, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, -80, -325), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, -80, -325), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, -80, -375), PxVec3(200, 20, 1));
 
 		//Floor 2
 
 		GameManager::AddPxFloorToWorld(PxTransform(0, 300, 150), PxVec3(200, 1, 70));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 300, -255), PxVec3(200, 1, 20));
-		GameManager::AddPxFloorToWorld(PxTransform(200, 500, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(-200, 500, -75), PxVec3(1, 200, 200));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 550, 125), PxVec3(200, 150, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 550, -275), PxVec3(200, 150, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(-200, 320, 170), PxVec3(1, 20, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(200, 320, 170), PxVec3(1, 20, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(0, 320, 220), PxVec3(200, 20, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(-25, 350, 125), PxVec3(175, 50, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 500, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 500, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, 125), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, -275), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 320, 170), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 320, 170), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 320, 220), PxVec3(200, 20, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-25, 350, 125), PxVec3(175, 50, 1));
 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 400, 145), PxQuat(-0.5, PxVec3(0, 0, 1))), PxVec3(200, 1, 20));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(150, 525, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(240, 1, 20));
