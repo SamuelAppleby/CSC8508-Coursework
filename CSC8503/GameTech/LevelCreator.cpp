@@ -262,8 +262,8 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 400, 145), PxQuat(-0.5, PxVec3(0, 0, 1))), PxVec3(200, 1, 20));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(150, 525, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(240, 1, 20));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-10, 604, 145), PxQuat(-0.35, PxVec3(0, 0, 1))), PxVec3(150, 1, 20));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, 665, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(110, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 600, 145), PxQuat(-0.35, PxVec3(0, 0, 1))), PxVec3(170, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(110, 665, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(130, 1, 20));
 
 
 
