@@ -113,8 +113,9 @@ namespace NCL {
 			ImFont* textFont;
 			ImFont* titleFont;
 
-			bool p_open;
 			ImGuiWindowFlags window_flags;
+			OGLTexture* levelImages[4];
+			OGLTexture* backgroundImage;
 
 			UIState levelState;
 			GameObject* lockedObject;
