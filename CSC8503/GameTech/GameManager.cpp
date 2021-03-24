@@ -384,10 +384,9 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 
 
 	Vector3 fwd = PhysxConversions::GetVector3(Quaternion(t.q) * Vector3(speed,0,0));
-	Vector3 up = PhysxConversions::GetVector3(Vector3::Cross(Vector3(speed, 0, 0), -fwd));
-	PxVec3 up2 = PxVec3(up.x, up.y, up.z);
+	PxVec3 up = PhysxConversions::GetVector3(Vector3::Cross(Vector3(speed, 0, 0), -fwd));
 
-	body->setAngularVelocity(up2);
+	body->setAngularVelocity(up);
 	body->setAngularDamping(0.f);
 	body->setMass(0.f);
 	body->setMassSpaceInertiaTensor(PxVec3(0.f));
