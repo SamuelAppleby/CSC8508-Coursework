@@ -232,6 +232,9 @@ void LevelCreator::InitFloors(LevelState state)
 	Vector3 respawnSize;
 	PxVec3 zone1Position, zone2Position, zone3Position, zone4Position;
 	PxQuat q;
+
+
+
 	switch (state)
 	{
 	case LevelState::LEVEL1:
@@ -718,6 +721,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 
 	PxVec3 translate = PxVec3(0, -59, -14) * 2;
 	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
+	PxQuat q;
 
 
 	switch (state)
@@ -843,13 +847,13 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//pegs as obstacles/hiding places for the bowling balls
 		//row 1
 		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2,0));
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
 
 		//row 2
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2, 0));
 
 		//row 3
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
