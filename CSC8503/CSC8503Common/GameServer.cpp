@@ -1,17 +1,17 @@
 #include "GameServer.h"
-#include "GameWorld.h"
 #include <iostream>
 
 using namespace NCL;
 using namespace CSC8503;
 
-GameServer::GameServer(int onPort, int maxClients, LevelState level) {
+GameServer::GameServer(int onPort, int maxClients) {
 	port = onPort;
 	clientMax = maxClients;
 	clientCount = 0;
 	netHandle = nullptr;
 	//threadAlive = false;
-	this->level = level;
+	//TODO LevelState
+	//this->level = level;
 
 	Initialise();
 }
@@ -75,7 +75,8 @@ void GameServer::UpdateServer(float dt) {
 
 		if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
 			std::cout << "Server: New client connected" << std::endl;
-			NewPlayerPacket player(peer, (int)level);
+			//TODO LevelState
+			NewPlayerPacket player(peer, (int)0); 
 			SendGlobalPacket(player);
 			players.insert(std::pair<int, ENetPeer*>(peer, p));
 			clientCount++;
@@ -124,6 +125,3 @@ bool GameServer::SendPacketToPeer(int peerID, GamePacket& packet) {
 
 //Second networking tutorial stuff
 
-void GameServer::SetGameWorld(GameWorld& g) {
-	gameWorld = &g;
-}

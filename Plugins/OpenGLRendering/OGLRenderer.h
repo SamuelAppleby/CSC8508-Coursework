@@ -61,6 +61,7 @@ namespace NCL {
 
 			void DrawString(const std::string& text, const Vector2&pos, const Vector4& colour = Vector4(0.75f, 0.75f, 0.75f,1), float size = 20.0f );
 			void DrawLine(const Vector3& start, const Vector3& end, const Vector4& colour);
+			void DrawSubMesh(int i);
 
 			virtual Matrix4 SetupDebugLineMatrix()	const;
 			virtual Matrix4 SetupDebugStringMatrix()const;
@@ -78,7 +79,7 @@ namespace NCL {
 			void BindShader(ShaderBase*s);
 			void BindTextureToShader(const TextureBase*t, const std::string& uniform, int texUnit) const;
 			void BindMesh(MeshGeometry*m);
-			void DrawBoundMesh(int subLayer = 0, int numInstances = 1);
+			void DrawBoundMesh(int subLayer = 0, int numInstances = 1,  bool hasMeshMaterial = false);
 #ifdef _WIN32
 			void InitWithWin32(Window& w);
 			void DestroyWithWin32();

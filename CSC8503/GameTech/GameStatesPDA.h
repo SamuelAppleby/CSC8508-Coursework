@@ -6,6 +6,7 @@
 #include "../CSC8503Common/State.h"
 #include "../../Common/Window.h"
 #include "NetworkedGame.h"
+//#include "LevelCreator.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -23,8 +24,8 @@ class Pause : public PushdownState
 		GameManager::GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
 
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) || 
-			GameManager::GetRenderer()->GetUIState() == UIState::MENU || 
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) ||
+			GameManager::GetRenderer()->GetUIState() == UIState::MENU ||
 			GameManager::GetRenderer()->GetUIState() == UIState::INGAME)
 		{
 			return PushdownResult::Pop;
@@ -73,7 +74,7 @@ class Level : public PushdownState
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE))
-		{		
+		{
 			*newState = new Pause();
 			return PushdownResult::Push;
 		}
@@ -96,13 +97,13 @@ class Level : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-			GameManager::GetAudioManager()->StopSound();
-			if (GameManager::GetLevelState() == LevelState::LEVEL1) 
+			//GameManager::GetAudioManager()->StopSound();
+			if (GameManager::GetLevelState() == LevelState::LEVEL1)
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
-			else 
+			else
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
 			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
-		}		
+		}
 		//winner = 0;
 	}
 };
@@ -171,34 +172,72 @@ class MultiplayerLevel : public PushdownState
 	UIState prevState;
 };
 
-class MainMenu : public PushdownState {
+class MainMenu : public PushdownState
+{
 public:
-	PushdownResult OnUpdate(float dt, PushdownState** newState) override {
+	PushdownResult OnUpdate(float dt, PushdownState** newState) override
+	{
 		GameManager::GetRenderer()->Render();
 		GameManager::GetAudioManager()->UpdateAudio(dt);
 		Debug::FlushRenderables(dt);
 
-		switch (GameManager::GetRenderer()->GetUIState()) {
+		if (GameManager::GetRenderer()->GetSelectedLevel())
+		{
+			*newState = new Level();
+			GameManager::GetAudioManager()->StopSound();
+			switch (GameManager::GetRenderer()->GetSelectedLevel())
+			{
+			case 1:
+				levelCreator->InitWorld(LevelState::LEVEL1);
+				GameManager::SetLevelState(LevelState::LEVEL1);
+				break;
+			case 2:
+				levelCreator->InitWorld(LevelState::LEVEL2);
+				GameManager::SetLevelState(LevelState::LEVEL2);
+				break;
+			case 3:
+				levelCreator->InitWorld(LevelState::LEVEL3);
+				GameManager::SetLevelState(LevelState::LEVEL3);
+				break;
+			case 4:
+				levelCreator->InitWorld(LevelState::SANDBOX);
+				GameManager::SetLevelState(LevelState::SANDBOX);
+				break;
+			}
+			return PushdownResult::Push;
+		}
+
+		switch (GameManager::GetRenderer()->GetUIState())
+		{
 		case UIState::QUIT:
 			return PushdownResult::Pop;
 			break;
-		case UIState::SOLOLEVEL1:
-			*newState = new Level();
-			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL1);
-			GameManager::SetLevelState(LevelState::LEVEL1);
-			return PushdownResult::Push;
-			break;
-		case UIState::SOLOLEVEL2:
-			*newState = new Level();
-			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL2);
-			GameManager::SetLevelState(LevelState::LEVEL2);
-			return PushdownResult::Push;
-			break;
-		case UIState::SOLOLEVEL3:
-			*newState = new Level();
-			levelCreator->LevelCreator::InitWorld(LevelState::LEVEL3);
-			GameManager::SetLevelState(LevelState::LEVEL3);
-			return PushdownResult::Push;
+			if (GameManager::GetRenderer()->GetSelectedLevel())
+			{
+				*newState = new Level();
+				GameManager::GetAudioManager()->StopSound();
+				switch (GameManager::GetRenderer()->GetSelectedLevel())
+				{
+				case 1:
+					levelCreator->InitWorld(LevelState::LEVEL1);
+					GameManager::SetLevelState(LevelState::LEVEL1);
+					break;
+				case 2:
+					levelCreator->InitWorld(LevelState::LEVEL2);
+					GameManager::SetLevelState(LevelState::LEVEL2);
+					break;
+				case 3:
+					levelCreator->InitWorld(LevelState::LEVEL3);
+					GameManager::SetLevelState(LevelState::LEVEL3);
+					break;
+				case 4:
+					levelCreator->InitWorld(LevelState::SANDBOX);
+					GameManager::SetLevelState(LevelState::SANDBOX);
+					break;
+				}
+				return PushdownResult::Push;
+			}
+			return PushdownResult::Pop;
 			break;
 		case UIState::HOSTLEVEL1:
 			*newState = new MultiplayerLevel();
@@ -255,15 +294,14 @@ private:
 	string IPAddress;
 	string portNo;
 	string playerName;
-	void  OnAwake() override {
+	void  OnAwake() override
+	{
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetWindow()->LockMouseToWindow(false);
-		if (levelCreator == nullptr) {
+		if (!levelCreator)
 			levelCreator = new NetworkedGame();
-		}
-		else {
+		else
 			levelCreator->ResetWorld();
-		}
 		GameManager::GetAudioManager()->StopSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 	}

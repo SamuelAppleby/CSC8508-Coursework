@@ -17,6 +17,9 @@ namespace NCL
 				//delete cannons;
 			}
 
+			void ClearObstacles() {
+				cannons.clear();
+			}
 		protected:
 
 		};

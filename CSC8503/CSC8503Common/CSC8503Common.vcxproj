@@ -159,6 +159,7 @@
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="KillPlane.h" />
+    <ClInclude Include="LongJump.h" />
     <ClInclude Include="NavigationGrid.h" />
     <ClInclude Include="NavigationMap.h" />
     <ClInclude Include="NavigationMesh.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="NetworkObject.h" />
     <ClInclude Include="NetworkState.h" />
     <ClInclude Include="Obstacles.h" />
+    <ClInclude Include="Pendulum.h" />
     <ClInclude Include="PhysXConversions.h" />
     <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="PlayerObject.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="PxPVD.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameWorld.h" />
+    <ClInclude Include="SpeedPower.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateGameObject.h" />
     <ClInclude Include="StateMachine.h" />
@@ -191,12 +194,12 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameWorld.cpp" />
-    <ClCompile Include="KillPlane.cpp" />
     <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="NetworkBase.cpp" />
     <ClCompile Include="NetworkObject.cpp" />
     <ClCompile Include="NetworkState.cpp" />
+    <ClCompile Include="Pendulum.cpp" />
     <ClCompile Include="PhysXObject.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PushdownMachine.cpp" />

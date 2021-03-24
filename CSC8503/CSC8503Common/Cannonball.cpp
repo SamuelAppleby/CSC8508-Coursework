@@ -17,8 +17,7 @@ void Cannonball::ResetBall(const PxVec3& newPos, const PxVec3& force)
 	actor->setLinearVelocity(PxVec3(0, 0, 0));
 	actor->setAngularVelocity(PxVec3(0, 0, 0));
 	actor->setGlobalPose(PxTransform(newPos));
-	actor->addForce(force, PxForceMode::eIMPULSE);
-
+	actor->addForce(force, PxForceMode::eVELOCITY_CHANGE);
 }
 
 void Cannonball::Update(float dt)

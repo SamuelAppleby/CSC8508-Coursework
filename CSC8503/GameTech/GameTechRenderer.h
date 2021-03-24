@@ -16,16 +16,25 @@
 #include "../../Common/AudioManager.h"
 #include <sstream>
 #include "../CSC8503Common/PlayerObject.h"
+//#include "NetworkedGame.h"
+#include <string.h>
+#include "../../Common/Assets.h"
+#include "../../Common/MeshMaterial.h"
+
+
+
+
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
-	namespace CSC8503 {
+	namespace CSC8503
+	{
 		class RenderObject;
-		class NetworkedGame;
-		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, SOLOLEVEL3,
+		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
 			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH };
 
-		class GameTechRenderer : public OGLRenderer	{
+		class GameTechRenderer : public OGLRenderer
+		{
 		public:
 			GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics);
 			~GameTechRenderer();
@@ -48,11 +57,13 @@ namespace NCL {
 				lockedObject = val;
 			}
 
-			string GetIP() const {
+			string GetIP() const
+			{
 				return ipString;
 			}
 
-			string GetPort() const {
+			string GetPort() const
+			{
 				return portString;
 			}
 
@@ -64,9 +75,18 @@ namespace NCL {
 				player = val;
 			}
 
-			void SetNetworkedGame(NetworkedGame* game) {
-				nGame = game;
+			void SetSelectedLevel(int val) {
+				selectedLevel = val;
 			}
+
+			int GetSelectedLevel() const {
+				return selectedLevel;
+			}
+			GLuint playerTex;
+
+			/*void SetNetworkedGame(NetworkedGame* game) {
+				nGame = game;
+			}*/
 
 		protected:
 			void RenderFrame()	override;
@@ -74,31 +94,31 @@ namespace NCL {
 			Matrix4 SetupDebugLineMatrix()	const override;
 			Matrix4 SetupDebugStringMatrix()const override;
 
-			OGLShader*		defaultShader;
+			OGLShader* defaultShader;
 
 			GameWorld&	gameWorld;
 			PxPhysicsSystem& pXPhysics;
 			PlayerObject* player;
-			NetworkedGame* nGame;
+			//NetworkedGame* nGame;
 
 			void RenderUI();
 
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();
-			void RenderCamera(); 
+			void RenderCamera();
 			void RenderSkybox();
 
 			void LoadSkybox();
 
 			vector<const RenderObject*> activeObjects;
 
-			OGLShader*  skyboxShader;
-			OGLMesh*	skyboxMesh;
+			OGLShader* skyboxShader;
+			OGLMesh* skyboxMesh;
 			GLuint		skyboxTex;
 
 			//shadow mapping things
-			OGLShader*	shadowShader;
+			OGLShader* shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;

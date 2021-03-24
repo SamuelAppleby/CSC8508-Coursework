@@ -139,6 +139,15 @@
     <ClInclude Include="PlayerObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Pendulum.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="LongJump.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedPower.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -180,9 +189,6 @@
     <ClCompile Include="Cannonball.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="KillPlane.cpp">
-      <Filter>Game Objects</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkBase.cpp">
       <Filter>Networking</Filter>
     </ClCompile>
@@ -199,6 +205,9 @@
       <Filter>Networking</Filter>
     </ClCompile>
     <ClCompile Include="PlayerObject.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Pendulum.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
   </ItemGroup>

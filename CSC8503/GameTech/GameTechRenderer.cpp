@@ -4,7 +4,7 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
-#include "NetworkedGame.h"
+
 
 using namespace NCL;
 using namespace Rendering;
@@ -14,9 +14,11 @@ using namespace CSC8503;
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
-GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) : 
-	OGLRenderer(*Window::GetWindow()), gameWorld(world), pXPhysics(physics){
-	
+
+GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
+	OGLRenderer(*Window::GetWindow()), gameWorld(world), pXPhysics(physics)
+{
+
 	glEnable(GL_DEPTH_TEST);
 	shadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
 
@@ -57,7 +59,8 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 	levelState = UIState::MENU;
 }
 
-GameTechRenderer::~GameTechRenderer() {
+GameTechRenderer::~GameTechRenderer()
+{
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
 
@@ -66,7 +69,8 @@ GameTechRenderer::~GameTechRenderer() {
 	ImGui::DestroyContext();
 }
 
-void GameTechRenderer::LoadSkybox() {
+void GameTechRenderer::LoadSkybox()
+{
 	string filenames[6] = {
 		"/Cubemap/skyrender0004.png",
 		"/Cubemap/skyrender0001.png",
@@ -83,9 +87,11 @@ void GameTechRenderer::LoadSkybox() {
 
 	vector<char*> texData(6, nullptr);
 
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 6; ++i)
+	{
 		TextureLoader::LoadTexture(filenames[i], texData[i], width[i], height[i], channels[i], flags[i]);
-		if (i > 0 && (width[i] != width[0] || height[0] != height[0])) {
+		if (i > 0 && (width[i] != width[0] || height[0] != height[0]))
+		{
 			std::cout << __FUNCTION__ << " cubemap input textures don't match in size?\n";
 			return;
 		}
@@ -95,7 +101,8 @@ void GameTechRenderer::LoadSkybox() {
 
 	GLenum type = channels[0] == 4 ? GL_RGBA : GL_RGB;
 
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 6; ++i)
+	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width[i], height[i], 0, type, GL_UNSIGNED_BYTE, texData[i]);
 	}
 
@@ -131,20 +138,22 @@ void GameTechRenderer::InitGUI(HWND handle)
 	//window_flags |= ImGuiWindowFlags_NoTitleBar;
 }
 
-bool GameTechRenderer::TestValidHost() {
-	std::vector<string> vect;
-	std::stringstream ss(ipString);
-	while (ss.good()) {
-		string substr;
-		getline(ss, substr, '.');
-		if (substr.size() < 1)
-			return false;
-		vect.push_back(substr);
+bool GameTechRenderer::TestValidHost()
+{
+	//std::vector<string> vect;
+	//std::stringstream ss(ipString);
+	//while (ss.good()) {
+	//	string substr;
+	//	getline(ss, substr, '.');
+	//	if (substr.size() < 1)
+	return false;
+	/*	vect.push_back(substr);
 	}
-	return vect.size() == 4 && portString.length() > 0 && isdigit(portString.at(0));
+	return vect.size() == 4 && portString.length() > 0 && isdigit(portString.at(0));*/
 }
 
-void GameTechRenderer::RenderFrame() {
+void GameTechRenderer::RenderFrame()
+{
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList();
@@ -161,10 +170,10 @@ void GameTechRenderer::RenderUI()
 {
 	for (int i = 0; i < 5; i++) ImGui::GetIO().MouseDown[i] = false;
 
-    int button = -1;
-    if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) button = 0;
+	int button = -1;
+	if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) button = 0;
 
-    if (button != -1) ImGui::GetIO().MouseDown[button] = true;
+	if (button != -1) ImGui::GetIO().MouseDown[button] = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	ImGui_ImplOpenGL3_NewFrame();
@@ -181,7 +190,8 @@ void GameTechRenderer::RenderUI()
 	readyToJoin = TestValidHost() && validName;
 	string* activeString = enterIP ? &ipString : enterPort ? &portString : &nameString;
 
-	switch (levelState) {
+	switch (levelState)
+	{
 	case UIState::PAUSED:
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
@@ -190,10 +200,12 @@ void GameTechRenderer::RenderUI()
 		if (ImGui::Button("Resume")) {
 			levelState = UIState::INGAME;
 		}
-		if (ImGui::Button("Options")) {
+		if (ImGui::Button("Options"))
+		{
 			levelState = UIState::INGAMEOPTIONS;
 		}
-		if (ImGui::Button("Exit to Menu")) {
+		if (ImGui::Button("Exit to Menu"))
+		{
 			levelState = UIState::MENU;
 		}
 		ImGui::PopFont();
@@ -204,22 +216,20 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Title Screen", NULL, window_flags);
-		if (ImGui::Button("Level 1")) {
-			selectedLevel = 1;
+		if (ImGui::Button("Single Player"))
+		{
 			levelState = UIState::MODESELECT;
 		}
-		if (ImGui::Button("Level 2")) {
-			selectedLevel = 2;
-			levelState = UIState::MODESELECT;
+		if (ImGui::Button("Multiplayer"))
+		{
+			levelState = UIState::MULTIPLAYERMENU;
 		}
-		if (ImGui::Button("Level 3")) {
-			selectedLevel = 3;
-			levelState = UIState::MODESELECT;
-		}
-		if (ImGui::Button("Options")) {
+		if (ImGui::Button("Options"))
+		{
 			levelState = UIState::OPTIONS;
 		}
-		if (ImGui::Button("Quit")) {
+		if (ImGui::Button("Quit"))
+		{
 			levelState = UIState::QUIT;
 		}
 		ImGui::PopFont();
@@ -232,7 +242,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::Begin("Options", NULL, window_flags);
 		ImGui::Text("VOLUME");
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
-		if (ImGui::Button("Back")) {
+		if (ImGui::Button("Back"))
+		{
 			levelState = UIState::MENU;
 		}
 		ImGui::PopFont();
@@ -247,7 +258,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SliderInt("", &(AudioManager::GetVolume()), 0, 100);
 		ImGui::SetWindowFontScale(0.5);
 		ImGui::TextWrapped("(Debug Mode Activated with C + H)");
-		if (ImGui::Button("Back")) {
+		if (ImGui::Button("Back"))
+		{
 			levelState = UIState::PAUSED;
 		}
 		ImGui::PopFont();
@@ -258,13 +270,24 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Play Mode", NULL, window_flags);
-		if (ImGui::Button("Single Player")) {
-			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
+		if (ImGui::Button("Level 1"))
+		{
+			selectedLevel = 1;
 		}
-		if (ImGui::Button("Multiplayer")) {
-			levelState = UIState::MULTIPLAYERMENU;
+		if (ImGui::Button("Level 2"))
+		{
+			selectedLevel = 2;
 		}
-		if (ImGui::Button("Back")) {
+		if (ImGui::Button("Level 3"))
+		{
+			selectedLevel = 3;
+		}
+		if (ImGui::Button("Sandbox"))
+		{
+			selectedLevel = 4;
+		}
+		if (ImGui::Button("Back"))
+		{
 			levelState = UIState::MENU;
 		}
 		ImGui::PopFont();
@@ -287,7 +310,8 @@ void GameTechRenderer::RenderUI()
 			levelState = selectedLevel == 1 ? UIState::HOSTLEVEL1 : selectedLevel == 2 ? UIState::HOSTLEVEL2 : UIState::HOSTLEVEL3;
 		}
 
-		if (!readyToJoin) {
+		if (!readyToJoin)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::Button("Join Game");
@@ -318,7 +342,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::Text("Host I.P:");
 		ImGui::SameLine();
 
-		if (enterIP) {
+		if (enterIP)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::Button(ipString.c_str(), ImVec2(400, 50));
@@ -336,7 +361,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::Text("Port No:");
 		ImGui::SameLine();
 
-		if (enterPort) {
+		if (enterPort)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::Button(portString.c_str(), ImVec2(300, 50));
@@ -374,11 +400,13 @@ void GameTechRenderer::RenderUI()
 			activeString->append(".");
 		}
 
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK) && activeString->length() > 0) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK) && activeString->length() > 0)
+		{
 			activeString->pop_back();
 		}
 
-		if (ImGui::Button("Back")) {
+		if (ImGui::Button("Back"))
+		{
 			portString.clear();
 			ipString.clear();
 			enterPort = false;
@@ -392,14 +420,26 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Game Info", &p_open, window_flags);
-		if (levelState == UIState::DEBUG) {
+		if (levelState == UIState::DEBUG)
+		{
 			if (gameWorld.GetShuffleObjects())
 				ImGui::Text("Shuffle Objects(F1):On");
 			else
 				ImGui::Text("Shuffle Objects(F1):Off");
 		}
-		if (player)
+		if (player) {
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
+			switch (player->GetPowerUpState())
+			{
+			case::PowerUpState::LONGJUMP:
+				ImGui::Text("Long Jumnp Power Up!");
+				break;
+			case::PowerUpState::SPEEDPOWER:
+				ImGui::Text("Speed Boost Power Up!");
+				break;
+			}
+			}
+		
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
 		ImGui::End();
@@ -408,18 +448,11 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Pause(ESC)");
+		ImGui::Text("Move(WASD)");
+		ImGui::Text("Sprint(LSHIFT)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;
@@ -447,32 +480,22 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
-		ImGui::Text("Exit to Menu (ESC)");
-		ImGui::Text("Pause(P)");
+		ImGui::Text("Pause(ESC)");
 
-		if (!selectionObject) {
+		if (!selectionObject)
+		{
 			ImGui::Text("Select Object (LM Click)");
 		}
-		else {
+		else
+		{
 			ImGui::Text("De-Select Object (RM Click)");
-			if (!lockedObject)
-				ImGui::Text("Lock Selected Object (L)");
-			else
-				ImGui::Text("Unlock Object (L)");
+			if (selectionObject == player)
+				ImGui::Text("Lock/Unlock Player (L)");
 		}
 		ImGui::Text("Change to play mode(Q)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;
@@ -483,7 +506,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::PopFont();
 		ImGui::End();
 
-		if (selectionObject) {
+		if (selectionObject)
+		{
 			ImGui::PushFont(textFont);
 			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2.5 * main_viewport->Size.y / 3.5) - 20), ImGuiCond_Always);
 			ImGui::Begin("Debug Information", &p_open, window_flags);
@@ -491,14 +515,17 @@ void GameTechRenderer::RenderUI()
 			ImGui::Text("Position:%s", Vector3(selectionObject->GetTransform().GetPosition()).ToString().c_str());
 			ImGui::Text("Orientation:%s", Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
 
-			if (selectionObject->GetPhysicsObject() != nullptr) {
-				if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>()) {
+			if (selectionObject->GetPhysicsObject() != nullptr)
+			{
+				if (selectionObject->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
+				{
 					PxRigidDynamic* body = (PxRigidDynamic*)selectionObject->GetPhysicsObject()->GetPXActor();
 					ImGui::Text("Linear Velocity:%s", Vector3(body->getLinearVelocity()).ToString().c_str());
 					ImGui::Text("Angular Velocity:%s", Vector3(body->getAngularVelocity()).ToString().c_str());
 					ImGui::Text("Mass:%.1f", body->getMass());
 				}
-				else {
+				else
+				{
 					ImGui::Text("Linear Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
 					ImGui::Text("Angular Velocity:%s", Vector3(0, 0, 0).ToString().c_str());
 					ImGui::Text("Mass:N/A");
@@ -527,7 +554,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("PLAYERS", NULL, window_flags);
 
-		if (nGame) {
+		/*if (nGame) {
 			int levelNetworkObjectsCount = nGame->GetLevelNetworkObjectsCount();
 			std::vector<NetworkObject*> networkObjects = nGame->GetNetworkObjects();
 
@@ -547,7 +574,7 @@ void GameTechRenderer::RenderUI()
 					}
 				}
 			}
-		}
+		}*/
 
 		ImGui::PopFont();
 		ImGui::End();
@@ -557,7 +584,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 5.5), ImGuiCond_Always);
 		ImGui::Begin("FINISHED!", NULL, window_flags);
-		ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
+		//ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
 		ImGui::PopFont();
 		ImGui::End();
 	}
@@ -566,13 +593,16 @@ void GameTechRenderer::RenderUI()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void GameTechRenderer::BuildObjectList() {
+void GameTechRenderer::BuildObjectList()
+{
 	activeObjects.clear();
 
 	gameWorld.OperateOnContents(
-		[&](GameObject* o) {
+		[&](GameObject* o)
+		{
 			const RenderObject* g = o->GetRenderObject();
-			if (g) {
+			if (g)
+			{
 				activeObjects.emplace_back(g);
 			}
 
@@ -580,11 +610,13 @@ void GameTechRenderer::BuildObjectList() {
 	);
 }
 
-void GameTechRenderer::SortObjectList() {
+void GameTechRenderer::SortObjectList()
+{
 	//Who cares!
 }
 
-void GameTechRenderer::RenderShadowMap() {
+void GameTechRenderer::RenderShadowMap()
+{
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -602,17 +634,21 @@ void GameTechRenderer::RenderShadowMap() {
 
 	shadowMatrix = biasMatrix * mvMatrix; //we'll use this one later on
 
-	for (const auto& i : activeObjects) {
+	for (const auto& i : activeObjects)
+	{
 		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
 		Matrix4 mvpMatrix = mvMatrix * modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
+
+
 		BindMesh((*i).GetMesh());
 		int layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (int i = 0; i < layerCount; ++i) {
+
+		for (int i = 0; i < layerCount; ++i)
+		{
 			DrawBoundMesh(i);
 		}
 	}
-
 	glViewport(0, 0, currentWidth, currentHeight);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -620,7 +656,8 @@ void GameTechRenderer::RenderShadowMap() {
 	glCullFace(GL_BACK);
 }
 
-void GameTechRenderer::RenderSkybox() {
+void GameTechRenderer::RenderSkybox()
+{
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -650,7 +687,8 @@ void GameTechRenderer::RenderSkybox() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void GameTechRenderer::RenderCamera() {
+void GameTechRenderer::RenderCamera()
+{
 	float screenAspect = (float)currentWidth / (float)currentHeight;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
@@ -674,13 +712,15 @@ void GameTechRenderer::RenderCamera() {
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 
-	for (const auto& i : activeObjects) {
+	for (const auto& i : activeObjects)
+	{
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
 
-		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
 
-		if (activeShader != shader) {
+
+		if (activeShader != shader)
+		{
 			projLocation = glGetUniformLocation(shader->GetProgramID(), "projMatrix");
 			viewLocation = glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
 			modelLocation = glGetUniformLocation(shader->GetProgramID(), "modelMatrix");
@@ -727,13 +767,55 @@ void GameTechRenderer::RenderCamera() {
 
 		BindMesh((*i).GetMesh());
 		int layerCount = (*i).GetMesh()->GetSubMeshCount();
-		for (int i = 0; i < layerCount; ++i) {
-			DrawBoundMesh(i);
+
+		vector<GLuint> mats;
+
+		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
+
+		if ((*i).GetMeshMaterial() != nullptr)
+		{
+			for (int j = 0; j < layerCount; j++)
+			{
+				const MeshMaterialEntry* matEntry =
+					(*i).GetMeshMaterial()->GetMaterialForLayer(j);
+
+				mats.emplace_back(playerTex);
+				//BindTextureToShader((OGLTexture*)mats[j], "mainTex", 0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, mats[j]);
+				DrawSubMesh(j);
+			}
+			//for (int j = 0; j < layerCount; j++)
+			//{
+				//glActiveTexture(GL_TEXTURE0);
+				//glBindTexture(GL_TEXTURE_2D, mats[j]);
+				//BindTextureToShader((OGLTexture*)playerTex, "mainTex", 0);
+				//DrawSubMesh(j);
+			//}
 		}
+		else
+		{
+			for (int i = 0; i < layerCount; ++i)
+			{
+				DrawBoundMesh(i);
+			}
+		}
+		//BindTextureToShader()
+
+		//for (int j = 0; j < layerCount; ++j)
+		//{
+			//DrawBoundMesh(j);
+		//}
+		//}
+
+
+
+
 	}
 }
 
-Matrix4 GameTechRenderer::SetupDebugLineMatrix()	const {
+Matrix4 GameTechRenderer::SetupDebugLineMatrix()	const
+{
 	float screenAspect = (float)currentWidth / (float)currentHeight;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
@@ -741,6 +823,7 @@ Matrix4 GameTechRenderer::SetupDebugLineMatrix()	const {
 	return projMatrix * viewMatrix;
 }
 
-Matrix4 GameTechRenderer::SetupDebugStringMatrix()	const {
+Matrix4 GameTechRenderer::SetupDebugStringMatrix()	const
+{
 	return Matrix4::Orthographic(-1, 1.0f, 100, 0, 0, 100);
 }

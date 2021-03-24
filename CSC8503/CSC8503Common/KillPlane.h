@@ -36,6 +36,7 @@ namespace NCL {
 				if (otherObject->GetName() == "Player") {
 					PxTransform t = PxTransform(getRespawnPoint());
 					otherObject->GetPhysicsObject()->GetPXActor()->setGlobalPose(t.transform(PxTransform(t.p)));
+					((PxRigidBody*)otherObject->GetPhysicsObject()->GetPXActor())->setLinearVelocity(PxVec3(0, 0, 0));
 				}
 
 			}

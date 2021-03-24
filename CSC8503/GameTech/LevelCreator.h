@@ -12,34 +12,42 @@ namespace NCL
 {
 	namespace CSC8503
 	{
+		const int IDEAL_FRAMES = 240;
+		const float IDEAL_DT = 1.0f / IDEAL_FRAMES;
 		class PlayerObject;
 		enum class FinishType { INGAME, TIMEOUT, WIN, LOSE };
 		class LevelCreator
 		{
 		public:
 			LevelCreator();
-			~LevelCreator();
+			~LevelCreator() {}
 
 			void ResetWorld();
 
 			virtual void Update(float dt);
+			void UpdateCamera(float dt);
+			virtual void UpdateTimeStep(float dt);
+
+			void FixedUpdate(float dt);
+
 			void UpdateLevel(float dt);
 			void UpdatePlayer(float dt);
 			void InitPlayer(const PxTransform& t, const PxReal scale);
 			void InitWorld(LevelState state);
 
 		protected:
-			LevelState currentLevel;
+			float dTOffset;
+			int realFrames;
+			float fixedDeltaTime;
 			void InitCamera();
-			void UpdateKeys();
 
 			void InitFloors(LevelState state);
 			void InitGameExamples(LevelState state);
 			void InitGameObstacles(LevelState state);
+			void InitGameMusic(LevelState state);
 
 			bool SelectObject();
 			void DebugObjectMovement();
-			void LockedObjectMovement(float dt);
 		};
 	}
 }

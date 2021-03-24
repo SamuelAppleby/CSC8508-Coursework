@@ -69,6 +69,40 @@ namespace NCL
 				}
 			}
 
+			static Vector3 SmoothDamp(Vector3 current, Vector3 target, Vector3& vel, float deltaTime)
+			{
+				float smoothTime = 0.0001f;//, smoothTime);
+				float omega = 2.f / smoothTime;
+
+				float x = omega * deltaTime;
+				float exp = 1.f / (1.f + x + 0.48F * x * x + 0.235F * x * x * x);
+				Vector3 change = current - target;
+				Vector3 originalTo = target;
+
+
+
+				Vector3 temp = Vector3(vel.x + omega, vel.y + omega, vel.z + omega) * deltaTime;
+				vel = (Vector3(vel.x + omega, vel.y + omega, vel.z + omega) * temp) * exp;
+				Vector3 output = target + (change + temp) * exp;
+
+				// Prevent overshooting
+				/*if (originalTo - current > 0.0F == output > originalTo)
+				{
+					output = originalTo;
+					currentVelocity = (output - originalTo) / deltaTime;
+				}*/
+
+				return output;
+			}
+
+			static inline float Distance(Vector3 v1, Vector3 v2)
+			{
+				float x = v1.x - v2.x;
+				float y = v1.y - v2.y;
+				float z = v1.z - v2.z;
+				return sqrt((x * x) + (y * y) + (z * z));
+			}
+
 			float	Length() const
 			{
 				return sqrt((x * x) + (y * y) + (z * z));

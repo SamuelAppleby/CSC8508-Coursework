@@ -66,10 +66,16 @@ void GameWorld::UpdateWorld(float dt) {
 			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);
 		if (i->IsColliding())
 			tempCols++;
-		if (i->CanDestroy())
-			RemoveGameObject(i, true);
+		/*if (i->CanDestroy())
+			RemoveGameObject(i, true);*/
 	}
 	totalCollisions = tempCols;
+}
+
+void GameWorld::UpdatePhysics(float fixedDeltaTime) {	
+	for (auto& i : gameObjects) {
+		i->FixedUpdate(fixedDeltaTime);
+	}
 }
 
 GameObject* GameWorld::FindObjectFromPhysicsBody(PxActor* actor) {

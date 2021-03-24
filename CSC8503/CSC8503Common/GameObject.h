@@ -21,7 +21,8 @@ namespace NCL
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt);	
+			virtual void Update(float dt);
+			virtual void FixedUpdate(float fixedDT) {}
 
 			void SetName(string val)
 			{
@@ -68,9 +69,9 @@ namespace NCL
 				return name;
 			}
 
-			virtual void OnCollisionBegin(GameObject* otherObject) {};
+			virtual void OnCollisionBegin(GameObject* otherObject) ;
 
-			virtual void OnCollisionEnd(GameObject* otherObject) {};
+			virtual void OnCollisionEnd(GameObject* otherObject) ;
 
 			void SetWorldID(int newID)
 			{
@@ -80,41 +81,6 @@ namespace NCL
 			int GetWorldID() const
 			{
 				return worldID;
-			}
-
-			int GetSelected() const
-			{
-				return selectedObject;
-			}
-
-			void SetSelected(bool val)
-			{
-				selectedObject = val;
-			}
-
-			void IncreaseTimeInSet(float dt)
-			{
-				timeInSet += dt;
-			}
-
-			void SetTimeInSet(float val)
-			{
-				timeInSet = val;
-			}
-
-			float GetTimeInSet() const
-			{
-				return timeInSet;
-			}
-
-			void SetPowerUpTimer(float val)
-			{
-				powerUpTimer = val;
-			}
-
-			float GetPowerUpTimer() const
-			{
-				return powerUpTimer;
 			}
 
 			float GetTimeAlive() const
@@ -135,9 +101,9 @@ namespace NCL
 			bool CanDestroy() const {
 				return canDestroy;
 			}
+
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
-			void SetScale(const PxVec3& newScale);
 
 		protected:
 			Transform transform;
@@ -148,11 +114,8 @@ namespace NCL
 
 			int	worldID;
 			string	name;
-			bool selectedObject;
-			float timeInSet;
 			float timeAlive;
-			float powerUpTimer;
-			//bool isGrounded;
+			bool isGrounded;
 
 			bool isColliding;
 			bool canDestroy;

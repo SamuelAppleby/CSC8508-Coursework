@@ -3,21 +3,20 @@
 //#include <atomic>
 
 #include "NetworkBase.h"
-#include "../GameTech/GameManager.h"
+//#include "../GameTech/GameManager.h"
 
 namespace NCL {
 	namespace CSC8503 {
-		class GameWorld;
 		class NetworkPlayer;
 		class GameServer : public NetworkBase {
 		public:
-			GameServer(int onPort, int maxClients, LevelState level);
+			//TODO LevelState
+			GameServer(int onPort, int maxClients);
 			~GameServer();
 
 			bool Initialise();
 			void Shutdown();
 
-			void SetGameWorld(GameWorld& g);
 
 			void ThreadedUpdate();
 
@@ -33,8 +32,7 @@ namespace NCL {
 			int			port;
 			int			clientMax;
 			int			clientCount;
-			GameWorld* gameWorld;
-			LevelState level;
+			//LevelState level;
 
 			/*std::atomic<bool> threadAlive;
 			std::thread updateThread;*/

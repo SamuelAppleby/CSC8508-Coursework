@@ -23,7 +23,7 @@ NetworkedGame::NetworkedGame() {
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
 
-	GameManager::GetRenderer()->SetNetworkedGame(this);
+	//GameManager::GetRenderer()->SetNetworkedGame(this);
 }
 
 NetworkedGame::~NetworkedGame() {
@@ -40,9 +40,9 @@ void NetworkedGame::ResetWorld() {
 	delete thisServer;
 	thisServer = nullptr;
 
-	if (thisClient) {
+	/*if (thisClient) {
 		thisClient->Disconnect();
-	}
+	}*/
 
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
@@ -56,7 +56,8 @@ void NetworkedGame::ResetWorld() {
 }
 
 void NetworkedGame::StartAsServer(LevelState state, string playerName) {
-	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4, state);
+	//TODO LevelState
+	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
 
@@ -68,7 +69,6 @@ void NetworkedGame::StartAsServer(LevelState state, string playerName) {
 	localPlayer->SetHost();
 
 	GameManager::SetPlayer(localPlayer);
-	GameManager::SetLockedObject(localPlayer);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 
 	/*GameManager::SetSelectionObject(localPlayer);
@@ -537,7 +537,6 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 				}
 
 				GameManager::SetPlayer(localPlayer);
-				GameManager::SetLockedObject(localPlayer);
 				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 
 				/*GameManager::SetSelectionObject(localPlayer);

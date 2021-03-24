@@ -10,6 +10,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FontBuilder", "FontBuilder\FontBuilder.vcxproj", "{F75A977F-2D2B-4D4A-A5E4-72905D38922A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSC8503Common", "CSC8503\CSC8503Common\CSC8503Common.vcxproj", "{F93B1523-C80E-4CFC-8A88-660866D29C10}"
+	ProjectSection(ProjectDependencies) = postProject
+		{124740DA-B6CB-4D9B-8C79-B8358B2A1D9F} = {124740DA-B6CB-4D9B-8C79-B8358B2A1D9F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameTech", "CSC8503\GameTech\GameTech.vcxproj", "{86B67DBB-8D8A-4B90-9383-A95C534E2A01}"
 	ProjectSection(ProjectDependencies) = postProject
