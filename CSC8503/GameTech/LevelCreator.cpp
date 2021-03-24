@@ -270,34 +270,15 @@ void LevelCreator::InitFloors(LevelState state)
 		//Floor 3
 		GameManager::AddPxFloorToWorld(PxTransform(0, 700, 95), PxVec3(200, 1, 32.5));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -325), PxVec3(200, 1, 50));
-
-
-
 		GameManager::AddPxFloorToWorld(PxTransform(-160, 700, -105), PxVec3(20, 1, 170));
 		GameManager::AddPxFloorToWorld(PxTransform(-80, 700, -105), PxVec3(20, 1, 170));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -105), PxVec3(20, 1, 170));
 		GameManager::AddPxFloorToWorld(PxTransform(80, 700, -105), PxVec3(20, 1, 170));
 		GameManager::AddPxFloorToWorld(PxTransform(160, 700, -105), PxVec3(20, 1, 170));
-
-
-
-		//GameManager::AddPxFloorToWorld(PxTransform(-200, 900, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(200, 900, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 950, 125), PxVec3(200, 150, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 950, -275), PxVec3(200, 150, 1));
 		GameManager::AddPxFloorToWorld(PxTransform(-200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 720, -375), PxVec3(200, 20, 1));
 
-		//Floor 4
-		//GameManager::AddPxFloorToWorld(PxTransform(125, 1100, -75), PxVec3(75, 1, 200));
-
-
-		//These should be seesaws
-		GameManager::AddPxFloorToWorld(PxTransform(-75, 1100, -225), PxVec3(125, 1, 25));
-		GameManager::AddPxFloorToWorld(PxTransform(-75, 1100, -125), PxVec3(125, 1, 25));
-		GameManager::AddPxFloorToWorld(PxTransform(-75, 1100, -25), PxVec3(125, 1, 25));
-		GameManager::AddPxFloorToWorld(PxTransform(-75, 1100, 75), PxVec3(125, 1, 25));
 
 		break;
 	case LevelState::LEVEL2:
@@ -812,33 +793,33 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		}
 
 		//floor 3 (pendulums)
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
 
 		break;
