@@ -219,20 +219,13 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Title Screen", &p_open, window_flags);
-		if (ImGui::Button("Level 1"))
+		if (ImGui::Button("Single Player"))
 		{
-			selectedLevel = 1;
 			levelState = UIState::MODESELECT;
 		}
-		if (ImGui::Button("Level 2"))
+		if (ImGui::Button("Multiplayer"))
 		{
-			selectedLevel = 2;
-			levelState = UIState::MODESELECT;
-		}
-		if (ImGui::Button("Level 3"))
-		{
-			selectedLevel = 3;
-			levelState = UIState::MODESELECT;
+			levelState = UIState::MULTIPLAYERMENU;
 		}
 		if (ImGui::Button("Options"))
 		{
@@ -280,13 +273,21 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Play Mode", &p_open, window_flags);
-		if (ImGui::Button("Single Player"))
+		if (ImGui::Button("Level 1"))
 		{
-			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
+			selectedLevel = 1;
 		}
-		if (ImGui::Button("Multiplayer"))
+		if (ImGui::Button("Level 2"))
 		{
-			levelState = UIState::MULTIPLAYERMENU;
+			selectedLevel = 2;
+		}
+		if (ImGui::Button("Level 3"))
+		{
+			selectedLevel = 3;
+		}
+		if (ImGui::Button("Sandbox"))
+		{
+			selectedLevel = 4;
 		}
 		if (ImGui::Button("Back"))
 		{
@@ -424,6 +425,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Pause(ESC)");
+		ImGui::Text("Move(WASD)");
+		ImGui::Text("Sprint(LSHIFT)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{

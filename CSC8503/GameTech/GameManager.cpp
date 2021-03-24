@@ -105,7 +105,6 @@ void GameManager::ResetMenu()
 {
 	levelState = LevelState::LEVEL1;
 	selectionObject = nullptr;
-	//lockedObject = nullptr;
 	renderer->SetSelectionObject(nullptr);
 	renderer->SetLockedObject(nullptr);
 }
@@ -455,10 +454,6 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		break;
 
 	}
-	/*if (!friction)
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));*/
 	world->AddGameObject(floor);
 }
 
@@ -474,9 +469,6 @@ Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxR
 	cannonBall->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, basicTex, toonShader));
 	world->AddGameObject(cannonBall);
-	//body->addForce(*force, PxForceMode::eIMPULSE);
-	//cannonObj->addShot(cannonBall);
-
 	return cannonBall;
 }
 

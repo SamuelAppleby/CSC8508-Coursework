@@ -22,6 +22,8 @@ void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
 	GameManager::GetObstacles()->ClearObstacles();
+	GameManager::GetRenderer()->SetSelectedLevel(0);
+	GameManager::SetPlayer(nullptr);
 	//WorldCreator::GetPhysicsSystem()->ResetPhysics();
 }
 
@@ -189,16 +191,16 @@ void LevelCreator::InitWorld(LevelState state)
 void LevelCreator::InitGameMusic(LevelState state) {
 	switch (state)
 	{
-	case LevelState::LEVEL1:
-		
+	case LevelState::LEVEL1:		
 		break;
 	case LevelState::LEVEL2:
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(-70, -98, -900) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(0, -98, -900) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.wav", PxTransform(PxVec3(70, -98, -900) * 2), true);
 		break;
-
 	case LevelState::LEVEL3:
+		break;
+	case LevelState::SANDBOX:
 		break;
 	}
 }
@@ -218,7 +220,6 @@ void LevelCreator::InitFloors(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(100, 1, 100));
 		break;
 	case LevelState::LEVEL2:
 		//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -599,6 +600,9 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37,  95.75, -875) * 2), PxVec3(4, 11.5, 2));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(48, 98, -875) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
 		break;
+		case LevelState::SANDBOX:
+			GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -20, 0)), PxVec3(1000, 1, 1000));
+			break;
 	}
 }
 
@@ -608,11 +612,6 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		InitPlayer(PxTransform(PxVec3(0, 20, 0)), 1);
-		//GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(-20, -5, 0)), 3);
-		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-30, -5, 0)), 3);
-		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -620,6 +619,33 @@ void LevelCreator::InitGameExamples(LevelState state)
 		break;
 	case LevelState::LEVEL3:
 		InitPlayer(PxTransform(PxVec3(0, 180, 150)), 1);
+		break;
+	case LevelState::SANDBOX:
+		InitPlayer(PxTransform(PxVec3(0, 10, 100)), 1);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-50, -10, -100)), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(0, -10, -100)), 3);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(50, -10, -100)), 3);
+		for (int i = 0; i < 10; i++) {
+			for (int j = -20; j < -10; j++) {
+				GameManager::AddPxSphereToWorld(PxTransform(PxVec3(j * 10, 5, i * 10)), 2, abs((9 - i) * 10) + 0.1);
+			}
+		}
+		for (int i = 0; i < 10; i++) {
+			for (int j = -10; j < 0; j++) {
+				GameManager::AddPxCubeToWorld(PxTransform(PxVec3(j * 10, 5, i * 10)), PxVec3(2, 2, 2), abs((9 - i) * 10) + 0.1);
+			}
+		}	
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(j * 10, 5, i * 10)), 2, 2, abs((9 - i) * 10) + 0.1);
+			}
+		}
+		for (int i = 0; i < 10; i++) {
+			for (int j = 10; j < 20; j++) {
+				GameManager::AddPxCylinderToWorld(PxTransform(PxVec3(j * 10, 5, i * 10)), 2, 2, abs((9 - i) * 10) + 0.1);
+			}
+		}
+		//GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);	
 		break;
 	}
 }
@@ -630,9 +656,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
-		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
-		GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
@@ -787,6 +810,11 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 99, -875) * 2), PxVec3(2, 2, 2), 1.0F);
 		GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 101, -875) * 2), PxVec3(2, 2, 2), 1.0F);
 		break;
+		case LevelState::SANDBOX:
+			GameManager::AddPxSphereToWorld(PxTransform(PxVec3(-20, 20, -20)), 2);
+			GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 20, -20)), PxVec3(2, 2, 2));
+			GameManager::AddPxCapsuleToWorld(PxTransform(PxVec3(20, 20, -20)), 2, 2);
+			break;
 	}
 }
 
@@ -802,10 +830,9 @@ bool LevelCreator::SelectObject()
 
 		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
 		{
-			if (GameManager::GetSelectionObject())
+			if (GameManager::GetSelectionObject() && GameManager::GetSelectionObject()->GetRenderObject())
 			{
-				if (GameManager::GetSelectionObject()->GetRenderObject())
-					GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+				GameManager::GetSelectionObject()->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
 			}
 
 			GameManager::SetSelectionObject(GameManager::GetWorld()->FindObjectFromPhysicsBody(hit.block.actor));

@@ -36,7 +36,7 @@ namespace NCL
 			void virtual InitWorld(LevelState state);
 
 		protected:
-			float	dTOffset;
+			float dTOffset;
 			int realFrames;
 			float fixedDeltaTime;
 			void InitCamera();

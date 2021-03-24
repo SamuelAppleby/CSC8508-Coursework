@@ -14,7 +14,7 @@ namespace NCL
 
 		private:
 			float speed;
-			float timer;
+			float angle;
 			bool isSwingingLeft;
 			tweeny::tween<float> tween;
 		};
