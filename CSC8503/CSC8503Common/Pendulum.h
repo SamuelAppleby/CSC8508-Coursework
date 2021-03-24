@@ -10,6 +10,9 @@ namespace NCL
 		{
 		public:
 			Pendulum(float timeToSwing, bool isSwingingLeft = true);
+			~Pendulum() {
+				delete &tween;
+			}
 			void FixedUpdate(float fixedDT) override;
 
 		private:
