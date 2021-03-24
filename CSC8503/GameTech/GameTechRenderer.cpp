@@ -280,12 +280,11 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	case UIState::MODESELECT:
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 1", NULL, window_flags);
-		if (ImGui::ImageButton((void*)(intptr_t)levelImages[0]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1, 
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
-		{
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[2]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
 			selectedLevel = 1;
 		}
 		ImGui::End();
@@ -297,11 +296,12 @@ void GameTechRenderer::RenderUI()
 			selectedLevel = 2;
 		}
 		ImGui::End();
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 3", NULL, window_flags);
-		if (ImGui::ImageButton((void*)(intptr_t)levelImages[2]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[0]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+		{
 			selectedLevel = 3;
 		}
 		ImGui::End();
