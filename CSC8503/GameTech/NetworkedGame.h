@@ -55,6 +55,7 @@ namespace NCL {
 			float timeToNextPacket;
 			int packetsToSnapshot;
 
+
 			// Client-side
 			std::vector<NetworkObject*> networkObjects;
 			LevelState clientState;

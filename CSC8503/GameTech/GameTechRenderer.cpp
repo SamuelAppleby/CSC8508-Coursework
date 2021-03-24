@@ -4,6 +4,8 @@
  *                170348069
  *			Game Tech Renderer Implementation */
 #include "GameTechRenderer.h"
+#include "../GameTech/NetworkPlayer.h"
+#include "NetworkedGame.h"
 
 
 using namespace NCL;
@@ -554,7 +556,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("PLAYERS", NULL, window_flags);
 
-		/*if (nGame) {
+		if (nGame) {
 			int levelNetworkObjectsCount = nGame->GetLevelNetworkObjectsCount();
 			std::vector<NetworkObject*> networkObjects = nGame->GetNetworkObjects();
 
@@ -574,7 +576,7 @@ void GameTechRenderer::RenderUI()
 					}
 				}
 			}
-		}*/
+		}
 
 		ImGui::PopFont();
 		ImGui::End();

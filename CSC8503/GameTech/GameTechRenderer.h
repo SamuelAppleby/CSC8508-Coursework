@@ -16,7 +16,6 @@
 #include "../../Common/AudioManager.h"
 #include <sstream>
 #include "../CSC8503Common/PlayerObject.h"
-//#include "NetworkedGame.h"
 #include <string.h>
 #include "../../Common/Assets.h"
 #include "../../Common/MeshMaterial.h"
@@ -29,6 +28,7 @@ namespace NCL {
 	class Maths::Vector4;
 	namespace CSC8503
 	{
+		class NetworkedGame;
 		class RenderObject;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
 			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH };
@@ -84,9 +84,9 @@ namespace NCL {
 			}
 			GLuint playerTex;
 
-			/*void SetNetworkedGame(NetworkedGame* game) {
+			void SetNetworkedGame(NetworkedGame* game) {
 				nGame = game;
-			}*/
+			}
 
 		protected:
 			void RenderFrame()	override;
@@ -99,7 +99,7 @@ namespace NCL {
 			GameWorld&	gameWorld;
 			PxPhysicsSystem& pXPhysics;
 			PlayerObject* player;
-			//NetworkedGame* nGame;
+			NetworkedGame* nGame;
 
 			void RenderUI();
 

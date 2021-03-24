@@ -30,7 +30,16 @@ void LevelCreator::ResetWorld()
 void LevelCreator::Update(float dt)
 {
 	if (GameManager::GetPlayer())
-		UpdatePlayer(dt);
+	{
+		if (!GameManager::GetPlayer()->HasFinished())
+		{
+			if (GameManager::GetPlayer()->CheckHasFinished(GameManager::GetLevelState()))
+			{
+				GameManager::GetRenderer()->SetUIState(UIState::FINISH);
+			}
+			UpdatePlayer(dt);
+		}
+	}
 
 	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateCamera(dt);

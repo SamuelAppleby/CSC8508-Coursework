@@ -188,19 +188,19 @@ public:
 			switch (GameManager::GetRenderer()->GetSelectedLevel())
 			{
 			case 1:
-				levelCreator->InitWorld(LevelState::LEVEL1);
+				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL1);
 				GameManager::SetLevelState(LevelState::LEVEL1);
 				break;
 			case 2:
-				levelCreator->InitWorld(LevelState::LEVEL2);
+				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL2);
 				GameManager::SetLevelState(LevelState::LEVEL2);
 				break;
 			case 3:
-				levelCreator->InitWorld(LevelState::LEVEL3);
+				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL3);
 				GameManager::SetLevelState(LevelState::LEVEL3);
 				break;
 			case 4:
-				levelCreator->InitWorld(LevelState::SANDBOX);
+				levelCreator->LevelCreator::InitWorld(LevelState::SANDBOX);
 				GameManager::SetLevelState(LevelState::SANDBOX);
 				break;
 			}

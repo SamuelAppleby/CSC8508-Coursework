@@ -1,6 +1,7 @@
 #pragma once
 #include "../CSC8503Common/PlayerObject.h"
 
+
 namespace NCL
 {
 	namespace CSC8503
