@@ -20,7 +20,7 @@ namespace NCL
 		{
 		public:
 			LevelCreator();
-			~LevelCreator();
+			~LevelCreator() {}
 
 			void ResetWorld();
 
@@ -39,7 +39,6 @@ namespace NCL
 			float	dTOffset;
 			int realFrames;
 			float fixedDeltaTime;
-			LevelState currentLevel;
 			void InitCamera();
 
 			void InitFloors(LevelState state);

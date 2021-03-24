@@ -18,11 +18,6 @@ LevelCreator::LevelCreator()
 	GameManager::LoadAssets();
 }
 
-LevelCreator::~LevelCreator()
-{
-
-}
-
 void LevelCreator::ResetWorld()
 {
 	GameManager::GetWorld()->ClearAndErase();
@@ -33,8 +28,7 @@ void LevelCreator::ResetWorld()
 void LevelCreator::Update(float dt)
 {
 	if (GameManager::GetPlayer())
-		UpdatePlayer(dt);
-		
+		UpdatePlayer(dt);		
 
 	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateCamera(dt);
@@ -45,7 +39,6 @@ void LevelCreator::Update(float dt)
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);
-
 }
 
 void LevelCreator::UpdateCamera(float dt)
@@ -623,10 +616,10 @@ void LevelCreator::InitGameExamples(LevelState state)
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
-		InitPlayer(PxTransform(PxVec3(0, 10, -1500)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 		break;
 	case LevelState::LEVEL3:
-		InitPlayer(PxTransform(PxVec3(0, 300, -1500)), 1);
+		InitPlayer(PxTransform(PxVec3(0, 180, 150)), 1);
 		break;
 	}
 }

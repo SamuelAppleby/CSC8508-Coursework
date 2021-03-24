@@ -66,6 +66,8 @@ void GameWorld::UpdateWorld(float dt) {
 			Debug::DrawAxisLines(i->GetTransform().GetMatrix(), 2.0f);
 		if (i->IsColliding())
 			tempCols++;
+		/*if (i->CanDestroy())
+			RemoveGameObject(i, true);*/
 	}
 	totalCollisions = tempCols;
 }

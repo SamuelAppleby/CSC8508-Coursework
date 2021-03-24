@@ -203,12 +203,10 @@ private:
 	void  OnAwake() override {
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetWindow()->LockMouseToWindow(false);
-		if (levelCreator == nullptr) {
+		if (!levelCreator) 
 			levelCreator = new LevelCreator();
-		}
-		else {
+		else 
 			levelCreator->ResetWorld();
-		}
 		GameManager::GetAudioManager()->StopSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 	}
