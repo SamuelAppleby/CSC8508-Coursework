@@ -718,7 +718,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 
 	PxVec3 translate = PxVec3(0, -59, -14) * 2;
 	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
-
+	PxQuat q;
 
 	switch (state)
 	{
