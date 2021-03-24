@@ -812,33 +812,33 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		}
 
 		//floor 3 (pendulums)
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5);
-		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
 
 		break;
