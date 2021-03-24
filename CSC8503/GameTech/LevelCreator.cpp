@@ -228,7 +228,7 @@ void LevelCreator::InitFloors(LevelState state)
 {
 	//couldn't be bothered to type out the same vector every time
 	PxVec3 translate = PxVec3(0, -59, -14) * 2;
-
+	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
 	Vector3 respawnSize;
 	PxVec3 zone1Position, zone2Position, zone3Position, zone4Position;
 	PxQuat q;
@@ -361,16 +361,16 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -800) * 2), PxVec3(200, 40, 1));
 
 		//gate left														 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -68, -800) * 2), PxVec3(20, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -78, -800) * 2), PxVec3(20, 20, 1));
 
 		//gate left mid													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -68, -800) * 2), PxVec3(50, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -78, -800) * 2), PxVec3(50, 20, 1));
 
 		//gate right mid												 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -68, -800) * 2), PxVec3(50, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -78, -800) * 2), PxVec3(50, 20, 1));
 
 		//gate right													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -68, -800) * 2), PxVec3(20, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -78, -800) * 2), PxVec3(20, 20, 1));
 
 		//OBSTACLE 3 - THE SPINNING COLUMNS (WITH CANNONS EITHER SIDE)
 		//I have no idea how to make these spin
@@ -452,7 +452,7 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100));
 
 		//blender floor
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1630.5) * 2) + translate), PxVec3(200, 1, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1630.5) * 2) + translate + translate2), PxVec3(200, 1, 339));
 
 
 		//diving boards can be used to give players an advantage in getting further into the blender
@@ -468,27 +468,27 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 8, -1630.5) * 2) + translate), PxVec3(1, 200, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 8, -1630.5) * 2) + translate), PxVec3(1, 200, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
 
 		//back wall
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -16.5, -1461) * 2) + translate), PxVec3(200, 143, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 8.5, -1461) * 2) + translate), PxVec3(200, 93, 1));
 
 		//should leave a gap of 20. Enough to get through, but tricky when there's a big old blender shoving everyone around
 		//inspired loosely by those windmills on crazy golf
 		//front wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-55, -58, -1800) * 2) + translate), PxVec3(90, 60, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
 
 		//front wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(55, -58, -1800) * 2) + translate), PxVec3(90, 60, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
 
 		//front wall top
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 23, -1800) * 2) + translate), PxVec3(200, 170, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 0, -1800) * 2) + translate + translate2), PxVec3(200, 116, 1));
 
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 107, -1580.5) * 2) + translate), PxVec3(200, 1, 439));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 107, -1581) * 2) + translate), PxVec3(200, 1, 439));
 
 		//VICTORY PODIUM
 		//the room you have to get in after the blender
@@ -497,19 +497,19 @@ void LevelCreator::InitFloors(LevelState state)
 		//also want a sliding door that locks players out
 		//pressing the button should make all the floors drop out
 		//Podium floor
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1825) * 2) + translate), PxVec3(50, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-25, -63, -1825) * 2) + translate), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(25, -63, -1825) * 2) + translate), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
 
 		//end wall 
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -63, -1850) * 2) + translate), PxVec3(50, 50, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -63, -1850) * 2) + translate + translate2), PxVec3(50, 50, 1));
 
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -38, -1825) * 2) + translate), PxVec3(50, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -38, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 		break;
 
 	case LevelState::LEVEL3:
@@ -732,6 +732,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 {
 
 	PxVec3 translate = PxVec3(0, -59, -14) * 2;
+	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
 
 
 	switch (state)
@@ -859,7 +860,7 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform((PxVec3(0, -85, -1705) * 2 )+ translate, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 20, 80, PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform((PxVec3(0, -90, -1720) * 2 )+ translate + translate2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 20, 80, PxVec3(0, 2, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
