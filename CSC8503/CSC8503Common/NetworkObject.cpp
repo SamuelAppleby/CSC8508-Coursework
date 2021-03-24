@@ -1,5 +1,7 @@
 #include "NetworkObject.h"
 #include "PhysXConversions.h"
+#include "GameObject.h"
+#include "../GameTech/NetworkPlayer.h"
 
 using namespace NCL;
 using namespace CSC8503;

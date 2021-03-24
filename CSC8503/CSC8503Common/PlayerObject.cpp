@@ -73,12 +73,15 @@ void PlayerObject::Update(float dt)
 	right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 }
 
-void PlayerObject::FixedUpdate(float fixedDT) {
+void PlayerObject::FixedUpdate(float fixedDT)
+{
 	speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
-	if (isSprinting) {
+	if (isSprinting)
+	{
 		MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f;
 	}
-	else {
+	else
+	{
 		MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f;
 	}
 	if (movingForward)
@@ -89,29 +92,35 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-fwd * speed, PxForceMode::eIMPULSE);
 	if (movingRight)
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(right * speed, PxForceMode::eIMPULSE);
-	
+
 	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
 	if (isJumping)
 		playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
-	
+
 	float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
 	float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
-	if (excessSpeed) {
+	if (excessSpeed)
+	{
 		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
 	}
 	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 }
-bool PlayerObject::CheckHasFinished(LevelState state) {
+bool PlayerObject::CheckHasFinished(LevelState state)
+{
 	Vector3 pos = transform.GetPosition();
 
-	if (state == LevelState::LEVEL2) {
-		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20) {
+	if (state == LevelState::LEVEL2)
+	{
+		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20)
+		{
 			finished = true;
 			finishTime = timeAlive;
 		}
 	}
-	else if (state == LevelState::LEVEL3) {
-		if (pos.z < -1800 && pos.y > 181 && pos.x > -101 && pos.x < 101) {
+	else if (state == LevelState::LEVEL3)
+	{
+		if (pos.z < -1800 && pos.y > 181 && pos.x > -101 && pos.x < 101)
+		{
 			finished = true;
 			finishTime = timeAlive;
 		}

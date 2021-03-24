@@ -4,7 +4,8 @@
 using namespace NCL;
 using namespace CSC8503;
 
-NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num) {
+NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num)
+{
 	this->game = game;
 	playerNum = num;
 	defaultPlayerName = "Player " + std::to_string(num + 2);
@@ -13,23 +14,33 @@ NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num) {
 	isHost = false;
 }
 
-NetworkPlayer::~NetworkPlayer() {
+NetworkPlayer::~NetworkPlayer()
+{
 
 }
 
-void NetworkPlayer::Update(float dt) {
+void NetworkPlayer::Update(float dt)
+{
 	UIState ui = GameManager::GetRenderer()->GetUIState();
 
-	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD)) {
+	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD))
+	{
 		PlayerObject::Update(dt);
 	}
-	else {
+	else
+	{
 		GameObject::Update(dt);
 		raycastTimer -= dt;
 	}
 }
 
-void NetworkPlayer::OnCollisionBegin(GameObject* otherObject) {
+void NetworkPlayer::FixedUpdate(float dt)
+{
+	PlayerObject::FixedUpdate(dt);
+}
+
+void NetworkPlayer::OnCollisionBegin(GameObject* otherObject)
+{
 	isColliding = true;
 
 	//if (game) {
@@ -40,7 +51,8 @@ void NetworkPlayer::OnCollisionBegin(GameObject* otherObject) {
 		score += 100;
 	}
 	else */
-	if (dynamic_cast<NetworkPlayer*>(otherObject)) {
+	if (dynamic_cast<NetworkPlayer*>(otherObject))
+	{
 		game->OnPlayerCollision(this, (NetworkPlayer*)otherObject);
 	}
 	//}

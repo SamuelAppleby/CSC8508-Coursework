@@ -1,52 +1,66 @@
 #pragma once
 #include "../CSC8503Common/PlayerObject.h"
 
-namespace NCL {
-	namespace CSC8503 {
+namespace NCL
+{
+	namespace CSC8503
+	{
 		class NetworkedGame;
 
-		class NetworkPlayer : public PlayerObject {
+		class NetworkPlayer : public PlayerObject
+		{
 		public:
 			NetworkPlayer(NetworkedGame* game, int num);
 			~NetworkPlayer();
 
 			void Update(float dt) override;
 
+			void FixedUpdate(float dt)override;
+
 			void OnCollisionBegin(GameObject* otherObject) override;
 
-			int GetPlayerNum() const {
+			int GetPlayerNum() const
+			{
 				return playerNum;
 			}
 
-			int GetScore() const {
+			int GetScore() const
+			{
 				return score;
 			}
 
-			void SetScore(int val) {
+			void SetScore(int val)
+			{
 				score = val;
 			}
 
-			string GetPlayerName() const {
+			string GetPlayerName() const
+			{
 				return playerName;
 			}
 
-			void SetPlayerName(string s) {
+			void SetPlayerName(string s)
+			{
 				playerName = s;
 			}
 
-			string GetDefaultPlayerName() const {
+			string GetDefaultPlayerName() const
+			{
 				return defaultPlayerName;
 			}
 
-			void Disconnect() {
+			void Disconnect()
+			{
 				connected = false;
 			}
 
-			bool IsConnected() const {
+			bool IsConnected() const
+			{
 				return connected;
 			}
 
-			void SetHost() {
+			void SetHost()
+			{
 				isHost = true;
 			}
 

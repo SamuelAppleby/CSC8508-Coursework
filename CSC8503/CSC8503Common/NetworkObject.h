@@ -1,49 +1,60 @@
 #pragma once
-#include "../GameTech/NetworkPlayer.h"
 #include "NetworkBase.h"
 #include "NetworkState.h"
-namespace NCL {
-	namespace CSC8503 {
-		struct FullPacket : public GamePacket {
+#include<vector>
+#include<string>
+
+namespace NCL
+{
+	namespace CSC8503
+	{
+		struct FullPacket : public GamePacket
+		{
 			int		objectID = -1;
 			NetworkState fullState;
 			int score = -1;
-			string playerName = "";
+			std::string playerName = "";
 			float finishTime = 0;
 
-			FullPacket() {
+			FullPacket()
+			{
 				type = Full_State;
 				size = sizeof(FullPacket) - sizeof(GamePacket);
 			}
 		};
 
-		struct DeltaPacket : public GamePacket {
+		struct DeltaPacket : public GamePacket
+		{
 			int		fullID = -1;
 			int		objectID = -1;
 			char	pos[3];
 			char	orientation[4];
 
-			DeltaPacket() {
+			DeltaPacket()
+			{
 				type = Delta_State;
 				size = sizeof(DeltaPacket) - sizeof(GamePacket);
 			}
 		};
 
-		struct ClientPacket : public GamePacket {
+		struct ClientPacket : public GamePacket
+		{
 			int		lastID = -1;
 			char	buttonstates[8];
 			Vector3 rightAxis;
 			int cameraYaw;
-			string playerName;
+			std::string playerName;
 			float finishTime = 0.0f;
 
-			ClientPacket() {
+			ClientPacket()
+			{
 				type = Received_State;
 				size = sizeof(ClientPacket);
 			}
 		};
 
-		class NetworkObject {
+		class NetworkObject
+		{
 		public:
 			NetworkObject(GameObject& o, int id);
 			virtual ~NetworkObject();
@@ -55,7 +66,8 @@ namespace NCL {
 
 			void UpdateStateHistory(int minID);
 
-			GameObject* GetGameObject() const {
+			GameObject* GetGameObject() const
+			{
 				return &object;
 			}
 
