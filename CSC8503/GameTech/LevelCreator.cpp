@@ -422,21 +422,6 @@ void LevelCreator::InitFloors(LevelState state)
 		//side wall right
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
 
-		//pegs as obstacles/hiding places for the bowling balls
-		//row 1
-		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-
-		//row 2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
-
-		//row 3
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
 
 		//buffer zone 4 (where contestants respawn on failing the fourth obstacle, this needs to be sorted on the individual kill plane)
 		zone4Position = PxVec3(0, 56, -1411) + translate;
@@ -854,6 +839,24 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -875) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
+
+		//pegs as obstacles/hiding places for the bowling balls
+		//row 1
+		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+
+		//row 2
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+
+		//row 3
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+
+
 
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins

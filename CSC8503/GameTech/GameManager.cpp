@@ -374,7 +374,20 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-	body->setAngularVelocity(rotation);
+
+	int x = rotation.x;
+	int y = rotation.y;
+	int z = rotation.z;
+
+
+	int speed = std::max(std::initializer_list<int>{x, y, z});
+
+
+	Vector3 fwd = PhysxConversions::GetVector3(Quaternion(t.q) * Vector3(speed,0,0));
+	Vector3 up = PhysxConversions::GetVector3(Vector3::Cross(Vector3(speed, 0, 0), -fwd));
+	PxVec3 up2 = PxVec3(up.x, up.y, up.z);
+
+	body->setAngularVelocity(up2);
 	body->setAngularDamping(0.f);
 	body->setMass(0.f);
 	body->setMassSpaceInertiaTensor(PxVec3(0.f));
