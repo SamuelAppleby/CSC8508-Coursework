@@ -45,9 +45,7 @@ void NetworkedGame::StartAsServer(LevelState state)
 	localPlayer = SpawnPlayer(-1);
 
 	GameManager::SetSelectionObject(localPlayer);
-	localPlayer->SetSelected(true);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-	GameManager::SetLockedObject(localPlayer);
 	GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 }
 
@@ -442,9 +440,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			}
 
 			GameManager::SetSelectionObject(localPlayer);
-			localPlayer->SetSelected(true);
 			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-			GameManager::SetLockedObject(localPlayer);
 			GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());
 
 			initialising = false;

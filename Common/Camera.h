@@ -9,16 +9,23 @@
 #include "Quaternion.h"
 #include "../CSC8503/CSC8503Common/GameObject.h"
 
-namespace NCL {
+#include <tweeny/tween.h>
+#include <tweeny/tweeny.h>
+
+namespace NCL
+{
 	using namespace NCL::Maths;
-	enum class CameraType {
+	enum class CameraType
+	{
 		Orthographic,
 		Perspective
 	};
-	enum class CameraState { FREE, TOPDOWN, GLOBAL1, GLOBAL2, THIRDPERSON };
-	class Camera {
+	enum class CameraState { FREE, TOPDOWN, THIRDPERSON };
+	class Camera
+	{
 	public:
-		Camera(void) {
+		Camera(void)
+		{
 			left = 0;
 			right = 0;
 			top = 0;
@@ -33,9 +40,13 @@ namespace NCL {
 			lockedOffset = Vector3(0, 0, 0);
 			camType = CameraType::Perspective;
 			currentState = CameraState::FREE;
+			currentDist = 50;
+			rotateSpeed = 50;
 		};
 
-		Camera(float pitch, float yaw, const Vector3& position) : Camera() {
+
+		Camera(float pitch, float yaw, const Vector3& position) : Camera()
+		{
 			this->pitch = pitch;
 			this->yaw = yaw;
 			this->position = position;
@@ -50,31 +61,39 @@ namespace NCL {
 		~Camera(void) {};
 
 		void UpdateCamera(float dt);
+		void RotateCameraWithObject(float dt, NCL::CSC8503::GameObject* o);
 		void UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o);
 
-		float GetFieldOfVision() const {
+		float GetFieldOfVision() const
+		{
 			return fov;
 		}
 
-		float GetNearPlane() const {
+		float GetNearPlane() const
+		{
 			return nearPlane;
 		}
 
-		float GetFarPlane() const {
+		float GetFarPlane() const
+		{
 			return farPlane;
 		}
 
-		void SetNearPlane(float val) {
+		void SetNearPlane(float val)
+		{
 			nearPlane = val;
 		}
 
-		void SetFarPlane(float val) {
+		void SetFarPlane(float val)
+		{
 			farPlane = val;
 		}
-		void SetState(CameraState val) {
+		void SetState(CameraState val)
+		{
 			currentState = val;
 		}
-		CameraState GetState() const {
+		CameraState GetState() const
+		{
 			return currentState;
 		}
 		//Builds a view matrix for the current camera variables, suitable for sending straight
@@ -100,9 +119,14 @@ namespace NCL {
 
 		static Camera BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw, float fov, float near, float far);
 		static Camera BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, float left, float right, float top, float bottom, float near, float far);
+
+		void setCurrentDist(float d) { currentDist = d; }
+
+
 	protected:
 		CameraType camType;
-
+		float rotateSpeed;
+		float currentDist;
 		float	nearPlane;
 		float	farPlane;
 		float	left;
@@ -116,6 +140,10 @@ namespace NCL {
 		Vector3 position;
 		Vector3 lockedOffset;
 
+		bool updatingclose = false;
 		CameraState currentState;
+
+
+		tweeny::tween<float> tween;
 	};
 }

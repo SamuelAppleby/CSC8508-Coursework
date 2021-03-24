@@ -4,6 +4,8 @@
 #include "../CSC8503Common/PhysxConversions.h"
 #include "../CSC8503Common/PxPhysicsSystem.h"
 
+enum class PowerUpState { NORMAL, LONGJUMP, SPEEDPOWER };
+
 namespace NCL{
 	namespace CSC8503 {
 		class PlayerObject : public GameObject {
@@ -40,25 +42,20 @@ namespace NCL{
 				return powerUpTimer;
 			}
 
+			PowerUpState GetPowerUpState() {
+				return state;
+			}
+
 			void LongJumpColelction() {
 				powerUpTimer = 5.0f;
+				jumpHeight = 30.0f;
+				state = PowerUpState::LONGJUMP;
 			}
 
-
-			//TEMPORARY FIX FOR OBSTACLES
-			void OnCollisionBegin(GameObject* otherObject) {
-				if (otherObject->GetName()._Equal("Floor")) {
-					isGrounded = true;
-				}
+			void SpeedPowerColelction() {
+				powerUpTimer = 5.0f;
+				state = PowerUpState::SPEEDPOWER;
 			}
-
-			void OnCollisionEnd(GameObject* otherObject) {
-				if (otherObject->GetName()._Equal("Floor")) {
-					isGrounded = false;
-				}
-			}
-
-
 
 		protected:
 			bool movingForward;
@@ -76,6 +73,7 @@ namespace NCL{
 			float raycastTimer;
 			float powerUpTimer;
 
+			PowerUpState state;
 			int coinsCollected;
 			float jumpHeight;
 		};

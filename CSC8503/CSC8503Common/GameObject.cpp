@@ -12,11 +12,10 @@ GameObject::GameObject(string objectName) {
 	physicsObject = nullptr;
 	renderObject = nullptr;
 	networkObject = nullptr;
-	selectedObject = false;
 	timeAlive = 0.0f;
-	timeInSet = 0.0f;
 	isGrounded = false;
 	isColliding = false;
+	canDestroy = false;
 }
 
 GameObject::~GameObject()
@@ -34,17 +33,14 @@ void GameObject::Update(float dt)
 	timeAlive += dt;
 }
 
-void GameObject::OnCollisionBegin(GameObject* otherObject) {
-	//std::cout << name << " collided with: " << otherObject->GetName() << std::endl;
+void GameObject::OnCollisionBegin(GameObject* otherObject) 
+{
 	isColliding = true;
-	
 }
 
 void GameObject::OnCollisionEnd(GameObject* otherObject)
 {
-	//std::cout << name << " stopped collision with: " << otherObject->GetName() << std::endl;
 	isColliding = false;
-
 }
 
 

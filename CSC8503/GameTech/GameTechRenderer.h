@@ -22,7 +22,7 @@ namespace NCL {
 	namespace CSC8503
 	{
 		class RenderObject;
-		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, SOLOLEVEL1, SOLOLEVEL2, SOLOLEVEL3,
+		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
 			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
 
 		class GameTechRenderer : public OGLRenderer
@@ -61,6 +61,14 @@ namespace NCL {
 
 			void SetPlayer(PlayerObject* val) {
 				player = val;
+			}
+
+			void SetSelectedLevel(int val) {
+				selectedLevel = val;
+			}
+
+			int GetSelectedLevel() const {
+				return selectedLevel;
 			}
 			GLuint playerTex;
 
@@ -101,7 +109,6 @@ namespace NCL {
 			float		lightRadius;
 			Vector3		lightPosition;
 			Vector3		lightDirection;
-
 
 			ImFont* textFont;
 			ImFont* titleFont;

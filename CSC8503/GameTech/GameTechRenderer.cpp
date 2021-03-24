@@ -219,20 +219,13 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Title Screen", &p_open, window_flags);
-		if (ImGui::Button("Level 1"))
+		if (ImGui::Button("Single Player"))
 		{
-			selectedLevel = 1;
 			levelState = UIState::MODESELECT;
 		}
-		if (ImGui::Button("Level 2"))
+		if (ImGui::Button("Multiplayer"))
 		{
-			selectedLevel = 2;
-			levelState = UIState::MODESELECT;
-		}
-		if (ImGui::Button("Level 3"))
-		{
-			selectedLevel = 3;
-			levelState = UIState::MODESELECT;
+			levelState = UIState::MULTIPLAYERMENU;
 		}
 		if (ImGui::Button("Options"))
 		{
@@ -280,13 +273,21 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Play Mode", &p_open, window_flags);
-		if (ImGui::Button("Single Player"))
+		if (ImGui::Button("Level 1"))
 		{
-			levelState = selectedLevel == 1 ? UIState::SOLOLEVEL1 : selectedLevel == 2 ? UIState::SOLOLEVEL2 : UIState::SOLOLEVEL3;
+			selectedLevel = 1;
 		}
-		if (ImGui::Button("Multiplayer"))
+		if (ImGui::Button("Level 2"))
 		{
-			levelState = UIState::MULTIPLAYERMENU;
+			selectedLevel = 2;
+		}
+		if (ImGui::Button("Level 3"))
+		{
+			selectedLevel = 3;
+		}
+		if (ImGui::Button("Sandbox"))
+		{
+			selectedLevel = 4;
 		}
 		if (ImGui::Button("Back"))
 		{
@@ -405,9 +406,16 @@ void GameTechRenderer::RenderUI()
 		}
 		if (player) {
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
-			if(player->GetPowerUpTimer() > 0.0f)
-				ImGui::Text("Powered Up!");
-		}
+			switch (player->GetPowerUpState())
+			{
+			case::PowerUpState::LONGJUMP:
+				ImGui::Text("Long Jumnp Power Up!");
+				break;
+			case::PowerUpState::SPEEDPOWER:
+				ImGui::Text("Speed Boost Power Up!");
+				break;
+			}
+			}
 		
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
@@ -417,18 +425,11 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
 		ImGui::Text("Pause(ESC)");
+		ImGui::Text("Move(WASD)");
+		ImGui::Text("Sprint(LSHIFT)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;
@@ -456,8 +457,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
 		ImGui::Begin("Controls", &p_open, window_flags);
-		ImGui::Text("Exit to Menu (ESC)");
-		ImGui::Text("Pause(P)");
+		ImGui::Text("Pause(ESC)");
 
 		if (!selectionObject)
 		{
@@ -466,24 +466,13 @@ void GameTechRenderer::RenderUI()
 		else
 		{
 			ImGui::Text("De-Select Object (RM Click)");
-			if (!lockedObject)
-				ImGui::Text("Lock Selected Object (L)");
-			else
-				ImGui::Text("Unlock Object (L)");
+			if (selectionObject == player)
+				ImGui::Text("Lock/Unlock Player (L)");
 		}
 		ImGui::Text("Change to play mode(Q)");
 
 		switch (gameWorld.GetMainCamera()->GetState())
 		{
-		case CameraState::FREE:
-			ImGui::Text("Change to Global Camera[1]");
-			break;
-		case CameraState::GLOBAL1:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
-		case CameraState::GLOBAL2:
-			ImGui::Text("Change to Free Camera[1]");
-			break;
 		case CameraState::THIRDPERSON:
 			ImGui::Text("Change to Topdown Camera[1]");
 			break;

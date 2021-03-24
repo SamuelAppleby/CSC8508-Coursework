@@ -74,7 +74,7 @@ class Level : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-			GameManager::GetAudioManager()->StopSound();
+			//GameManager::GetAudioManager()->StopSound();
 			if (GameManager::GetLevelState() == LevelState::LEVEL1) 
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
 			else 
@@ -137,27 +137,33 @@ public:
 		GameManager::GetAudioManager()->UpdateAudio(dt);
 		Debug::FlushRenderables(dt);
 
+		if (GameManager::GetRenderer()->GetSelectedLevel()) {
+			*newState = new Level();
+			GameManager::GetAudioManager()->StopSound();
+			switch (GameManager::GetRenderer()->GetSelectedLevel()) {
+			case 1:
+				levelCreator->InitWorld(LevelState::LEVEL1);
+				GameManager::SetLevelState(LevelState::LEVEL1);
+				break;
+			case 2:
+				levelCreator->InitWorld(LevelState::LEVEL2);
+				GameManager::SetLevelState(LevelState::LEVEL2);
+				break;
+			case 3:
+				levelCreator->InitWorld(LevelState::LEVEL3);
+				GameManager::SetLevelState(LevelState::LEVEL3);
+				break;
+			case 4:
+				levelCreator->InitWorld(LevelState::SANDBOX);
+				GameManager::SetLevelState(LevelState::SANDBOX);
+				break;
+			}
+			return PushdownResult::Push;
+		}
+	
 		switch (GameManager::GetRenderer()->GetUIState()) {
 		case UIState::QUIT:
 			return PushdownResult::Pop;
-			break;
-		case UIState::SOLOLEVEL1:
-			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL1);
-			GameManager::SetLevelState(LevelState::LEVEL1);
-			return PushdownResult::Push;
-			break;
-		case UIState::SOLOLEVEL2:
-			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL2);
-			GameManager::SetLevelState(LevelState::LEVEL2);
-			return PushdownResult::Push;
-			break;
-		case UIState::SOLOLEVEL3:
-			*newState = new Level();
-			levelCreator->InitWorld(LevelState::LEVEL3);
-			GameManager::SetLevelState(LevelState::LEVEL3);
-			return PushdownResult::Push;
 			break;
 		case UIState::HOSTLEVEL1:
 			*newState = new MultiplayerLevel();
@@ -200,12 +206,10 @@ private:
 	void  OnAwake() override {
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetWindow()->LockMouseToWindow(false);
-		if (levelCreator == nullptr) {
+		if (!levelCreator) 
 			levelCreator = new LevelCreator();
-		}
-		else {
+		else 
 			levelCreator->ResetWorld();
-		}
 		GameManager::GetAudioManager()->StopSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 	}

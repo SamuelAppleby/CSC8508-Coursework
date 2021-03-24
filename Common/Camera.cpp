@@ -12,9 +12,11 @@ using namespace NCL;
 /* Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...) */
-void Camera::UpdateCamera(float dt) {
-	if (currentState == CameraState::FREE) {		// Only update camera if in free mode
-		//Update the mouse by how much
+void Camera::UpdateCamera(float dt)
+{
+	if (currentState == CameraState::FREE)
+	{		// Only update camera if in free mode
+			//Update the mouse by how much
 		pitch -= (Window::GetMouse()->GetRelativePosition().y);
 		yaw -= (Window::GetMouse()->GetRelativePosition().x);
 
@@ -41,26 +43,15 @@ void Camera::UpdateCamera(float dt) {
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT))
 			position.y -= frameSpeed;
 	}
-	/* Otherwise set the global positions */
-	else if (currentState == CameraState::GLOBAL1) {
-		position = Vector3(0, 800, 0);
-		yaw = 0;
-		pitch = -90;
-	}
-	else if (currentState == CameraState::GLOBAL2) {
-		position = Vector3(0, 650, -240);
-		yaw = 0;
-		pitch = -90;
-	}
 }
 
-/* Lock the camera to an object */
-void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o) {
-	pitch -= (Window::GetMouse()->GetRelativePosition().y);
-	yaw -= (Window::GetMouse()->GetRelativePosition().x);
+void Camera::RotateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
+{
+	pitch -= (Window::GetMouse()->GetRelativePosition().y) * rotateSpeed * dt;
+	yaw -= (Window::GetMouse()->GetRelativePosition().x) * rotateSpeed * dt;
 
-	pitch = std::min(pitch, 90.0f);
-	pitch = std::max(pitch, -90.0f);
+	pitch = std::min(pitch, 05.0f);
+	pitch = std::max(pitch, -20.0f);
 
 	if (yaw < 0)
 		yaw += 360.0f;
@@ -73,40 +64,80 @@ void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o) {
 	float xPos = (scale * yaw) / radius;
 	xPos = fmod(xPos, radius);
 
-	if (yaw < 90) {
+	if (yaw < 90)
+	{
 		lockedOffset.x = xPos;
 		lockedOffset.z = radius - xPos;
 	}
-	else if (yaw < 180) {
+	else if (yaw < 180)
+	{
 		lockedOffset.x = radius - xPos;
 		lockedOffset.z = -xPos;
 	}
-	else if (yaw < 270) {
+	else if (yaw < 270)
+	{
 		lockedOffset.x = -xPos;
 		lockedOffset.z = -radius + xPos;
 	}
-	else {
+	else
+	{
 		lockedOffset.x = -radius + xPos;
 		lockedOffset.z = xPos;
 	}
-
+}
+/* Lock the camera to an object */
+void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
+{
 	/* Set our play camera */
-	if (currentState == CameraState::TOPDOWN) {
+	if (currentState == CameraState::TOPDOWN)
+	{
 		PxTransform pose = o->GetPhysicsObject()->GetPXActor()->getGlobalPose();
 		position = Vector3(0, 100, 0) + pose.p;
 		pitch = -90;
 	}
-	else if (currentState == CameraState::THIRDPERSON) {
-		PxTransform pose = o->GetPhysicsObject()->GetPXActor()->getGlobalPose();
-		Vector3 camPos = Quaternion(pose.q.x, pose.q.y, pose.q.z, pose.q.w) * Vector3(0, 5, 30) + pose.p;
-		position = camPos;
-		pitch = 0;
+	else if (currentState == CameraState::THIRDPERSON)
+	{
+		PxRigidDynamic* actor = (PxRigidDynamic*)o->GetPhysicsObject()->GetPXActor();
+		PxTransform pose = actor->getGlobalPose();
+		float mag = abs(actor->getLinearVelocity().magnitude());	
+
+		if (mag >= 50)
+		{
+			tween = tweeny::from(currentDist).to(56.f).during(40).onStep([this](float outDist)
+				{
+					this->setCurrentDist(outDist);
+					return false;
+				});
+		}
+		else if (mag < 50 && mag > 20)
+		{
+			tween = tweeny::from(currentDist).to(46.f).during(40).onStep([this](float outDist)
+				{
+					this->setCurrentDist(outDist);
+					return false;
+				});
+		}
+		else
+		{
+			tween = tweeny::from(currentDist).to(40.f).during(40).onStep([this](float outDist)
+				{
+					this->setCurrentDist(outDist);
+					return false;
+				});
+		}
+		if (tween.progress() < 1.0f)
+		{
+			tween.step(1);
+		}
+		SetPosition(Quaternion(pose.q) * Vector3(0, 20, currentDist) + pose.p);
 	}
 }
 
+
 /* Generates a view matrix for the camera's viewpoint. This matrix can be sent
 straight to the shader...it's already an 'inverse camera' matrix. */
-Matrix4 Camera::BuildViewMatrix() const {
+Matrix4 Camera::BuildViewMatrix() const
+{
 	//Why do a complicated matrix inversion, when we can just generate the matrix
 	//using the negative values ;). The matrix multiplication order is important!
 	return	Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
@@ -114,14 +145,17 @@ Matrix4 Camera::BuildViewMatrix() const {
 		Matrix4::Translation(-position);
 };
 
-Matrix4 Camera::BuildProjectionMatrix(float currentAspect) const {
-	if (camType == CameraType::Orthographic) {
+Matrix4 Camera::BuildProjectionMatrix(float currentAspect) const
+{
+	if (camType == CameraType::Orthographic)
+	{
 		return Matrix4::Orthographic(nearPlane, farPlane, right, left, top, bottom);
 	}
 	return Matrix4::Perspective(nearPlane, farPlane, currentAspect, fov);
 }
 
-Camera Camera::BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw, float fov, float nearPlane, float farPlane) {
+Camera Camera::BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw, float fov, float nearPlane, float farPlane)
+{
 	Camera c;
 	c.camType = CameraType::Perspective;
 	c.position = pos;
@@ -135,7 +169,8 @@ Camera Camera::BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw
 	return c;
 }
 
-Camera Camera::BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, float left, float right, float top, float bottom, float nearPlane, float farPlane) {
+Camera Camera::BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, float left, float right, float top, float bottom, float nearPlane, float farPlane)
+{
 	Camera c;
 	c.camType = CameraType::Orthographic;
 	c.position = pos;

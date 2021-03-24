@@ -13,6 +13,7 @@ namespace NCL
 			virtual void OnCollisionBegin(GameObject* otherObject) {
 				if (otherObject->GetName() == "Player") {
 					SetPosition(PxVec3(5000, 5000, 5000));
+					canDestroy = true;
 				}
 			}
 		};

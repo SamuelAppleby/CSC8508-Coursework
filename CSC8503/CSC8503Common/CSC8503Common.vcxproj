@@ -179,6 +179,7 @@
     <ClInclude Include="PxPVD.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameWorld.h" />
+    <ClInclude Include="SpeedPower.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateGameObject.h" />
     <ClInclude Include="StateMachine.h" />
@@ -193,7 +194,6 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameWorld.cpp" />
-    <ClCompile Include="KillPlane.cpp" />
     <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="NetworkBase.cpp" />

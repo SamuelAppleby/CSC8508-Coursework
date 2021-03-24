@@ -4,6 +4,7 @@
 #include "NetworkedGame.h"
 #include "../CSC8503Common/Coin.h"
 #include "../CSC8503Common/LongJump.h"
+#include "../CSC8503Common/SpeedPower.h"
 Win32Code::Win32Window* GameManager::window = nullptr;
 
 PxPhysicsSystem* GameManager::pXPhysics = nullptr;
@@ -42,7 +43,7 @@ OGLShader* GameManager::toonShader = nullptr;
 
 CameraState GameManager::camState = CameraState::FREE;
 
-GameObject* GameManager::lockedObject = nullptr;
+//GameObject* GameManager::lockedObject = nullptr;
 GameObject* GameManager::selectionObject = nullptr;
 
 LevelState GameManager::levelState = LevelState::LEVEL1;
@@ -104,7 +105,6 @@ void GameManager::ResetMenu()
 {
 	levelState = LevelState::LEVEL1;
 	selectionObject = nullptr;
-	lockedObject = nullptr;
 	renderer->SetSelectionObject(nullptr);
 	renderer->SetLockedObject(nullptr);
 }
@@ -194,7 +194,7 @@ void GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxReal radiu
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - (radius / 2)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
 	cylinder->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
@@ -253,6 +253,24 @@ void GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius)
 	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, toonShader));
 	jump->GetRenderObject()->SetColour(Debug::RED);
 	world->AddGameObject(jump);
+}
+
+void GameManager::AddPxSpeedPower(const PxTransform& t, const PxReal radius)
+{
+	SpeedPower* speed = new SpeedPower();
+
+	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
+	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(0, 0, 0);
+	PxRigidActorExt::createExclusiveShape(*body, PxSphereGeometry(radius), *newMat);
+	PxRigidBodyExt::updateMassAndInertia(*body, FLT_MIN);
+	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	speed->SetPhysicsObject(new PhysXObject(body, newMat));
+	pXPhysics->GetGScene()->addActor(*body);
+
+	speed->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
+	speed->SetRenderObject(new RenderObject(&speed->GetTransform(), bonusMesh, basicTex, toonShader));
+	speed->GetRenderObject()->SetColour(Debug::GREEN);
+	world->AddGameObject(speed);
 }
 
 PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal scale)
@@ -375,7 +393,7 @@ void GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxRea
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - (radius / 2)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	body->setAngularVelocity(rotation);
 	body->setAngularDamping(0.f);
@@ -395,7 +413,7 @@ void GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal radius
 
 	PxRigidDynamic* body = pXPhysics->GetGPhysics()->createRigidDynamic(t);
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
-	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight) - radius), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
+	PxRigidActorExt::createExclusiveShape(*body, PxCapsuleGeometry(radius, (2 * halfHeight)), *newMat)->setLocalPose(PxTransform(PxQuat(PxHalfPi, PxVec3(0, 0, 1))));
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	body->setAngularDamping(0.f);
 	body->setMass(0.f);
@@ -436,10 +454,6 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		break;
 
 	}
-	/*if (!friction)
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
-	else
-		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));*/
 	world->AddGameObject(floor);
 }
 
@@ -455,9 +469,6 @@ Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxR
 	cannonBall->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, basicTex, toonShader));
 	world->AddGameObject(cannonBall);
-	//body->addForce(*force, PxForceMode::eIMPULSE);
-	//cannonObj->addShot(cannonBall);
-
 	return cannonBall;
 }
 

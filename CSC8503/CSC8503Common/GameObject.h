@@ -21,8 +21,8 @@ namespace NCL
 			GameObject(string name = "");
 			~GameObject();
 
-			virtual void Update(float dt);	
-			virtual void FixedUpdate(float fixedDT){}
+			virtual void Update(float dt);
+			virtual void FixedUpdate(float fixedDT) {}
 
 			void SetName(string val)
 			{
@@ -83,31 +83,6 @@ namespace NCL
 				return worldID;
 			}
 
-			int GetSelected() const
-			{
-				return selectedObject;
-			}
-
-			void SetSelected(bool val)
-			{
-				selectedObject = val;
-			}
-
-			void IncreaseTimeInSet(float dt)
-			{
-				timeInSet += dt;
-			}
-
-			void SetTimeInSet(float val)
-			{
-				timeInSet = val;
-			}
-
-			float GetTimeInSet() const
-			{
-				return timeInSet;
-			}
-
 			float GetTimeAlive() const
 			{
 				return timeAlive;
@@ -128,6 +103,10 @@ namespace NCL
 				return isColliding;
 			}
 
+			bool CanDestroy() const {
+				return canDestroy;
+			}
+
 			void SetPosition(const PxVec3& worldPos);
 			void SetOrientation(const PxQuat& newOr);
 
@@ -140,12 +119,11 @@ namespace NCL
 
 			int	worldID;
 			string	name;
-			bool selectedObject;
-			float timeInSet;
 			float timeAlive;
 			bool isGrounded;
 
 			bool isColliding;
+			bool canDestroy;
 		};
 	}
 }

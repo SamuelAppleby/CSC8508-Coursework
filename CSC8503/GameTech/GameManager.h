@@ -24,7 +24,7 @@
 using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
-enum class LevelState { LEVEL1, LEVEL2, LEVEL3 };
+enum class LevelState { LEVEL1, LEVEL2, LEVEL3, SANDBOX };
 enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE};
 
 class GameManager {
@@ -49,6 +49,7 @@ public:
 
 	static void AddPxCoinToWorld(const PxTransform& t, const PxReal radius);
 	static void AddPxLongJump(const PxTransform& t, const PxReal radius);
+	static void AddPxSpeedPower(const PxTransform& t, const PxReal radius);
 	static PlayerObject* AddPxPlayerToWorld(const PxTransform& t, const PxReal scale);
 	static NetworkPlayer* AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
@@ -81,17 +82,8 @@ public:
 		return audioManager;
 	}
 
-	static GameObject* GetLockedObject() {
-		return lockedObject;
-	}
-
 	static GameObject* GetSelectionObject() {
 		return selectionObject;
-	}
-
-	static void SetLockedObject(GameObject* val) {
-		lockedObject = val;
-		renderer->SetLockedObject(lockedObject);
 	}
 
 	static void SetSelectionObject(GameObject* val) {
@@ -164,7 +156,6 @@ private:
 	static CameraState camState;
 
 	static GameObject* selectionObject;
-	static GameObject* lockedObject;
 
 	static LevelState levelState;
 
