@@ -95,7 +95,7 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 	Vector3 pos = transform.GetPosition();
 
 	switch (state) {
-	case LevelState::LEVEL1:
+	case LevelState::LEVEL3:
 		if (pos.z < -275 && pos.y > 700 && pos.x > -200 && pos.x < 200)
 		{
 			finished = true;
@@ -111,7 +111,7 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 		}
 
 		break;
-	case LevelState::LEVEL3:
+	case LevelState::LEVEL1:
 		if (pos.z < -1950 && pos.y > 182 && pos.x > -101 && pos.x < 101)
 		{
 			finished = true;
