@@ -366,7 +366,7 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	world->AddGameObject(cube);
 }
 
-GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity, string name)
+GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity, string name, bool rotatedRotation)
 {
 	GameObject* cube = new GameObject(name);
 
@@ -375,16 +375,25 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
-	int x = rotation.x;
-	int y = rotation.y;
-	int z = rotation.z;
+	PxVec3 up;
+
+	if (rotatedRotation) {
+		int x = rotation.x;
+		int y = rotation.y;
+		int z = rotation.z;
 
 
-	int speed = std::max(std::initializer_list<int>{x, y, z});
+		int speed = std::max(std::initializer_list<int>{x, y, z});
 
 
-	Vector3 fwd = PhysxConversions::GetVector3(Quaternion(t.q) * Vector3(speed,0,0));
-	PxVec3 up = PhysxConversions::GetVector3(Vector3::Cross(Vector3(speed, 0, 0), -fwd));
+		Vector3 fwd = PhysxConversions::GetVector3(Quaternion(t.q) * Vector3(speed, 0, 0));
+		up = PhysxConversions::GetVector3(Vector3::Cross(Vector3(speed, 0, 0), -fwd));
+	}
+	else {
+		up = rotation;
+	}
+
+
 
 	body->setAngularVelocity(up);
 	body->setAngularDamping(0.f);

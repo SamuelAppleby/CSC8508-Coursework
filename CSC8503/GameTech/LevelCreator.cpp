@@ -665,10 +665,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
-		InitPlayer(PxTransform(PxVec3(0, 0, -250)), 1);
-		//GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, 5, 0)), 3);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(-20, -5, 0)), 3);
-		GameManager::AddPxEnemyToWorld(PxTransform(PxVec3(20, 20, 0)), 1);
+		InitPlayer(PxTransform(PxVec3(0, -100, 100)), 1);
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -729,15 +726,15 @@ void LevelCreator::InitGameObstacles(LevelState state)
 	case LevelState::LEVEL1:
 
 		//Killplane
-		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(400, 1, 300), PxVec3(0, -50, 50), PxVec3(90, 1, 20));
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(1000, 1, 1000), PxVec3(0, -50, 50), PxVec3(90, 1, 20), false);
 
 		//Floor 1
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, "Floor");
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, "Floor", false);
 
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
-		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor");
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor", false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor", false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor", false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, "Floor", false);
 
 		//Floor 1-2 connection
 		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
