@@ -33,16 +33,6 @@ void PlayerObject::Update(float dt)
 	transform.UpdateMatrix();
 	timeAlive += dt;
 
-	/*if (powerUpTimer > 0.0f)
-	{
-		jumpHeight = 40.0f;
-		powerUpTimer -= dt;
-	}
-	else
-	{
-		jumpHeight = 20.0f;
-	}*/
-
 	if (powerUpTimer > 0.0f)
 	{
 		powerUpTimer -= dt;
@@ -54,9 +44,6 @@ void PlayerObject::Update(float dt)
 		case PowerUpState::LONGJUMP:
 			jumpHeight = 15.0f;
 			break;
-		case PowerUpState::SPEEDPOWER:
-			//speed = speed * 10;
-			break;
 		}
 		state = PowerUpState::NORMAL;
 	}
@@ -66,48 +53,40 @@ void PlayerObject::Update(float dt)
 	movingLeft = (Window::GetKeyboard()->KeyDown(KeyboardKeys::A));
 	movingBackwards = (Window::GetKeyboard()->KeyDown(KeyboardKeys::S));
 	movingRight = (Window::GetKeyboard()->KeyDown(KeyboardKeys::D));
-	isSprinting = (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT) && isGrounded);
+	isSprinting = (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT));
 	isJumping = (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded);
 
 	fwd = PhysxConversions::GetVector3(Quaternion(transform.GetOrientation()) * Vector3(0, 0, 1));
 	right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 }
 
-void PlayerObject::FixedUpdate(float fixedDT)
-{
+void PlayerObject::FixedUpdate(float fixedDT) {
 	if (!finished)
 	{
-		speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
-		if (isSprinting)
-		{
-			MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f;
-		}
-		else
-		{
-			MAX_SPEED = state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f;
-		}
-		if (movingForward)
-			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(fwd * speed, PxForceMode::eIMPULSE);
-		if (movingLeft)
-			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-right * speed, PxForceMode::eIMPULSE);
-		if (movingBackwards)
-			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-fwd * speed, PxForceMode::eIMPULSE);
-		if (movingRight)
-			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(right * speed, PxForceMode::eIMPULSE);
+	speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
 
-		PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
-		if (isJumping)
-			playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
+	MAX_SPEED = isSprinting ? (state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f) : (state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f);
+	if (movingForward)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(fwd * speed, PxForceMode::eIMPULSE);
+	if (movingLeft)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-right * speed, PxForceMode::eIMPULSE);
+	if (movingBackwards)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-fwd * speed, PxForceMode::eIMPULSE);
+	if (movingRight)
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(right * speed, PxForceMode::eIMPULSE);
+	
+	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
+	if (isJumping)
+		playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
 
-		float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
-		float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
-		if (excessSpeed)
-		{
-			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
-		}
-		((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
+	float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
+	float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
+	if (excessSpeed) {
+		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
 	}
-}
+
+	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
+}}
 bool PlayerObject::CheckHasFinished(LevelState state)
 {
 	Vector3 pos = transform.GetPosition();
@@ -130,5 +109,6 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 	}
 
 	return finished;
+
 }
 

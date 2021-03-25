@@ -12,7 +12,7 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
-#define SHADOWSIZE 4096
+#define SHADOWSIZE 8192
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
@@ -47,7 +47,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 	//Set up the light properties
 	lightColour = Vector4(1, 1, 1, 1.0f);
 	lightRadius = 1000.0f;
-	lightPosition = Vector3(0.0f, 600.0f, 100);
+	lightPosition = Vector3(500.0f, 2600.0f, -500);
 	lightDirection = Vector3(0.0f, -1, -1.f);
 
 	//Skybox!
@@ -59,6 +59,11 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 
 	LoadSkybox();
 	levelState = UIState::MENU;
+	backgroundImage = (OGLTexture*)TextureLoader::LoadAPITexture("background.png");
+	levelImages[0] = (OGLTexture*)TextureLoader::LoadAPITexture("level_1.png");
+	levelImages[1] = (OGLTexture*)TextureLoader::LoadAPITexture("level_2.png");
+	levelImages[2] = (OGLTexture*)TextureLoader::LoadAPITexture("level_3.png");
+	levelImages[3] = (OGLTexture*)TextureLoader::LoadAPITexture("sandbox.png");
 }
 
 GameTechRenderer::~GameTechRenderer()
@@ -126,18 +131,17 @@ void GameTechRenderer::InitGUI(HWND handle)
 	titleFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Bold.ttf", 50.0f);
 	textFont = io.Fonts->AddFontFromFileTTF("../../Assets/Fonts/JosefinSans-Regular.ttf", 15.0f);
 
-	p_open = true;
 	window_flags = 0;
 	window_flags |= ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-	//window_flags |= ImGuiWindowFlags_NoScrollbar;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
 	//window_flags |= ImGuiWindowFlags_MenuBar;
 	//window_flags |= ImGuiWindowFlags_NoNav;
 	//window_flags |= ImGuiWindowFlags_NoBackground;
 	//window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
-	//window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
 }
 
 bool GameTechRenderer::TestValidHost()
@@ -199,7 +203,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 4), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("PAUSED", NULL, window_flags);
-		if (ImGui::Button("Resume")) {
+		if (ImGui::Button("Resume"))
+		{
 			levelState = UIState::INGAME;
 		}
 		if (ImGui::Button("Options"))
@@ -214,6 +219,12 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	case UIState::MENU:
+		ImGui::SetNextWindowBgAlpha(1);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
+		ImGui::Begin("Background", NULL, window_flags);
+		ImGui::Image((void*)(intptr_t)backgroundImage->GetObjectID(), ImVec2(main_viewport->Size.x, main_viewport->Size.y));
+		ImGui::End();
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
@@ -269,34 +280,47 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	case UIState::MODESELECT:
-		ImGui::PushFont(titleFont);
-		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
-		ImGui::Begin("Play Mode", NULL, window_flags);
-		if (ImGui::Button("Level 1"))
-		{
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Level 1", NULL, window_flags);
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[2]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
 			selectedLevel = 1;
 		}
-		if (ImGui::Button("Level 2"))
-		{
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x / 2, main_viewport->WorkPos.y), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Level 2", NULL, window_flags);
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[1]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
 			selectedLevel = 2;
 		}
-		if (ImGui::Button("Level 3"))
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
+		//TODO Network Stuff
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Level 3", NULL, window_flags);
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[0]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
 		{
 			selectedLevel = 3;
 		}
-		if (!nGame)
-		{		
-			if (ImGui::Button("Sandbox"))
-			{
-				selectedLevel = 4;
-			}
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
+		ImGui::Begin("Sandbox", NULL, window_flags);
+		if (ImGui::ImageButton((void*)(intptr_t)levelImages[3]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+			selectedLevel = 4;
 		}
-		if (ImGui::Button("Back"))
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x / 2 - main_viewport->Size.x / 16,
+			main_viewport->Size.y / 2 - main_viewport->Size.y / 16), ImGuiCond_Always);
+		ImGui::Begin("Back", NULL, window_flags);
+		if (ImGui::Button("Back", ImVec2(main_viewport->Size.x / 8, main_viewport->Size.y / 8)))
 		{
-			levelState = prevState;
+			levelState = UIState::MENU;
 		}
-		ImGui::PopFont();
 		ImGui::End();
 		break;
 	case UIState::MULTIPLAYERMENU:
@@ -636,7 +660,7 @@ void GameTechRenderer::RenderShadowMap()
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 
 	Matrix4 shadowViewMatrix = Matrix4::BuildViewMatrix(lightPosition, Vector3(0, 0, 0), Vector3(0, 1, 0));
-	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 500.0f, 1, 45.0f);
+	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 50000.0f, 1, 45.0f);
 
 	Matrix4 mvMatrix = shadowProjMatrix * shadowViewMatrix;
 

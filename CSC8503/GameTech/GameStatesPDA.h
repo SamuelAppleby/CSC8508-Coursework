@@ -98,7 +98,7 @@ class Level : public PushdownState
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
 			//GameManager::GetAudioManager()->StopSound();
-			if (GameManager::GetLevelState() == LevelState::LEVEL1)
+			if (GameManager::GetLevelState() == LevelState::LEVEL1) 
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
 			else
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);

@@ -15,7 +15,7 @@ namespace NCL
 			void OnCollisionBegin(GameObject* otherObject) override {
 				Collectable::OnCollisionBegin(otherObject);
 				if (otherObject->GetName() == "Player") {
-					((PlayerObject*)otherObject)->SpeedPowerColelction();
+					((PlayerObject*)otherObject)->SpeedPowerCollection();
 				}
 			}
 		};

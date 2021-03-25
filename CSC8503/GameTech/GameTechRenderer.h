@@ -41,19 +41,23 @@ namespace NCL {
 			void InitGUI(HWND handle);
 			bool TestValidHost();
 
-			void SetUIState(UIState val) {
+			void SetUIState(UIState val)
+			{
 				levelState = val;
 			}
 
-			UIState GetUIState() {
+			UIState GetUIState()
+			{
 				return levelState;
 			}
 
-			void SetSelectionObject(GameObject* val) {
+			void SetSelectionObject(GameObject* val)
+			{
 				selectionObject = val;
 			}
 
-			void SetLockedObject(GameObject* val) {
+			void SetLockedObject(GameObject* val)
+			{
 				lockedObject = val;
 			}
 
@@ -92,6 +96,11 @@ namespace NCL {
 			{
 				return prevState;
 			}
+			void SetLightPosition(Vector3 lPos)
+			{
+				lightPosition = lPos;
+			}
+
 
 		protected:
 			void RenderFrame()	override;
@@ -101,7 +110,7 @@ namespace NCL {
 
 			OGLShader* defaultShader;
 
-			GameWorld&	gameWorld;
+			GameWorld& gameWorld;
 			PxPhysicsSystem& pXPhysics;
 			PlayerObject* player;
 			NetworkedGame* nGame;
@@ -123,7 +132,7 @@ namespace NCL {
 			GLuint		skyboxTex;
 
 			//shadow mapping things
-			OGLShader* shadowShader;
+			OGLShader*  shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
@@ -136,8 +145,9 @@ namespace NCL {
 			ImFont* textFont;
 			ImFont* titleFont;
 
-			bool p_open;
 			ImGuiWindowFlags window_flags;
+			OGLTexture* levelImages[4];
+			OGLTexture* backgroundImage;
 
 			UIState levelState;
 			UIState prevState;

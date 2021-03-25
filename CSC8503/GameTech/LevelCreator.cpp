@@ -101,7 +101,6 @@ void LevelCreator::FixedUpdate(float dt)
 {
 	GameManager::GetPhysicsSystem()->StepPhysics(dt);
 	GameManager::GetWorld()->UpdatePhysics(dt);
-
 }
 
 /* Logic for updating level 1 or level 2 */
@@ -117,6 +116,7 @@ void LevelCreator::UpdateLevel(float dt)
 		}
 		UpdatePlayer(dt);
 	}
+
 
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
@@ -178,6 +178,9 @@ void LevelCreator::UpdatePlayer(float dt)
 	}
 }
 
+
+
+
 /* Initialise camera to default location */
 void LevelCreator::InitCamera()
 {
@@ -227,12 +230,66 @@ void LevelCreator::InitPlayer(const PxTransform& t, const PxReal scale)
 /* Place all the levels solid floors */
 void LevelCreator::InitFloors(LevelState state)
 {
+	//couldn't be bothered to type out the same vector every time
+	PxVec3 translate = PxVec3(0, -59, -14) * 2;
+	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
 	Vector3 respawnSize;
 	PxVec3 zone1Position, zone2Position, zone3Position, zone4Position;
 	PxQuat q;
+
+
+
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		//Josh's second level
+
+				//Floor 1
+
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, 75)), PxVec3(200, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, -275)), PxVec3(200, 1, 100));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 100, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 100, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 100, 125), PxVec3(200, 200, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 150, -275), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(25, -50, -275), PxVec3(175, 50, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, -80, -325), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, -80, -325), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, -80, -375), PxVec3(200, 20, 1));
+
+		//Floor 2
+
+		GameManager::AddPxFloorToWorld(PxTransform(0, 300, 150), PxVec3(200, 1, 70));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 300, -255), PxVec3(200, 1, 20));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 500, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 500, -75), PxVec3(1, 200, 200));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, 125), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, -275), PxVec3(200, 150, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-200, 320, 170), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(200, 320, 170), PxVec3(1, 20, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform(0, 320, 220), PxVec3(200, 20, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(-25, 350, 125), PxVec3(175, 50, 1));
+
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 400, 145), PxQuat(-0.5, PxVec3(0, 0, 1))), PxVec3(200, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(150, 525, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(240, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 600, 145), PxQuat(-0.35, PxVec3(0, 0, 1))), PxVec3(170, 1, 20));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(110, 665, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(130, 1, 20));
+
+
+
+		//Floor 3
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, 95), PxVec3(200, 1, 32.5));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -325), PxVec3(200, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(-160, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(-80, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(80, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(160, 700, -105), PxVec3(20, 1, 170));
+		GameManager::AddPxFloorToWorld(PxTransform(-200, 720, -325), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(200, 720, -325), PxVec3(1, 20, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(0, 720, -375), PxVec3(200, 20, 1));
+
+
 		break;
 	case LevelState::LEVEL2:
 		//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -311,16 +368,16 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -800) * 2), PxVec3(200, 40, 1));
 
 		//gate left														 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -68, -800) * 2), PxVec3(20, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -78, -800) * 2), PxVec3(20, 20, 1));
 
 		//gate left mid													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -68, -800) * 2), PxVec3(50, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -78, -800) * 2), PxVec3(50, 20, 1));
 
 		//gate right mid												 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -68, -800) * 2), PxVec3(50, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -78, -800) * 2), PxVec3(50, 20, 1));
 
 		//gate right													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -68, -800) * 2), PxVec3(20, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -78, -800) * 2), PxVec3(20, 20, 1));
 
 		//OBSTACLE 3 - THE SPINNING COLUMNS (WITH CANNONS EITHER SIDE)
 		//I have no idea how to make these spin
@@ -372,71 +429,58 @@ void LevelCreator::InitFloors(LevelState state)
 		//side wall right
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
 
-		//pegs as obstacles/hiding places for the bowling balls
-		//row 1
-		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10));
-
-		//row 2
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10));
-
-		//row 3
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10));
 
 		//buffer zone 4 (where contestants respawn on failing the fourth obstacle, this needs to be sorted on the individual kill plane)
-		zone4Position = PxVec3(0, 56, -1411);
+		zone4Position = PxVec3(0, 56, -1411) + translate;
 
 		//bottom kill plane
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -150, -1631) * 2), PxVec3(500, 1, 438), zone4Position, respawnSize, false);
 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 55, -1411) * 2), PxVec3(200, 1, 100));
+
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 55, -1411) * 2) + translate), PxVec3(200, 1, 100));
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, 81, -1411) * 2), PxVec3(1, 52, 100));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100));
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, 81, -1411) * 2), PxVec3(1, 52, 100));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100));
+
+		//blender floor
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1630.5) * 2) + translate + translate2), PxVec3(200, 1, 339));
+
 
 		//diving boards can be used to give players an advantage in getting further into the blender
 		//(if they can stay on, it's not gated to encourage players barging into each other
 
 		//diving board left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-70, 45, -1495) * 2), PxVec3(20, 1, 70), 0.5, 2);
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
 
 		//diving board centre
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 45, -1495) * 2), PxVec3(20, 1, 70), 0.5, 2);
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
 
 		//diving board right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(70, 45, -1495) * 2), PxVec3(20, 1, 70), 0.5, 2);
-
-		//blender floor
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -1630.5) * 2), PxVec3(200, 1, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, 8, -1630.5) * 2), PxVec3(1, 200, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, 8, -1630.5) * 2), PxVec3(1, 200, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
 
 		//back wall
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -16.5, -1461) * 2), PxVec3(200, 143, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 8.5, -1461) * 2) + translate), PxVec3(200, 93, 1));
 
 		//should leave a gap of 20. Enough to get through, but tricky when there's a big old blender shoving everyone around
 		//inspired loosely by those windmills on crazy golf
 		//front wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-55, -58, -1800) * 2), PxVec3(90, 60, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
 
 		//front wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(55, -58, -1800) * 2), PxVec3(90, 60, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
 
 		//front wall top
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 23, -1800) * 2), PxVec3(200, 170, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 0, -1800) * 2) + translate + translate2), PxVec3(200, 116, 1));
 
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 107, -1580.5) * 2), PxVec3(200, 1, 439));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 107, -1581) * 2) + translate), PxVec3(200, 1, 439));
 
 		//VICTORY PODIUM
 		//the room you have to get in after the blender
@@ -445,19 +489,19 @@ void LevelCreator::InitFloors(LevelState state)
 		//also want a sliding door that locks players out
 		//pressing the button should make all the floors drop out
 		//Podium floor
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -1825) * 2), PxVec3(50, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-25, -63, -1825) * 2), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, -63, -1825) * 2), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
 
 		//end wall 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -63, -1850) * 2), PxVec3(50, 50, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -63, -1850) * 2) + translate + translate2), PxVec3(50, 50, 1));
 
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1825) * 2), PxVec3(50, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -38, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 		break;
 
 	case LevelState::LEVEL3:
@@ -625,6 +669,7 @@ void LevelCreator::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		InitPlayer(PxTransform(PxVec3(0, -100, 100)), 1);
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -674,9 +719,109 @@ void LevelCreator::InitGameExamples(LevelState state)
 /* This method will initialise any other moveable obstacles we want */
 void LevelCreator::InitGameObstacles(LevelState state)
 {
+
+	PxVec3 translate = PxVec3(0, -59, -14) * 2;
+	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
+	PxQuat q;
+
+
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+
+		//Killplane
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(1000, 1, 1000), PxVec3(0, -50, 50), PxVec3(90, 1, 20), false);
+
+		//Floor 1
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, false);
+
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
+
+		//Floor 1-2 connection
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 4);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		//Floor 2
+		for (int z = 0; z < 4; ++z)
+		{
+			for (int x = 0; x < 5 - (z % 2); ++x)
+			{
+				GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 300, 30 - (z * 80))), PxVec3(20, 1, 20));
+
+			}
+		}
+
+		//Floor 2-3 connection
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-180, 700, 145)), PxVec3(50, 0, 0), 15, 15, PxVec3(50, 0, 0));
+		for (int i = 0; i < 30; i++)
+		{
+			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(-200, 700, 145) * 2), 10, new PxVec3(25, 0, 0), 37));
+		}
+
+		//floor 3 (pendulums)
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false, 0.5f, 2);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
+
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
+		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
+
+
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
@@ -700,18 +845,35 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 
+		//pegs as obstacles/hiding places for the bowling balls
+		//row 1
+		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2,0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+
+		//row 2
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0,2, 0));
+
+		//row 3
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0));
+
+
+
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -85, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
-			20, 80, PxVec3(0, 2, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxRotatingCylinderToWorld(PxTransform((PxVec3(0, -90, -1720) * 2 )+ translate + translate2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 20, 80, PxVec3(0, 2, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
 
 
 		for (int i = 0; i < 30; i++)
