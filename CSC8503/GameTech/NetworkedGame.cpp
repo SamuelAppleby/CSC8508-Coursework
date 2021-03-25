@@ -303,13 +303,13 @@ NetworkPlayer* NetworkedGame::SpawnPlayer(int playerNum)
 	LevelState state = GameManager::GetLevelState();
 
 	switch (state) {
-	case LevelState::LEVEL1:
+	case LevelState::LEVEL3:
 		pos = PxVec3(0, -100, 100);
 		break;
 	case LevelState::LEVEL2:
 		pos = PxVec3(0, 10, 0);
 		break;
-	case LevelState::LEVEL3:
+	case LevelState::LEVEL1:
 		pos = PxVec3(0, 180, 150);
 		break;
 	}
@@ -342,7 +342,7 @@ void NetworkedGame::InitGameExamples(LevelState state)
 {
 	switch (state)
 	{
-	case LevelState::LEVEL1:
+	case LevelState::LEVEL3:
 		//power ups
 		//floor 1
 		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-20, -92, -75)), 5));
@@ -414,7 +414,7 @@ void NetworkedGame::InitGameExamples(LevelState state)
 
 		}
 		break;
-	case LevelState::LEVEL3:
+	case LevelState::LEVEL1:
 		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 89, 30) * 2), 3));
 		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(30, 99, 0) * 2), 3));
 		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-30, 99, 0) * 2), 3));
@@ -458,7 +458,7 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 
 	switch (state)
 	{
-	case LevelState::LEVEL1:
+	case LevelState::LEVEL3:
 		//Killplane
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(1000, 1, 1000), PxVec3(0, -50, 50), PxVec3(90, 1, 20), false);
 
@@ -619,7 +619,7 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 		}
 		break;
 
-	case LevelState::LEVEL3:
+	case LevelState::LEVEL1:
 		//OBSTACLE 1
 //Rotating pillars
 		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 177, -180) * 2), 10, 25, 200));
