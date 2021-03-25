@@ -43,7 +43,7 @@ bool GameServer::Initialise()
 
 	if (!netHandle)
 	{
-		std::cout << __FUNCTION__ << " failed to create network handle!" << std::endl;
+		//std::cout << __FUNCTION__ << " failed to create network handle!" << std::endl;
 		return false;
 	}
 	//threadAlive		= true;
@@ -84,7 +84,7 @@ void GameServer::UpdateServer(float dt)
 
 		if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT)
 		{
-			std::cout << "Server: New client connected" << std::endl;
+			//std::cout << "Server: New client connected" << std::endl;
 			NewPlayerPacket player(peer, (int)level);
 			SendGlobalPacket(player);
 			players.insert(std::pair<int, ENetPeer*>(peer, p));
@@ -92,7 +92,7 @@ void GameServer::UpdateServer(float dt)
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT)
 		{
-			std::cout << "Server: A client has disconnected" << std::endl;
+			//std::cout << "Server: A client has disconnected" << std::endl;
 			PlayerDisconnectPacket player(peer);
 			SendGlobalPacket(player);
 
@@ -136,6 +136,3 @@ bool GameServer::SendPacketToPeer(int peerID, GamePacket& packet)
 //		UpdateServer(0);
 //	}
 //}
-
-//Second networking tutorial stuff
-
