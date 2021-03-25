@@ -686,6 +686,43 @@ void LevelCreator::InitGameExamples(LevelState state)
 	{
 	case LevelState::LEVEL1:
 		InitPlayer(PxTransform(PxVec3(0, -100, 100)), 1);
+
+
+		//power ups
+		//floor 1
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-20, -92, -75)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-40, -92, -75)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(20, -92, -75)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(40, -92, -75)), 5);
+
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -75)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -35)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -95)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -115)), 5);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -135)), 5);
+
+		//floor 2
+		for (int z = 0; z < 4; ++z)
+		{
+			for (int x = 0; x < 5 - (z % 2); ++x)
+			{
+				GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 300, 30 - (z * 80))), PxVec3(20, 1, 20));
+				if (x % 2 == 0) {
+					GameManager::AddPxLongJump(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 308, 30 - (z * 80))), 5);
+				}
+				else {
+					GameManager::AddPxCoinToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 308, 30 - (z * 80))), 5);
+
+				}
+			}
+		}
+
+		//floor 3
+		for (int i = 0; i < 4; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, 708, -5 - (i * 70))), 5);
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(160, 708, -5 - (i * 70))), 5);
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-160, 708, -5 - (i * 70))), 5);
+		}
 		break;
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
@@ -820,6 +857,8 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		//Floor 1
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, false);
 
+
+
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
@@ -866,7 +905,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 			for (int x = 0; x < 5 - (z % 2); ++x)
 			{
 				GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 300, 30 - (z * 80))), PxVec3(20, 1, 20));
-
 			}
 		}
 
@@ -883,6 +921,9 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5, true, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2);
+
+
+
 
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
