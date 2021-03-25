@@ -66,10 +66,10 @@ namespace NCL {
 				return ipString;
 			}
 
-			string GetPort() const
-			{
-				return portString;
-			}
+			//string GetPort() const
+			//{
+			//	return portString;
+			//}
 
 			string GetPlayerName() const {
 				return nameString;
@@ -160,12 +160,12 @@ namespace NCL {
 			bool readyToHost = false;
 
 			string ipString = "Enter IP";
-			string portString = "Enter Port";
+			//string portString = "Enter Port";
 			string nameString = "Enter Name";
 
 			bool enterName = false;
 			bool enterIP = false;
-			bool enterPort = false;
+			//bool enterPort = false;
 		};
 	}
 }

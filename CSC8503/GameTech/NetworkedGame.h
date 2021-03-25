@@ -21,13 +21,6 @@ namespace NCL {
 
 			void Update(float dt) override;
 
-			void UpdatePlayer(NetworkPlayer* player, float dt);
-			NetworkPlayer* SpawnPlayer(int playerNum);
-			void AddLevelNetworkObject(GameObject* object);
-
-			void InitWorld(LevelState state);
-			void InitGameObstacles(LevelState state);
-
 			void ReceivePacket(float dt, int type, GamePacket* payload, int source) override;
 
 			void OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b);
@@ -46,6 +39,14 @@ namespace NCL {
 
 			void BroadcastSnapshot(bool deltaFrame);
 			void UpdateMinimumState();
+
+			void UpdatePlayer(NetworkPlayer* player, float dt);
+			NetworkPlayer* SpawnPlayer(int playerNum);
+			void AddLevelNetworkObject(GameObject* object);
+
+			void InitWorld(LevelState state);
+			void InitGameExamples(LevelState state);
+			void InitGameObstacles(LevelState state);
 
 			// Server-side
 			std::map<int, int> stateIDs;

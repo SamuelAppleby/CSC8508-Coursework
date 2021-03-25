@@ -12,26 +12,25 @@ NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num)
 	playerName = defaultPlayerName;
 	connected = true;
 	isHost = false;
+	isOnHost = false;
 }
 
-//void NetworkPlayer::Update(float dt)
-//{
-//	UIState ui = GameManager::GetRenderer()->GetUIState();
-//
-//	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD))
-//	{
-//		PlayerObject::Update(dt);
-//	}
-//	else
-//	{
-//		Vector3 q = Quaternion(physicsObject->GetPXActor()->getGlobalPose().q).ToEuler() + Vector3(0, 180, 0);
-//		transform.SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(q.x, q.y, q.z)));
-//		transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
-//		transform.UpdateMatrix();
-//		timeAlive += dt;
-//		raycastTimer -= dt;
-//	}
-//}
+void NetworkPlayer::Update(float dt)
+{
+	if (isOnHost)
+	{
+		PlayerObject::Update(dt);		
+	}
+	else
+	{
+		Vector3 q = Quaternion(physicsObject->GetPXActor()->getGlobalPose().q).ToEuler() + Vector3(0, 180, 0);
+		transform.SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(q.x, q.y, q.z)));
+		transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
+		transform.UpdateMatrix();
+		timeAlive += dt;
+	}
+
+}
 
 void NetworkPlayer::FixedUpdate(float dt)
 {

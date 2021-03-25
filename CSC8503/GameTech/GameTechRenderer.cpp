@@ -163,7 +163,7 @@ bool GameTechRenderer::TestValidHost()
 			return false;
 		vect.push_back(substr);
 	}
-	return vect.size() == 4 && portString.length() > 0 && isdigit(portString.at(0));
+	return vect.size() == 4/* && portString.length() > 0 && isdigit(portString.at(0))*/;
 }
 
 void GameTechRenderer::RenderFrame()
@@ -202,7 +202,7 @@ void GameTechRenderer::RenderUI()
 	bool validName = nameString.length() > 0 && nameString != "Enter Name";
 	readyToHost = validName;
 	readyToJoin = TestValidHost() && validName;
-	string* activeString = enterIP ? &ipString : enterPort ? &portString : &nameString;
+	string* activeString = enterIP ? &ipString :/* enterPort ? &portString :*/ &nameString;
 
 	switch (levelState)
 	{
@@ -381,11 +381,11 @@ void GameTechRenderer::RenderUI()
 		else if (ImGui::Button(nameString.c_str(), ImVec2(400, 50))) {
 			nameString.clear();
 			enterName = true;
-			enterPort = false;
+			//enterPort = false;
 			enterIP = false;
 		}
 
-		ImGui::Text("Host I.P:");
+		ImGui::Text("Host IP:");
 		ImGui::SameLine();
 
 		if (enterIP)
@@ -399,11 +399,11 @@ void GameTechRenderer::RenderUI()
 		else if (ImGui::Button(ipString.c_str(), ImVec2(400, 50))) {
 			ipString.clear();
 			enterName = false;
-			enterPort = false;
+			//enterPort = false;
 			enterIP = true;
 		}
 
-		ImGui::SameLine();
+		/*ImGui::SameLine();
 		ImGui::Text("Port No:");
 		ImGui::SameLine();
 
@@ -420,7 +420,7 @@ void GameTechRenderer::RenderUI()
 			enterName = false;
 			enterIP = false;
 			enterPort = true;
-		}
+		}*/
 
 		/* Using hex to get keyboard inputs */
 		for (int i = 0x30; i <= 0x39; ++i) {
@@ -453,11 +453,12 @@ void GameTechRenderer::RenderUI()
 
 		if (ImGui::Button("Back"))
 		{
-			portString.clear();
+			//portString.clear();
 			ipString.clear();
 			//nameString.clear();
-			enterPort = false;
+			//enterPort = false;
 			enterIP = false;
+			enterName = false;
 			levelState = UIState::MENU;
 		}
 		ImGui::PopFont();
@@ -479,10 +480,10 @@ void GameTechRenderer::RenderUI()
 			switch (player->GetPowerUpState())
 			{
 			case::PowerUpState::LONGJUMP:
-				ImGui::Text("Long Jumnp Power Up!");
+				ImGui::Text("Long Jump Power-Up!");
 				break;
 			case::PowerUpState::SPEEDPOWER:
-				ImGui::Text("Speed Boost Power Up!");
+				ImGui::Text("Speed Boost Power-Up!");
 				break;
 			}
 			}
@@ -630,7 +631,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 5.5), ImGuiCond_Always);
-		ImGui::Begin("FINISHED!", NULL, window_flags);
+		ImGui::Begin("FINISHED!", NULL, box_flags);
 		ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
 		ImGui::PopFont();
 		ImGui::End();

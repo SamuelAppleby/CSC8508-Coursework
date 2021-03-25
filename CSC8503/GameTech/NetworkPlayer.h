@@ -14,7 +14,7 @@ namespace NCL
 			NetworkPlayer(NetworkedGame* game, int num);
 			~NetworkPlayer() {};
 
-			//void Update(float dt) override;
+			void Update(float dt) override;
 
 			void FixedUpdate(float dt)override;
 
@@ -63,9 +63,12 @@ namespace NCL
 			void SetHost()
 			{
 				isHost = true;
+				isOnHost = true;
 			}
 
-			Vector3 vel;
+			void SetOnHost() {
+				isOnHost = true;
+			}
 
 		protected:
 			NetworkedGame* game;
@@ -75,6 +78,7 @@ namespace NCL
 			string defaultPlayerName;
 			bool connected;
 			bool isHost;
+			bool isOnHost;
 		};
 	}
 }
