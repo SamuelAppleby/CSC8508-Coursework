@@ -343,6 +343,41 @@ void NetworkedGame::InitGameExamples(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		//power ups
+		//floor 1
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-20, -92, -75)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-40, -92, -75)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(20, -92, -75)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(40, -92, -75)), 5));
+
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -75)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -35)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -95)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -115)), 5));
+		AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -92, -135)), 5));
+
+		//floor 2
+		for (int z = 0; z < 4; ++z)
+		{
+			for (int x = 0; x < 5 - (z % 2); ++x)
+			{
+				AddLevelNetworkObject(GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 300, 30 - (z * 80))), PxVec3(20, 1, 20)));
+				if (x % 2 == 0) {
+					AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 308, 30 - (z * 80))), 5));
+				}
+				else {
+					AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 308, 30 - (z * 80))), 5));
+
+				}
+			}
+		}
+
+		//floor 3
+		for (int i = 0; i < 4; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, 708, -5 - (i * 70))), 5));
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(160, 708, -5 - (i * 70))), 5));
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-160, 708, -5 - (i * 70))), 5));
+		}
 		break;
 	case LevelState::LEVEL2:
 		//power ups
@@ -424,6 +459,103 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		//Killplane
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(1000, 1, 1000), PxVec3(0, -50, 50), PxVec3(90, 1, 20), false);
+
+		//Floor 1
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, false));
+
+
+
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false));
+
+		//Floor 1-2 connection
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, -100, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 4);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, -20, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 60, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 140, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(0, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(80, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(160, 220, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-40, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+		GameManager::AddBounceSticks(PxTransform(PxVec3(-120, 300, -300), PxQuat(1.5708, PxVec3(1, 0, 0))), 10, 20, 10, 0.5, 3);
+
+		//Floor 2
+		for (int z = 0; z < 4; ++z)
+		{
+			for (int x = 0; x < 5 - (z % 2); ++x)
+			{
+				AddLevelNetworkObject(GameManager::AddPxFallingTileToWorld(PxTransform(PxVec3((-180 + (20 * (z % 2))) + (x * 80), 300, 30 - (z * 80))), PxVec3(20, 1, 20)));
+			}
+		}
+
+		//Floor 2-3 connection
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-180, 700, 145)), PxVec3(50, 0, 0), 15, 15, PxVec3(50, 0, 0));
+		for (int i = 0; i < 30; i++)
+		{
+			Cannonball* c = GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(-200, 700, 145) * 2), 10, new PxVec3(25, 0, 0), 37);
+			AddLevelNetworkObject(c);
+			GameManager::GetObstacles()->cannons.push_back(c);
+		}
+
+		//floor 3 (pendulums)
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, 30)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -40)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -110)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2));
+
+
+
+
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -215)), 10, 30, 5, false, 0.5f, 2));
+
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -5)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -75)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -145)), 10, 30, 5, false, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(80, 760, -215)), 10, 30, 5, false, 0.5f, 2));
+
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, 30)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -40)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -110)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -180)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(160, 760, -250)), 10, 30, 5, true, 0.5f, 2));
+
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, 30)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -40)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5, true, 0.5f, 2));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5, true, 0.5f, 2));
 		break;
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
