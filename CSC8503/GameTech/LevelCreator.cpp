@@ -506,7 +506,7 @@ void LevelCreator::InitFloors(LevelState state)
 
 	case LevelState::LEVEL3:
 		//floor
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 80, 25) * 2), PxVec3(100, 1, 130));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 80, 40) * 2), PxVec3(100, 1, 150));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(100, 70, 1));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(500, 70, 1), 0.5f, 0.1f, TextureState::INVISIBLE);
 
@@ -526,7 +526,7 @@ void LevelCreator::InitFloors(LevelState state)
 
 		//buffer zone 1 (where contestants respawn on failing the first obstacle, this needs to be sorted on the individual kill plane)
 		respawnSize = Vector3(100, 0, 45);
-		zone1Position = PxVec3(0, 81, 100);
+		zone1Position = PxVec3(0, 81, 90);
 
 		//Kill PLlanes for out of bounce 
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60, 50) * 2), PxVec3(500, 1, 400), zone1Position, respawnSize, false);
@@ -571,6 +571,7 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60.1, -200) * 2), PxVec3(500, 1, 170), zone2Position, respawnSize, false);
 		//platform after blender platforms
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 150, -460) * 2), PxVec3(100, 1, 50));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -435) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
 		//side wall left
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 154.5, -460) * 2), PxVec3(1, 10, 50));
 		//side wall right
@@ -586,7 +587,7 @@ void LevelCreator::InitFloors(LevelState state)
 
 		//buffer zone 4
 		zone4Position = PxVec3(0, 153, -460);
-		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60.1, -600) * 2), PxVec3(500, 1, 500), zone4Position, respawnSize, false);
+		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60.1, -700) * 2), PxVec3(500, 1, 500), zone4Position, respawnSize, false);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -470) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
 
 		//Floor after ramp
@@ -595,7 +596,16 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 95.5, -825) * 2), PxVec3(1, 10, 300));
 		//side wall right												  
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-50, 95.5, -825) * 2), PxVec3(1, 10, 300));
+		//wall at the end... final wall
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 91, -977.5) * 2), PxVec3(100, 1, 5), 0.5F, 0.1F, TextureState::FINISH);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-50, 115, -975) * 2), PxVec3(1, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 115, -975) * 2), PxVec3(1, 40, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 130, -975) * 2), PxVec3(100, 7, 1), 0.5F, 0.1F, TextureState::FINISH);
 
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 91, -990) * 2), PxVec3(100, 1, 20), 0.5F, 0.1F);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-50, 95.5, -990) * 2), PxVec3(1, 10, 30));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 95.5, -990) * 2), PxVec3(1, 10, 30));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 95.5, -1000) * 2), PxVec3(100, 10, 1));
 
 		//Pillars
 		for (int i = 0; i <= 15; i++)
@@ -677,6 +687,39 @@ void LevelCreator::InitGameExamples(LevelState state)
 		break;
 	case LevelState::LEVEL3:
 		InitPlayer(PxTransform(PxVec3(0, 180, 150)), 1);
+
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 89, 30) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(30, 99, 0) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-30, 99, 0) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, 129, -85) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-60, 129, -85) * 2), 3);
+		
+		//AFTER TRAMPOLINES
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, 154, -124.5) * 2),3);
+
+		//Powerup before jumping part with blenders
+		GameManager::AddPxLongJump(PxTransform(PxVec3(36, 154, -280) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-36, 154, -280) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 154, -270) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 154, -260) * 2), 3);
+
+		//Slope  coins
+
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(22, 134, -545) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(4, 125, -575) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-15, 110, -625) * 2), 3);
+		
+		//Toilet section powerUps/coins
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-30, 95, -720) * 2), 3);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(-15, 95, -720) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 95, -720) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(15, 95, -720) * 2), 3);
+		GameManager::AddPxSpeedPower(PxTransform(PxVec3(30, 95, -720) * 2), 3);
+
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(30, 95, -800) * 2), 3);
+
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-30, 95, -850) * 2), 3);
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 91, -825) * 2), PxVec3(100, 1, 300));
 		break;
 	case LevelState::SANDBOX:
 		InitPlayer(PxTransform(PxVec3(0, 10, 100)), 1);

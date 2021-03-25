@@ -478,6 +478,9 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	case TextureState::TRAMPOLINE:
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, trampolineTex, toonShader));
 		break;
+	case TextureState::FINISH:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, finishTex, toonShader));
+		break;
 	case TextureState::INVISIBLE:
 		break;
 
