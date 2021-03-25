@@ -63,30 +63,32 @@ void PlayerObject::Update(float dt)
 void PlayerObject::FixedUpdate(float fixedDT) {
 	if (!finished)
 	{
-	speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
+		speed = isGrounded ? 2000.0f : 1000.0f;	// air damping
 
-	MAX_SPEED = isSprinting ? (state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f) : (state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f);
-	if (movingForward)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(fwd * speed, PxForceMode::eIMPULSE);
-	if (movingLeft)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-right * speed, PxForceMode::eIMPULSE);
-	if (movingBackwards)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-fwd * speed, PxForceMode::eIMPULSE);
-	if (movingRight)
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(right * speed, PxForceMode::eIMPULSE);
-	
-	PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
-	if (isJumping)
-		playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
+		MAX_SPEED = isSprinting ? (state == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f) : (state == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f);
+		if (movingForward)
+			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(fwd * speed, PxForceMode::eIMPULSE);
+		if (movingLeft)
+			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-right * speed, PxForceMode::eIMPULSE);
+		if (movingBackwards)
+			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-fwd * speed, PxForceMode::eIMPULSE);
+		if (movingRight)
+			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(right * speed, PxForceMode::eIMPULSE);
 
-	float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
-	float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
-	if (excessSpeed) {
-		((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
+		PxVec3 playerVel = ((PxRigidDynamic*)physicsObject->GetPXActor())->getLinearVelocity();
+		if (isJumping)
+			playerVel.y = sqrt(jumpHeight * -2 * NCL::CSC8503::GRAVITTY);
+
+		float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
+		float excessSpeed = std::clamp(linearSpeed - MAX_SPEED, 0.0f, 0.1f);
+		if (excessSpeed) {
+			((PxRigidDynamic*)physicsObject->GetPXActor())->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
+		}
+
+		((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
 	}
+}
 
-	((PxRigidDynamic*)physicsObject->GetPXActor())->setLinearVelocity(playerVel);
-}}
 bool PlayerObject::CheckHasFinished(LevelState state)
 {
 	Vector3 pos = transform.GetPosition();
