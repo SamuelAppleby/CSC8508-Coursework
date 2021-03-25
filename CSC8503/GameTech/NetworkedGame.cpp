@@ -301,15 +301,18 @@ NetworkPlayer* NetworkedGame::SpawnPlayer(int playerNum)
 {
 	PxVec3 pos;
 	LevelState state = GameManager::GetLevelState();
-	if (state == LevelState::LEVEL2)
-	{
-		pos = PxVec3(0, 10, 0);
 
-	}
-	else if (state == LevelState::LEVEL3)
-	{
+	switch (state) {
+	case LevelState::LEVEL1:
+		pos = PxVec3(0, -100, 100);
+		break;
+	case LevelState::LEVEL2:
+		pos = PxVec3(0, 10, 0);
+		break;
+	case LevelState::LEVEL3:
 		pos = PxVec3(0, 180, 150);
-	}	
+		break;
+	}
 
 	pos.x = 10 * playerNum;
 	NetworkPlayer* p = GameManager::AddPxNetworkPlayerToWorld(PxTransform(pos), 1, this, playerNum);
@@ -342,6 +345,39 @@ void NetworkedGame::InitGameExamples(LevelState state)
 	case LevelState::LEVEL1:
 		break;
 	case LevelState::LEVEL2:
+		//power ups
+		for (int i = 0; i < 20; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), 2, -50) * 2), 5));
+		}
+
+		for (int i = 0; i < 20; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -42, -200) * 2), 5));
+		}
+
+		for (int i = 0; i < 20; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -83, -340) * 2), 5));
+		}
+
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 5));
+
+		for (int i = 0; i < 8; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -94, -845 - (i * 20)) * 2), 5));
+
+		}
+		for (int i = 0; i < 8; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-70, -94, -845 - (i * 20)) * 2), 5));
+			AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(70, -94, -845 - (i * 20)) * 2), 5));
+
+		}
 		break;
 	case LevelState::LEVEL3:
 		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, 89, 30) * 2), 3));
@@ -381,6 +417,10 @@ void NetworkedGame::InitGameExamples(LevelState state)
 
 void NetworkedGame::InitGameObstacles(LevelState state)
 {
+	PxVec3 translate = PxVec3(0, -59, -14) * 2;
+	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
+	PxQuat q;
+
 	switch (state)
 	{
 	case LevelState::LEVEL1:
@@ -390,6 +430,8 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
 		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 100, PxVec3(0, 0, 1)));
+
+
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900      )*2), PxVec3(20, 20, 200));
 		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 100, PxVec3(0, 0, 1)));
@@ -407,18 +449,35 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 
+		//pegs as obstacles/hiding places for the bowling balls
+		//row 1
+		q = PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(11, 45, 11));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -38, -1180) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+
+		//row 2
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(30, -23, -1235) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+
+		//row 3
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(60, -3, -1290) * 2, q), PxVec3(10, 50, 10), PxVec3(0, 2, 0)));
+
+
+
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -85, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
-			20, 80, PxVec3(0, 2, 0)));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform((PxVec3(0, -90, -1720) * 2) + translate + translate2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))), 20, 80, PxVec3(0, 2, 0)));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2 + translate), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
 
 		for (int i = 0; i < 30; i++)
 		{

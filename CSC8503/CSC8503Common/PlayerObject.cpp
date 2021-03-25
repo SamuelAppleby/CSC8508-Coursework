@@ -96,7 +96,7 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 
 	if (state == LevelState::LEVEL2)
 	{
-		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20)
+		if (pos.z < -3601 && pos.y > -176 && pos.x > -20 && pos.x < 20)
 		{
 			finished = true;
 			finishTime = timeAlive;
