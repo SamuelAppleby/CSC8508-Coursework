@@ -25,7 +25,7 @@ using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3, SANDBOX };
-enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH};
+enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH, DOGE, RED};
 
 class GameManager {
 public:
@@ -149,6 +149,7 @@ private:
 	static OGLTexture* wallTex;
 	static OGLTexture* dogeTex;
 	static OGLTexture* pBodyTex;
+	static OGLTexture* redTex;
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;

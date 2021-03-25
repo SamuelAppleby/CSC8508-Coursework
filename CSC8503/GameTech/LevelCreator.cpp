@@ -513,8 +513,8 @@ void LevelCreator::InitFloors(LevelState state)
 	case LevelState::LEVEL3:
 		//floor
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 80, 40) * 2), PxVec3(100, 1, 150));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(100, 70, 1));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(500, 70, 1), 0.5f, 0.1f, TextureState::INVISIBLE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 114.5, -100) * 2, PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(0, 0, 180))), PxVec3(100, 70, 1), 0.5f, 0.1f, TextureState::DOGE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 115, -100) * 2), PxVec3(500, 70, 1), 0, 0.1f, TextureState::INVISIBLE);
 
 		//Wall Trambolines		
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 85, 30) * 2), PxVec3(25, 1, 25), 0.5F, 2.0f, TextureState::TRAMPOLINE);
@@ -577,7 +577,7 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60.1, -200) * 2), PxVec3(500, 1, 170), zone2Position, respawnSize, false);
 		//platform after blender platforms
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 150, -460) * 2), PxVec3(100, 1, 50));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -435) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -435) * 2), PxVec3(500, 100, 1), 0, 0.1F, TextureState::INVISIBLE);
 		//side wall left
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, 154.5, -460) * 2), PxVec3(1, 10, 50));
 		//side wall right
@@ -586,7 +586,7 @@ void LevelCreator::InitFloors(LevelState state)
 		//buffer zone 3
 		zone3Position = PxVec3(0, 153, -270);
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60, -375) * 2), PxVec3(500, 1, 190), zone3Position, respawnSize, false);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -272) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -272) * 2), PxVec3(500, 100, 1), 0,0.1F, TextureState::INVISIBLE);
 		//slippery ramp
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 120, -580) * 2,
 			PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(-17, 0, 0))), PxVec3(100, 1, 200), 0, 0, TextureState::ICE);
@@ -594,7 +594,7 @@ void LevelCreator::InitFloors(LevelState state)
 		//buffer zone 4
 		zone4Position = PxVec3(0, 153, -460);
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, 60.1, -700) * 2), PxVec3(500, 1, 500), zone4Position, respawnSize, false);
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -470) * 2), PxVec3(500, 100, 1), 0.5F, 0.1F, TextureState::INVISIBLE);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 99, -470) * 2), PxVec3(500, 100, 1), 0, 0.1F, TextureState::INVISIBLE);
 
 		//Floor after ramp
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, 91, -825) * 2), PxVec3(100, 1, 300));
@@ -623,54 +623,54 @@ void LevelCreator::InitFloors(LevelState state)
 
 		//First row of wall obstacle 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-47, 98, -775) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(1, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -775) * 2), PxVec3(4, 11.5f, 2));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -775) * 2), PxVec3(4, 11.5f, 2),0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(1, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -775) * 2), PxVec3(4, 11.5f, 2), 0.5F, 2.0f, TextureState::RED);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(48, 98, -775) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
 
 		//Middle of wall obstacle
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-47, 98, -825) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-23, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-23, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
 		//gap in wall										  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(19, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(43, 95.75, -825) * 2), PxVec3(4, 11.5, 2));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(19, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(43, 95.75, -825) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(48, 98, -825) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
 
 		//Last row of wall obstacle 									  
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-47, 98, -875) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-23, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(1, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(19, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -875) * 2), PxVec3(4, 11.5, 2));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-41, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-29, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-23, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-17, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-11, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-5, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(1, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(7, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(13, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(19, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(25, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(31, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(37, 95.75, -875) * 2), PxVec3(4, 11.5, 2), 0.5F, 2.0f, TextureState::RED);
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(48, 98, -875) * 2), PxVec3(4, 15, 2));//side wall blocking remaining gap
 		break;
 	case LevelState::SANDBOX:

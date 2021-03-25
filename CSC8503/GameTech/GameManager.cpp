@@ -33,6 +33,7 @@ OGLTexture* GameManager::menuTex = nullptr;
 OGLTexture* GameManager::plainTex = nullptr;
 OGLTexture* GameManager::wallTex = nullptr;
 OGLTexture* GameManager::dogeTex = nullptr;
+OGLTexture* GameManager::redTex = nullptr;
 OGLTexture* GameManager::pBodyTex = nullptr;
 
 OGLShader* GameManager::basicShader = nullptr;
@@ -94,6 +95,7 @@ void GameManager::LoadAssets()
 
 	renderer->SetTextureRepeating(trampolineTex, false);
 
+	redTex = (OGLTexture*)TextureLoader::LoadAPITexture("red.png");
 	pBodyMat = new MeshMaterial("pbody.mat");
 
 	//renderer->
@@ -136,6 +138,7 @@ GameManager::~GameManager()
 	delete plainTex;
 	delete wallTex;
 	delete dogeTex;
+	delete redTex;
 
 	delete basicShader;
 	delete toonShader;
@@ -153,7 +156,7 @@ GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 hal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, redTex, toonShader));
 	world->AddGameObject(cube);
 
 	return cube;
@@ -483,6 +486,12 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		break;
 	case TextureState::FINISH:
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, finishTex, toonShader));
+		break;
+	case TextureState::RED:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, redTex, toonShader));
+		break;
+	case TextureState::DOGE:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, dogeTex, toonShader));
 		break;
 	case TextureState::INVISIBLE:
 		break;
