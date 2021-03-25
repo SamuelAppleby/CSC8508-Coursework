@@ -870,7 +870,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 	else if (type == Player_Disconnected)
 	{
 		PlayerDisconnectPacket* realPacket = (PlayerDisconnectPacket*)payload;
-		std::cout << "Client: Player Disconnected!" << std::endl;
+		//std::cout << "Client: Player Disconnected!" << std::endl;
 		GameObject* g = networkObjects[levelNetworkObjectsCount + realPacket->playerID + 1]->GetGameObject();
 
 		if (dynamic_cast<NetworkPlayer*>(g))
