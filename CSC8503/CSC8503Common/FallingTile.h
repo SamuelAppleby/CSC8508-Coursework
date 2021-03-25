@@ -31,7 +31,6 @@ namespace NCL {
 
 				if (started) {
 					timeActive += dt;
-
 					if (timeActive >= originalTime) {
 
 						PxRigidDynamic* actor = (PxRigidDynamic*)physicsObject->GetPXActor();
@@ -50,6 +49,9 @@ namespace NCL {
 
 			void OnCollisionBegin(GameObject* otherObject) override {
 
+				if (otherObject->GetName()._Equal("Player")) {
+					started = true;
+				}
 
 	
 				
