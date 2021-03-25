@@ -14,7 +14,7 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
-#define SHADOWSIZE 4096
+#define SHADOWSIZE 8192
 
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
@@ -49,7 +49,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 	//Set up the light properties
 	lightColour = Vector4(1, 1, 1, 1.0f);
 	lightRadius = 1000.0f;
-	lightPosition = Vector3(0.0f, 600.0f, 100);
+	lightPosition = Vector3(500.0f, 2600.0f, -500);
 	lightDirection = Vector3(0.0f, -1, -1.f);
 
 	//Skybox!
@@ -592,7 +592,7 @@ void GameTechRenderer::RenderShadowMap()
 	int mvpLocation = glGetUniformLocation(shadowShader->GetProgramID(), "mvpMatrix");
 
 	Matrix4 shadowViewMatrix = Matrix4::BuildViewMatrix(lightPosition, Vector3(0, 0, 0), Vector3(0, 1, 0));
-	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 500.0f, 1, 45.0f);
+	Matrix4 shadowProjMatrix = Matrix4::Perspective(100.0f, 50000.0f, 1, 45.0f);
 
 	Matrix4 mvMatrix = shadowProjMatrix * shadowViewMatrix;
 

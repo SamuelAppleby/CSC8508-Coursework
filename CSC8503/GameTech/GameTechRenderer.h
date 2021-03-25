@@ -16,14 +16,18 @@
 #include "../../Common/AudioManager.h"
 #include <sstream>
 #include "../CSC8503Common/PlayerObject.h"
-namespace NCL {
+namespace NCL
+{
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503
 	{
 		class RenderObject;
-		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
-			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG };
+		enum class UIState
+		{
+			PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
+			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG
+		};
 
 		class GameTechRenderer : public OGLRenderer
 		{
@@ -33,19 +37,23 @@ namespace NCL {
 			void InitGUI(HWND handle);
 			bool TestValidHost();
 
-			void SetUIState(UIState val) {
+			void SetUIState(UIState val)
+			{
 				levelState = val;
 			}
 
-			UIState GetUIState() {
+			UIState GetUIState()
+			{
 				return levelState;
 			}
 
-			void SetSelectionObject(GameObject* val) {
+			void SetSelectionObject(GameObject* val)
+			{
 				selectionObject = val;
 			}
 
-			void SetLockedObject(GameObject* val) {
+			void SetLockedObject(GameObject* val)
+			{
 				lockedObject = val;
 			}
 
@@ -59,17 +67,26 @@ namespace NCL {
 				return portString;
 			}
 
-			void SetPlayer(PlayerObject* val) {
+			void SetPlayer(PlayerObject* val)
+			{
 				player = val;
 			}
 
-			void SetSelectedLevel(int val) {
+			void SetSelectedLevel(int val)
+			{
 				selectedLevel = val;
 			}
 
-			int GetSelectedLevel() const {
+			int GetSelectedLevel() const
+			{
 				return selectedLevel;
 			}
+
+			void SetLightPosition(Vector3 lPos)
+			{
+				lightPosition = lPos;
+			}
+
 			GLuint playerTex;
 
 		protected:
@@ -80,7 +97,7 @@ namespace NCL {
 
 			OGLShader* defaultShader;
 
-			GameWorld&	gameWorld;
+			GameWorld& gameWorld;
 			PxPhysicsSystem& pXPhysics;
 			PlayerObject* player;
 			void RenderUI();
@@ -100,7 +117,7 @@ namespace NCL {
 			GLuint		skyboxTex;
 
 			//shadow mapping things
-			OGLShader* shadowShader;
+			OGLShader*  shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
