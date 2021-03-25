@@ -16,6 +16,8 @@ namespace NCL
 			std::string playerName = "";
 			float finishTime = 0.0f;
 			Vector3 playerVel;
+			int powerUpState = 0;
+			int coins = 0;
 
 			FullPacket()
 			{

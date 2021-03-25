@@ -83,6 +83,9 @@ bool NetworkObject::ReadFullPacket(FullPacket& p) {
 			player.SetPlayerName(p.playerName);
 		}
 
+		player.SetPowerUpState((PowerUpState)p.powerUpState);
+		player.SetCoinsCollected(p.coins);
+
 		((PxRigidDynamic*)player.GetPhysicsObject()->GetPXActor())->setLinearVelocity(PhysxConversions::GetVector3(p.playerVel));
 	}
 
@@ -140,6 +143,9 @@ bool NetworkObject::WriteFullPacket(GamePacket** p) {
 		if (player.HasFinished()) {
 			fp->finishTime = player.GetFinishTime();
 		}
+
+		fp->powerUpState = (int)player.GetPowerUpState();
+		fp->coins = player.GetCoinsCollected();
 
 		fp->playerVel = ((PxRigidDynamic*)player.GetPhysicsObject()->GetPXActor())->getLinearVelocity();
 	}

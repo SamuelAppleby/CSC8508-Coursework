@@ -44,6 +44,10 @@ namespace NCL
 				coinsCollected++;
 			}
 
+			void SetCoinsCollected(int val)
+			{
+				coinsCollected = val;
+			}
 			int GetCoinsCollected() const
 			{
 				return coinsCollected;
@@ -75,17 +79,17 @@ namespace NCL
 				return jumpHeight;
 			}
 
-			PowerUpState GetState() const
-			{
-				return state;
-			}
-
 			float GetPowerUpTimer() const
 			{
 				return powerUpTimer;
 			}
 
-			PowerUpState GetPowerUpState()
+			void SetPowerUpState(PowerUpState state)
+			{
+				this->state = state;
+			}
+
+			PowerUpState GetPowerUpState() const
 			{
 				return state;
 			}

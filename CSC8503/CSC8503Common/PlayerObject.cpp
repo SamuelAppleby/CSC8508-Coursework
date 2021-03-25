@@ -104,7 +104,7 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 	}
 	else if (state == LevelState::LEVEL3)
 	{
-		if (pos.z < -1800 && pos.y > 181 && pos.x > -101 && pos.x < 101)
+		if (pos.z < -1950 && pos.y > 182 && pos.x > -101 && pos.x < 101)
 		{
 			finished = true;
 			finishTime = timeAlive;
