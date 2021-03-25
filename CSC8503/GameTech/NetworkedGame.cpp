@@ -67,9 +67,7 @@ void NetworkedGame::StartAsServer(LevelState state, string playerName)
 
 	//std::cout << "Starting as server." << std::endl;
 
-	GameManager::GetLevelState();
 	InitWorld(state);
-	GameManager::GetLevelState();
 	localPlayer = SpawnPlayer(-1);
 	localPlayer->SetPlayerName(playerName);
 	localPlayer->SetHost();
@@ -121,8 +119,8 @@ void NetworkedGame::Update(float dt)
 		timeToNextPacket += 1.0f / 120.0f; //120hz server/client update
 	}
 
-	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateCamera(dt);
+	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateLevel(dt);
 
 	if (thisServer)
@@ -158,7 +156,6 @@ void NetworkedGame::UpdateAsServer(float dt)
 	{
 		for (auto i = serverPlayers.begin(); i != serverPlayers.end(); )
 		{
-			//for (auto i : serverPlayers) {
 			std::map<int, ENetPeer*>::iterator it;
 			it = thisServer->players.find((*i).first);
 
@@ -505,7 +502,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 	//std::cout << "SOME SORT OF PACKET RECEIVED" << std::endl;
 	if (type == Received_State)
 	{	//Server version of the game receives these from players
-//std::cout << "Server: Received packet from client " << source << "." << std::endl;
+	//std::cout << "Server: Received packet from client " << source << "." << std::endl;
 		ClientPacket* realPacket = (ClientPacket*)payload;
 
 		std::map<int, int>::iterator it;
@@ -539,16 +536,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 				PxVec3 right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 
 				float speed = player->IsGrounded() ? 4000.0f : 2000.0f;	// air damping
-				float maxSpeed = 50.0f;
-
-				if (realPacket->buttonstates[5] == 1)
-				{
-					maxSpeed = player->GetState() == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f;
-				}
-				else
-				{
-					maxSpeed = player->GetState() == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f;
-				}
+				float maxSpeed = realPacket->buttonstates ? (player->GetState() == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f) : (player->GetState() == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f);
 
 				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
 
@@ -606,18 +594,16 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 		if (realPacket->messageID == COLLISION_MSG)
 		{
-			std::cout << "Client: Received collision message!" << std::endl;
+			//std::cout << "Client: Received collision message!" << std::endl;
 		}
 	}
 	else if (type == Player_Connected)
 	{
 		NewPlayerPacket* realPacket = (NewPlayerPacket*)payload;
-		std::cout << "Client: New player connected! ID: " << realPacket->playerID << std::endl;
+		//std::cout << "Client: New player connected! ID: " << realPacket->playerID << std::endl;
 
 		if (initialising)
 		{
-			/*if ((int)clientState == realPacket->serverLevel)
-			{*/
 			LevelState level = (LevelState)realPacket->serverLevel;
 			GameManager::SetLevelState(level);
 			InitWorld(level);
@@ -639,11 +625,6 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
 
 			initialising = false;
-			//}
-			//else
-			//{
-			//	GameManager::GetRenderer()->SetUIState(UIState::MENU);
-			//}
 		}
 		else
 		{

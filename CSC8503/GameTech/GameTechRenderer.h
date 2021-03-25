@@ -146,7 +146,8 @@ namespace NCL {
 			ImFont* titleFont;
 
 			ImGuiWindowFlags window_flags;
-			OGLTexture* levelImages[4];
+			ImGuiWindowFlags box_flags;
+			OGLTexture* levelImages[5];
 			OGLTexture* backgroundImage;
 
 			UIState levelState;
