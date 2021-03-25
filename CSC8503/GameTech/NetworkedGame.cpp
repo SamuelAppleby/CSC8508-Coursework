@@ -771,7 +771,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 				PxVec3 fwd = PhysxConversions::GetVector3(realPacket->fwdAxis);
 				PxVec3 right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 
-				float speed = player->IsGrounded() ? 4000.0f : 2000.0f;	// air damping
+				float speed = player->IsGrounded() ? 5000.0f : 2500.0f;	// air damping
 				float maxSpeed = realPacket->buttonstates[5] == 1 ? (player->GetPowerUpState() == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f) : (player->GetPowerUpState() == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f);
 
 				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
