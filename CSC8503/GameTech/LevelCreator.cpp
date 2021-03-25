@@ -306,6 +306,7 @@ void LevelCreator::InitFloors(LevelState state)
 		//side wall right											   
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, 4.5, 0) * 2), PxVec3(1, 10, 100));
 
+
 		//OBSTACLE 0.5 - THE RAMP DOWN
 		//after a short platform for players to build up some momentum, the players are sent down a ramp to build up speed
 		//it should be slippery as well (possibly do some stuff with coefficients?) so that players don't have as much control
@@ -336,19 +337,25 @@ void LevelCreator::InitFloors(LevelState state)
 		//and the stepping stones from takeshi's castle
 		//may need to add more if the jump isn't far enough
 		//honestly not sure on some of these values, there may not be enough stepping stones, so we should decide if more are needed after a little testing
+
+
+
 		//front row
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -88, -470) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -480) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(50, -88, -475) * 2), PxVec3(30, 1, 30));
+
 		//next row														 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-40, -88, -550) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(10, -88, -540) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(60, -88, -520) * 2), PxVec3(30, 1, 30));
+
 		//last row														 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-65, -88, -610) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-20, -88, -620) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(20, -88, -640) * 2), PxVec3(30, 1, 30));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(70, -88, -600) * 2), PxVec3(30, 1, 30));
+
 
 		//buffer zone 2 (where contestants respawn on failing the second obstacle, this needs to be sorted on the individual kill plane)
 		zone2Position = PxVec3(0, -87, -750);
@@ -683,6 +690,42 @@ void LevelCreator::InitGameExamples(LevelState state)
 	case LevelState::LEVEL2:
 		//player added to check this is all a reasonable scale
 		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
+
+		//power ups
+		for (int i = 0; i < 20; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), 2, -50) * 2), 5);
+		}
+
+		for (int i = 0; i < 20; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -42, -200) * 2), 5);
+		}
+
+		for (int i = 0; i < 20; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -83, -340) * 2), 5);
+		}
+
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 5);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 5);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 5);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 5);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 5);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 5);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 5);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 5);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 5);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 5);
+
+		for (int i = 0; i < 8; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -94, -845 - (i * 20)) * 2), 5);
+
+		}
+		for (int i = 0; i < 8; ++i) {
+			GameManager::AddPxLongJump(PxTransform(PxVec3(-70, -94, -845 - (i * 20)) * 2), 5);
+			GameManager::AddPxLongJump(PxTransform(PxVec3(70, -94, -845 - (i * 20)) * 2), 5);
+
+		}
+
+
 		break;
 	case LevelState::LEVEL3:
 		InitPlayer(PxTransform(PxVec3(0, 180, 150)), 1);
@@ -866,10 +909,13 @@ void LevelCreator::InitGameObstacles(LevelState state)
 
 		break;
 	case LevelState::LEVEL2:
+
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
 		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 100, PxVec3(0, 0, 1));
+
+
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900      )*2), PxVec3(20, 20, 200));
 		GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
 			20, 100, PxVec3(0, 0, 1));
