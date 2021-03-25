@@ -14,7 +14,8 @@ namespace NCL
 			NetworkState fullState;
 			int score = -1;
 			std::string playerName = "";
-			float finishTime = 0;
+			float finishTime = 0.0f;
+			Vector3 playerVel;
 
 			FullPacket()
 			{
@@ -40,8 +41,8 @@ namespace NCL
 		struct ClientPacket : public GamePacket
 		{
 			int		lastID = -1;
-			char	buttonstates[8];
-			Vector3 rightAxis;
+			char	buttonstates[6];
+			Vector3 fwdAxis;
 			int cameraYaw;
 			std::string playerName;
 			float finishTime = 0.0f;

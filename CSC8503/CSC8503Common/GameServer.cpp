@@ -11,7 +11,6 @@ GameServer::GameServer(int onPort, int maxClients, LevelState level)
 	clientCount = 0;
 	netHandle = nullptr;
 	//threadAlive = false;
-	//TODO LevelState
 	this->level = level;
 
 	Initialise();
@@ -86,7 +85,6 @@ void GameServer::UpdateServer(float dt)
 		if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT)
 		{
 			std::cout << "Server: New client connected" << std::endl;
-			//TODO LevelState
 			NewPlayerPacket player(peer, (int)level);
 			SendGlobalPacket(player);
 			players.insert(std::pair<int, ENetPeer*>(peer, p));

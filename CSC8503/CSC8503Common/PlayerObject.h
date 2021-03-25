@@ -65,9 +65,20 @@ namespace NCL
 				return finishTime;
 			}
 
-			bool IsGrounded() const { return isGrounded; }
+			bool IsGrounded() const
+			{ 
+				return isGrounded;
+			}
 
+			float GetJumpHeight() const
+			{
+				return jumpHeight;
+			}
 
+			PowerUpState GetState() const
+			{
+				return state;
+			}
 
 			float GetPowerUpTimer() const
 			{
@@ -79,14 +90,14 @@ namespace NCL
 				return state;
 			}
 
-			void LongJumpColelction()
+			void LongJumpCollection()
 			{
 				powerUpTimer = 5.0f;
 				jumpHeight = 30.0f;
 				state = PowerUpState::LONGJUMP;
 			}
 
-			void SpeedPowerColelction()
+			void SpeedPowerCollection()
 			{
 				powerUpTimer = 5.0f;
 				state = PowerUpState::SPEEDPOWER;

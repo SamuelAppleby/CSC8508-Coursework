@@ -14,7 +14,6 @@ namespace NCL
 		class GameServer : public NetworkBase
 		{
 		public:
-			//TODO LevelState
 			GameServer(int onPort, int maxClients, LevelState level);
 			~GameServer();
 
@@ -22,7 +21,7 @@ namespace NCL
 			void Shutdown();
 
 
-			void ThreadedUpdate();
+			//void ThreadedUpdate();
 
 			bool SendGlobalPacket(int msgID);
 			bool SendGlobalPacket(GamePacket& packet);

@@ -59,10 +59,6 @@ bool NetworkObject::ReadDeltaPacket(DeltaPacket& p) {
 
 	object.GetPhysicsObject()->GetPXActor()->setGlobalPose(PxTransform(PhysxConversions::GetVector3(fullPos), PhysxConversions::GetQuaternion(fullOrientation)));
 
-	/*object.GetTransform()
-		.SetPosition(fullPos)
-		.SetOrientation(fullOrientation);*/
-
 	return true;
 }
 
@@ -76,16 +72,19 @@ bool NetworkObject::ReadFullPacket(FullPacket& p) {
 
 	if (dynamic_cast<NetworkPlayer*>(&object)) {
 		NetworkPlayer& player = (NetworkPlayer&)object;
-		player.SetScore(p.score);
+
+		if (p.finishTime > 0)
+		{
+			player.SetFinishTime(p.finishTime);
+			player.SetFinished(true);
+		}
 
 		if (p.playerName != player.GetDefaultPlayerName()) {
 			player.SetPlayerName(p.playerName);
 		}
-	}
 
-	/*object.GetTransform()
-		.SetPosition(lastFullState.position)
-		.SetOrientation(lastFullState.orientation);*/
+		((PxRigidDynamic*)player.GetPhysicsObject()->GetPXActor())->setLinearVelocity(PhysxConversions::GetVector3(p.playerVel));
+	}
 
 	stateHistory.emplace_back(lastFullState);
 
@@ -141,6 +140,8 @@ bool NetworkObject::WriteFullPacket(GamePacket** p) {
 		if (player.HasFinished()) {
 			fp->finishTime = player.GetFinishTime();
 		}
+
+		fp->playerVel = ((PxRigidDynamic*)player.GetPhysicsObject()->GetPXActor())->getLinearVelocity();
 	}
 
 	*p = fp;
