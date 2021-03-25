@@ -159,7 +159,7 @@ class MultiplayerLevel : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-			GameManager::GetAudioManager()->StopSound();
+			//GameManager::GetAudioManager()->StopSound();
 			if (GameManager::GetLevelState() == LevelState::LEVEL1)
 				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
 			else
@@ -183,27 +183,23 @@ public:
 
 		if (GameManager::GetRenderer()->GetSelectedLevel())
 		{
-			*newState = new Level();
 			GameManager::GetAudioManager()->StopSound();
-			switch (GameManager::GetRenderer()->GetSelectedLevel())
+
+			LevelState level = (LevelState)(GameManager::GetRenderer()->GetSelectedLevel() - 1);
+			GameManager::SetLevelState(level);
+
+			if (GameManager::GetRenderer()->GetPreviousUIState() == UIState::MENU)
 			{
-			case 1:
-				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL1);
-				GameManager::SetLevelState(LevelState::LEVEL1);
-				break;
-			case 2:
-				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL2);
-				GameManager::SetLevelState(LevelState::LEVEL2);
-				break;
-			case 3:
-				levelCreator->LevelCreator::InitWorld(LevelState::LEVEL3);
-				GameManager::SetLevelState(LevelState::LEVEL3);
-				break;
-			case 4:
-				levelCreator->LevelCreator::InitWorld(LevelState::SANDBOX);
-				GameManager::SetLevelState(LevelState::SANDBOX);
-				break;
+				*newState = new Level();
+				levelCreator->LevelCreator::InitWorld(level);
 			}
+			else
+			{
+				*newState = new MultiplayerLevel();
+				playerName = GameManager::GetRenderer()->GetPlayerName();
+				levelCreator->StartAsServer(level, playerName);
+			}
+
 			return PushdownResult::Push;
 		}
 
@@ -212,79 +208,12 @@ public:
 		case UIState::QUIT:
 			return PushdownResult::Pop;
 			break;
-			if (GameManager::GetRenderer()->GetSelectedLevel())
-			{
-				*newState = new Level();
-				GameManager::GetAudioManager()->StopSound();
-				switch (GameManager::GetRenderer()->GetSelectedLevel())
-				{
-				case 1:
-					levelCreator->InitWorld(LevelState::LEVEL1);
-					GameManager::SetLevelState(LevelState::LEVEL1);
-					break;
-				case 2:
-					levelCreator->InitWorld(LevelState::LEVEL2);
-					GameManager::SetLevelState(LevelState::LEVEL2);
-					break;
-				case 3:
-					levelCreator->InitWorld(LevelState::LEVEL3);
-					GameManager::SetLevelState(LevelState::LEVEL3);
-					break;
-				case 4:
-					levelCreator->InitWorld(LevelState::SANDBOX);
-					GameManager::SetLevelState(LevelState::SANDBOX);
-					break;
-				}
-				return PushdownResult::Push;
-			}
-			return PushdownResult::Pop;
-			break;
-		case UIState::HOSTLEVEL1:
-			*newState = new MultiplayerLevel();
-			playerName = GameManager::GetRenderer()->GetPlayerName();
-			levelCreator->StartAsServer(LevelState::LEVEL1, playerName);
-			GameManager::SetLevelState(LevelState::LEVEL1);
-			return PushdownResult::Push;
-			break;
-		case UIState::JOINLEVEL1:
+		case UIState::JOINLEVEL:
 			*newState = new MultiplayerLevel();
 			playerName = GameManager::GetRenderer()->GetPlayerName();
 			IPAddress = GameManager::GetRenderer()->GetIP();
 			portNo = GameManager::GetRenderer()->GetPort();
-			levelCreator->StartAsClient(LevelState::LEVEL1, playerName, IPAddress);
-			GameManager::SetLevelState(LevelState::LEVEL1);
-			return PushdownResult::Push;
-			break;
-		case UIState::HOSTLEVEL2:
-			*newState = new MultiplayerLevel();
-			playerName = GameManager::GetRenderer()->GetPlayerName();
-			levelCreator->StartAsServer(LevelState::LEVEL2, playerName);
-			GameManager::SetLevelState(LevelState::LEVEL2);
-			return PushdownResult::Push;
-			break;
-		case UIState::JOINLEVEL2:
-			*newState = new MultiplayerLevel();
-			playerName = GameManager::GetRenderer()->GetPlayerName();
-			IPAddress = GameManager::GetRenderer()->GetIP();
-			portNo = GameManager::GetRenderer()->GetPort();
-			levelCreator->StartAsClient(LevelState::LEVEL2, playerName, IPAddress);
-			GameManager::SetLevelState(LevelState::LEVEL2);
-			return PushdownResult::Push;
-			break;
-		case UIState::HOSTLEVEL3:
-			*newState = new MultiplayerLevel();
-			playerName = GameManager::GetRenderer()->GetPlayerName();
-			levelCreator->StartAsServer(LevelState::LEVEL3, playerName);
-			GameManager::SetLevelState(LevelState::LEVEL3);
-			return PushdownResult::Push;
-			break;
-		case UIState::JOINLEVEL3:
-			*newState = new MultiplayerLevel();
-			playerName = GameManager::GetRenderer()->GetPlayerName();
-			IPAddress = GameManager::GetRenderer()->GetIP();
-			portNo = GameManager::GetRenderer()->GetPort();
-			levelCreator->StartAsClient(LevelState::LEVEL3, playerName, IPAddress);
-			GameManager::SetLevelState(LevelState::LEVEL3);
+			levelCreator->StartAsClient(playerName, IPAddress);
 			return PushdownResult::Push;
 			break;
 		}

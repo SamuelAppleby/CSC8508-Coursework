@@ -26,7 +26,7 @@ NetworkedGame::NetworkedGame()
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
 
-	//GameManager::GetRenderer()->SetNetworkedGame(this);
+	GameManager::GetRenderer()->SetNetworkedGame(this);
 }
 
 NetworkedGame::~NetworkedGame()
@@ -45,13 +45,12 @@ void NetworkedGame::ResetWorld()
 	delete thisServer;
 	thisServer = nullptr;
 
-	/*if (thisClient) {
+	if (thisClient) {
 		thisClient->Disconnect();
-	}*/
+	}
 
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
-	clientState = LevelState::LEVEL1;
 	localPlayer = nullptr;
 	localPlayerName = "";
 	levelNetworkObjectsCount = 0;
@@ -62,29 +61,25 @@ void NetworkedGame::ResetWorld()
 
 void NetworkedGame::StartAsServer(LevelState state, string playerName)
 {
-	//TODO LevelState
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4, state);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
 
 	//std::cout << "Starting as server." << std::endl;
 
+	GameManager::GetLevelState();
 	InitWorld(state);
+	GameManager::GetLevelState();
 	localPlayer = SpawnPlayer(-1);
 	localPlayer->SetPlayerName(playerName);
 	localPlayer->SetHost();
 
 	GameManager::SetPlayer(localPlayer);
+	GameManager::SetSelectionObject(localPlayer);
 	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-
-	/*GameManager::SetSelectionObject(localPlayer);
-	localPlayer->SetSelected(true);
-	GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-	GameManager::SetLockedObject(localPlayer);
-	GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
 }
 
-void NetworkedGame::StartAsClient(LevelState state, string playerName, string ip)
+void NetworkedGame::StartAsClient(string playerName, string ip)
 {
 	bool clientExists = true;
 
@@ -108,8 +103,6 @@ void NetworkedGame::StartAsClient(LevelState state, string playerName, string ip
 	//std::cout << "Starting as client." << std::endl;
 
 	localPlayerName = playerName;
-
-	clientState = state;
 }
 
 void NetworkedGame::Update(float dt)
@@ -128,13 +121,15 @@ void NetworkedGame::Update(float dt)
 		timeToNextPacket += 1.0f / 120.0f; //120hz server/client update
 	}
 
+	GameManager::GetWorld()->UpdateWorld(dt);
+	UpdateCamera(dt);
+	UpdateLevel(dt);
+
 	if (thisServer)
 	{
-		GameManager::GetPhysicsSystem()->StepPhysics(dt);
+		UpdateTimeStep(dt);
 	}
 
-	UpdateLevel(dt);
-	GameManager::GetWorld()->UpdateWorld(dt);
 	GameManager::GetAudioManager()->UpdateAudio(dt);
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
@@ -195,12 +190,6 @@ void NetworkedGame::UpdateAsServer(float dt)
 	{
 		BroadcastSnapshot(true);
 	}
-
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::DELETEKEY))
-	{
-		thisServer->Shutdown();
-		//GameManager::GetRenderer()->SetUIState(UIState::MENU);
-	}
 }
 
 void NetworkedGame::UpdateAsClient(float dt)
@@ -209,13 +198,11 @@ void NetworkedGame::UpdateAsClient(float dt)
 	thisClient->UpdateClient(dt);
 
 	Camera* c = GameManager::GetWorld()->GetMainCamera();
-	Matrix4 view = c->BuildViewMatrix();
-	Matrix4 camWorld = view.Inverse();
-	newPacket.rightAxis = Vector3(camWorld.GetColumn(0));
 	newPacket.cameraYaw = c->GetYaw();
 
 	if (localPlayer)
 	{
+		newPacket.fwdAxis = Quaternion(localPlayer->GetTransform().GetOrientation()) * Vector3(0, 0, 1);
 		newPacket.playerName = localPlayer->GetPlayerName();
 
 		if (localPlayer->HasFinished())
@@ -236,9 +223,9 @@ void NetworkedGame::UpdateAsClient(float dt)
 			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D))
 				newPacket.buttonstates[3] = 1;
 			if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE))
-			{
 				newPacket.buttonstates[4] = 1;
-			}
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT))
+				newPacket.buttonstates[5] = 1;
 		}
 	}
 
@@ -248,21 +235,10 @@ void NetworkedGame::UpdateAsClient(float dt)
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame)
 {
-	/*std::vector<GameObject*>::const_iterator first;
-	std::vector<GameObject*>::const_iterator last;
-
-	GameManager::GetWorld()->GetObjectIterators(first, last);*/
-
 	for (auto p : serverPlayers)
 	{
-		//for (auto i = first; i != last; ++i) { // Change to loop through networkObjects?
 		for (auto o : networkObjects)
 		{
-			/*NetworkObject* o = (*i)->GetNetworkObject();
-			if (!o) {
-				continue;
-			}*/
-
 			int playerState = stateIDs.at(p.first);
 			GamePacket* newPacket = nullptr;
 			if (o->WritePacket(&newPacket, deltaFrame, playerState))
@@ -308,27 +284,36 @@ void NetworkedGame::UpdatePlayer(NetworkPlayer* player, float dt)
 {
 	if (player->GetRaycastTimer() <= 0.0f)
 	{
-		PxVec3 pos = PhysxConversions::GetVector3(player->GetTransform().GetPosition()) + PxVec3(0, -6, 0);
+		PxVec3 pos = PhysxConversions::GetVector3(player->GetTransform().GetPosition() + PxVec3(0, 3, 0));
 		PxVec3 dir = PxVec3(0, -1, 0);
 		float distance = 4.0f;
-		PxRaycastBuffer hit;
+		const PxU32 bufferSize = 4;        // [in] size of 'hitBuffer'
+		PxRaycastHit hitBuffer[bufferSize];  // [out] User provided buffer for results
+		PxRaycastBuffer buf(hitBuffer, bufferSize); // [out] Blocking and touching hits stored here
 
-		if (GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, hit))
-		{
-			GameObject* obj = GameManager::GetWorld()->FindObjectFromPhysicsBody(hit.block.actor);
-			player->SetIsGrounded(obj->GetName() == "Floor");
-		}
-		else
-		{
-			player->SetIsGrounded(false);
-		}
-		player->SetRaycastTimer(.25f);
+		GameManager::GetPhysicsSystem()->GetGScene()->raycast(pos, dir, distance, buf);
+		player->SetIsGrounded(buf.getNbTouches() > 1);
+
+		player->SetRaycastTimer(0.1f);
 	}
 }
 
 NetworkPlayer* NetworkedGame::SpawnPlayer(int playerNum)
 {
-	NetworkPlayer* p = GameManager::AddPxNetworkPlayerToWorld(PxTransform(PxVec3(-5 * playerNum, 1, 0)), 1, this, playerNum);
+	PxVec3 pos;
+	LevelState state = GameManager::GetLevelState();
+	if (state == LevelState::LEVEL2)
+	{
+		pos = PxVec3(0, 10, 0);
+
+	}
+	else if (state == LevelState::LEVEL3)
+	{
+		pos = PxVec3(0, 180, 150);
+	}	
+
+	pos.x = 10 * playerNum;
+	NetworkPlayer* p = GameManager::AddPxNetworkPlayerToWorld(PxTransform(pos), 1, this, playerNum);
 	NetworkObject* n = new NetworkObject(*p, levelNetworkObjectsCount + playerNum + 1);
 	networkObjects.emplace_back(n);
 
@@ -344,8 +329,8 @@ void NetworkedGame::AddLevelNetworkObject(GameObject* object)
 void NetworkedGame::InitWorld(LevelState state)
 {
 	InitCamera();
-	//GameManager::SetLevelState(state);
 	InitFloors(state);
+	InitGameMusic(state);
 	InitGameObstacles(state);
 }
 
@@ -362,37 +347,37 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 	case LevelState::LEVEL2:
 		//HAVE COMMENTED OUT THE ORIGINAL BEAMS, WILL LEAVE IN IN CASE WE DECIDE TO GO FOR STATIC ONES
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(-70, -98, -900)), PxVec3(20, 20, 200));
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 20, 100, PxVec3(0, 0, 1)));
-
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-70, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
+			20, 100, PxVec3(0, 0, 1)));
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(0, -98, -900      )*2), PxVec3(20, 20, 200));
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 20, 100, PxVec3(0, 0, 1)));
-
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
+			20, 100, PxVec3(0, 0, 1)));
 		//WorldCreator::AddPxFloorToWorld(PxTransform(PxVec3(70, -98, -900     )*2), PxVec3(20, 20, 200));
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(70, -98, -900) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 20, 100, PxVec3(0, 0, 1)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(70, -98, -900) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
+			20, 100, PxVec3(0, 0, 1)));
 
 		//cannons																
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -850) * 2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -900) * 2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -950) * 2), PxVec3(700000000, 8500, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -850) * 2), PxVec3(700, -50, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -900) * 2), PxVec3(700, -50, 0), 10, 10, PxVec3(35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-150, -70, -950) * 2), PxVec3(700, -50, 0), 10, 10, PxVec3(35, 0, 0));
 
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -825) * 2), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -875) * 2), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925) * 2), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975) * 2), PxVec3(-700000000, 8500, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -825) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -875) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -925) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(150, -70, -975) * 2), PxVec3(-700, -50, 0), 10, 10, PxVec3(-35, 0, 0));
 
 		//OBSTACLE 5 - THE BLENDER
 		//basically, it's an enclosed space with a spinning arm at the bottom to randomise which player actually wins
 		//it should be flush with the entrance to the podium room so that the door is reasonably difficult to access unless there's nobody else there
 		//again, not sure how to create the arm, it's a moving object, might need another class for this
 		//also, it's over a 100m drop to the blender floor, so pls don't put fall damage in blender blade
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -78, -1705) * 2, PxQuat(1.5701, PxVec3(1, 0, 0))), 20, 80, PxVec3(0, 2, 0)));
-
-
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
-		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2), PxVec3(1, 1, 700000), 20, 20, PxVec3(0, 0, 25));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, -85, -1705) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(1, 0, 0))),
+			20, 80, PxVec3(0, 2, 0)));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(-40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(0, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(40, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
+		GameManager::AddPxCannonToWorld(PxTransform(PxVec3(80, 100, -1351) * 2), PxVec3(1, -200, 1), 20, 20, PxVec3(0, 0, 25));
 
 		for (int i = 0; i < 30; i++)
 		{
@@ -400,48 +385,31 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 			AddLevelNetworkObject(c);
 			GameManager::GetObstacles()->cannons.push_back(c);
 		}
-
-		/*
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-
-		for (int i = 0; i < 7; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 10));
-		}
-
-		for (int i = 0; i < 5; i++)
-		{
-			GameManager::GetObstacles()->cannons.push_back(GameManager::AddPxCannonBallToWorld(PxTransform(PxVec3(50000, 5000, 5000)), 20));
-		}
-		*/
-		//PxTransform t = PxTransform(PxVec3(0, 50, 0));
-
-		//GameManager::AddPxCannonBallToWorld(t);
 		break;
 
 	case LevelState::LEVEL3:
 		//OBSTACLE 1
 		//Rotating pillars
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -180) * 2), 10, 25, PxVec3(0, 0, 1)));
-
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -200) * 2), 10, 25, PxVec3(0, 0, 1)));
-
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 177, -220) * 2), 10, 25, PxVec3(0, 0, 1)));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 177, -180) * 2), 10, 25, 200));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 177, -200) * 2), 10, 25, 200, false));
+		AddLevelNetworkObject(GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 177, -220) * 2), 10, 25, 200));
 
 		//OBSTACLE2 
 		//Jumping platforms with blenders
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -315) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 3, 12, PxVec3(0, 1, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -315) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
+			3, 12, PxVec3(0, 1, 0)));
 
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -315) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 3, 12, PxVec3(0, 1, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -315) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
+			3, 12, PxVec3(0, 1, 0)));
 
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 152.5, -360) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 3, 24, PxVec3(0, 1, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(0, 152.5, -360) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
+			3, 24, PxVec3(0, 1, 0)));
 
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -410) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 3, 12, PxVec3(0, 1, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(36.5, 152.5, -410) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
+			3, 12, PxVec3(0, 1, 0)));
 
-		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -410) * 2, PxQuat(1.5701, PxVec3(0, 0, 1))), 3, 12, PxVec3(0, 1, 0)));
+		AddLevelNetworkObject(GameManager::AddPxRotatingCylinderToWorld(PxTransform(PxVec3(-36.5, 152.5, -410) * 2, PxQuat(Maths::DegreesToRadians(90), PxVec3(0, 0, 1))),
+			3, 12, PxVec3(0, 1, 0)));
 
 		//OBSTACLE 3
 		//bouncing sticks on the slide 
@@ -460,28 +428,75 @@ void NetworkedGame::InitGameObstacles(LevelState state)
 		//OBSTACLE 4
 		//Running through walls
 		//cubes		
+		/* 1st round */
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-22, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-24, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
 
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(18, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(18, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(18, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(18, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(18, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(20, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(20, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(20, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(20, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(20, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 93, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 95, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 97, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 99, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 101, -775) * 2), PxVec3(2, 2, 2), 1.0F));
+
+		/* Second Round */
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 93, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 95, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 97, -825) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 99, -825) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(0, 101, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 93, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 95, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 97, -825) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 99, -825) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(2, 101, -825) * 2), PxVec3(2, 2, 2), 1.0F));
 
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 93, -875) * 2), PxVec3(2, 2, 2), 1.0F));
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 95, -875) * 2), PxVec3(2, 2, 2), 1.0F));
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 97, -875) * 2), PxVec3(2, 2, 2), 1.0F));
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 93, -875) * 2), PxVec3(2, 2, 2), 1.0F));
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 95, -875) * 2), PxVec3(2, 2, 2), 1.0F));
-		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 97, -875) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-34, 93, -825) * 2), PxVec3(2, 2, 2), 1.0F));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-34, 95, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-34, 97, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-34, 99, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-34, 101, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-36, 93, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-36, 95, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-36, 97, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-36, 99, -825) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(-36, 101, -825) * 2), PxVec3(2, 2, 2), 1.0f));
 
-		break;
+
+		/* Third Round */
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 93, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 95, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 97, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 99, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(42, 101, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 93, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 95, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 97, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 99, -875) * 2), PxVec3(2, 2, 2), 1.0f));
+		AddLevelNetworkObject(GameManager::AddPxCubeToWorld(PxTransform(PxVec3(44, 101, -875) * 2), PxVec3(2, 2, 2), 1.0f));
 	}
 }
 
@@ -503,13 +518,6 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 		if (serverPlayers.size() >= (source + 1))
 		{
-			Vector3 rightAxis = realPacket->rightAxis;
-
-			Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-			fwdAxis.y = 0.0f;
-			fwdAxis.Normalise();
-			float force = 1000000.0f;
-
 			NetworkPlayer* player = serverPlayers.at(source);
 
 			if (realPacket->playerName != "")
@@ -527,22 +535,43 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 			if (player->GetPhysicsObject()->GetPXActor()->is<PxRigidDynamic>())
 			{
-				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
-				//body->setLinearDamping(0.4f);
+				PxVec3 fwd = PhysxConversions::GetVector3(realPacket->fwdAxis);
+				PxVec3 right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 
-				if (realPacket->buttonstates[0] == 1)
-					body->addForce(PhysxConversions::GetVector3(fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-				if (realPacket->buttonstates[1] == 1)
-					body->addForce(PhysxConversions::GetVector3(-rightAxis) * force * dt, PxForceMode::eIMPULSE);
-				if (realPacket->buttonstates[2] == 1)
-					body->addForce(PhysxConversions::GetVector3(-fwdAxis) * force * dt, PxForceMode::eIMPULSE);
-				if (realPacket->buttonstates[3] == 1)
-					body->addForce(PhysxConversions::GetVector3(rightAxis) * force * dt, PxForceMode::eIMPULSE);
-				if (realPacket->buttonstates[4] == 1 && serverPlayers.at(source)->IsGrounded())
+				float speed = player->IsGrounded() ? 4000.0f : 2000.0f;	// air damping
+				float maxSpeed = 50.0f;
+
+				if (realPacket->buttonstates[5] == 1)
 				{
-					body->addForce(PhysxConversions::GetVector3(Vector3(0, 1, 0)) * force * 500 * dt, PxForceMode::eIMPULSE);
+					maxSpeed = player->GetState() == PowerUpState::SPEEDPOWER ? 160.0f : 80.0f;
+				}
+				else
+				{
+					maxSpeed = player->GetState() == PowerUpState::SPEEDPOWER ? 100.0f : 50.0f;
 				}
 
+				PxRigidDynamic* body = (PxRigidDynamic*)serverPlayers.at(source)->GetPhysicsObject()->GetPXActor();
+
+				if (realPacket->buttonstates[0] == 1)
+					body->addForce(fwd * speed, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[1] == 1)
+					body->addForce(-right * speed, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[2] == 1)
+					body->addForce(-fwd * speed, PxForceMode::eIMPULSE);
+				if (realPacket->buttonstates[3] == 1)
+					body->addForce(right * speed, PxForceMode::eIMPULSE);
+
+				PxVec3 playerVel = body->getLinearVelocity();
+				if (realPacket->buttonstates[4] == 1 && player->IsGrounded())
+					playerVel.y = sqrt(player->GetJumpHeight() * -2 * NCL::CSC8503::GRAVITTY);
+
+				float linearSpeed = PxVec3(playerVel.x, 0, playerVel.z).magnitude();
+				float excessSpeed = std::clamp(linearSpeed - maxSpeed, 0.0f, 0.1f);
+				if (excessSpeed)
+				{
+					body->addForce(-playerVel * excessSpeed, PxForceMode::eVELOCITY_CHANGE);
+				}
+				body->setLinearVelocity(playerVel);
 				body->setAngularVelocity(PxVec3(0));
 				body->setGlobalPose(PxTransform(body->getGlobalPose().p, PxQuat(Maths::DegreesToRadians(realPacket->cameraYaw), { 0, 1, 0 })));
 			}
@@ -587,37 +616,34 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 
 		if (initialising)
 		{
-			if ((int)clientState == realPacket->serverLevel)
+			/*if ((int)clientState == realPacket->serverLevel)
+			{*/
+			LevelState level = (LevelState)realPacket->serverLevel;
+			GameManager::SetLevelState(level);
+			InitWorld(level);
+
+			for (int i = -1; i < realPacket->playerID; i++)
 			{
-				InitWorld(clientState);
-
-				for (int i = -1; i < realPacket->playerID; i++)
-				{
-					SpawnPlayer(i);
-				}
-
-				localPlayer = SpawnPlayer(realPacket->playerID);
-
-				if (localPlayerName != "")
-				{
-					localPlayer->SetPlayerName(localPlayerName);
-				}
-
-				GameManager::SetPlayer(localPlayer);
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-
-				/*GameManager::SetSelectionObject(localPlayer);
-				localPlayer->SetSelected(true);
-				GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
-				GameManager::SetLockedObject(localPlayer);
-				GameManager::GetWorld()->GetMainCamera()->SetState(GameManager::GetWorld()->GetMainCamera()->GetState());*/
-
-				initialising = false;
+				SpawnPlayer(i);
 			}
-			else
+
+			localPlayer = SpawnPlayer(realPacket->playerID);
+
+			if (localPlayerName != "")
 			{
-				GameManager::GetRenderer()->SetUIState(UIState::MENU);
+				localPlayer->SetPlayerName(localPlayerName);
 			}
+
+			GameManager::SetPlayer(localPlayer);
+			GameManager::SetSelectionObject(localPlayer);
+			GameManager::GetWorld()->GetMainCamera()->SetState(CameraState::THIRDPERSON);
+
+			initialising = false;
+			//}
+			//else
+			//{
+			//	GameManager::GetRenderer()->SetUIState(UIState::MENU);
+			//}
 		}
 		else
 		{

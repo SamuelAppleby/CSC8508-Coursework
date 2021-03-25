@@ -29,18 +29,6 @@ void LevelCreator::ResetWorld()
 
 void LevelCreator::Update(float dt)
 {
-	if (GameManager::GetPlayer())
-	{
-		if (!GameManager::GetPlayer()->HasFinished())
-		{
-			if (GameManager::GetPlayer()->CheckHasFinished(GameManager::GetLevelState()))
-			{
-				GameManager::GetRenderer()->SetUIState(UIState::FINISH);
-			}
-			UpdatePlayer(dt);
-		}
-	}
-
 	GameManager::GetWorld()->UpdateWorld(dt);
 	UpdateCamera(dt);
 	UpdateLevel(dt);
@@ -119,6 +107,17 @@ void LevelCreator::FixedUpdate(float dt)
 /* Logic for updating level 1 or level 2 */
 void LevelCreator::UpdateLevel(float dt)
 {
+	PlayerObject* player = GameManager::GetPlayer();
+
+	if (player && !player->HasFinished())
+	{
+		if (player->CheckHasFinished(GameManager::GetLevelState()))
+		{
+			GameManager::GetRenderer()->SetUIState(UIState::FINISH);
+		}
+		UpdatePlayer(dt);
+	}
+
 	/* Enter debug mode? */
 	if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::C) && Window::GetKeyboard()->KeyPressed(KeyboardKeys::H))
 	{

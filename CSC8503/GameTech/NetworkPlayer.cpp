@@ -14,46 +14,41 @@ NetworkPlayer::NetworkPlayer(NetworkedGame* game, int num)
 	isHost = false;
 }
 
-NetworkPlayer::~NetworkPlayer()
-{
+//void NetworkPlayer::Update(float dt)
+//{
+//	UIState ui = GameManager::GetRenderer()->GetUIState();
+//
+//	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD))
+//	{
+//		PlayerObject::Update(dt);
+//	}
+//	else
+//	{
+//		Vector3 q = Quaternion(physicsObject->GetPXActor()->getGlobalPose().q).ToEuler() + Vector3(0, 180, 0);
+//		transform.SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(q.x, q.y, q.z)));
+//		transform.SetPosition(physicsObject->GetPXActor()->getGlobalPose().p);
+//		transform.UpdateMatrix();
+//		timeAlive += dt;
+//		raycastTimer -= dt;
+//	}
+//}
 
-}
-
-void NetworkPlayer::Update(float dt)
+void NetworkPlayer::FixedUpdate(float dt)
 {
 	UIState ui = GameManager::GetRenderer()->GetUIState();
 
 	if (isHost && (ui == UIState::INGAME || ui == UIState::SCOREBOARD))
 	{
-		PlayerObject::Update(dt);
+		PlayerObject::FixedUpdate(dt);
 	}
-	else
-	{
-		GameObject::Update(dt);
-		raycastTimer -= dt;
-	}
-}
-
-void NetworkPlayer::FixedUpdate(float dt)
-{
-	PlayerObject::FixedUpdate(dt);
 }
 
 void NetworkPlayer::OnCollisionBegin(GameObject* otherObject)
 {
 	isColliding = true;
 
-	//if (game) {
-	/*if (otherObject->GetName() == "Floor") {
-		isGrounded = true;
-	}
-	else if (otherObject->GetName() == "Coin") {
-		score += 100;
-	}
-	else */
 	if (dynamic_cast<NetworkPlayer*>(otherObject))
 	{
 		game->OnPlayerCollision(this, (NetworkPlayer*)otherObject);
 	}
-	//}
 }

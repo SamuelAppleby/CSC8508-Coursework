@@ -142,16 +142,16 @@ void GameTechRenderer::InitGUI(HWND handle)
 
 bool GameTechRenderer::TestValidHost()
 {
-	//std::vector<string> vect;
-	//std::stringstream ss(ipString);
-	//while (ss.good()) {
-	//	string substr;
-	//	getline(ss, substr, '.');
-	//	if (substr.size() < 1)
-	return false;
-	/*	vect.push_back(substr);
+	std::vector<string> vect;
+	std::stringstream ss(ipString);
+	while (ss.good()) {
+		string substr;
+		getline(ss, substr, '.');
+		if (substr.size() < 1)
+			return false;
+		vect.push_back(substr);
 	}
-	return vect.size() == 4 && portString.length() > 0 && isdigit(portString.at(0));*/
+	return vect.size() == 4 && portString.length() > 0 && isdigit(portString.at(0));
 }
 
 void GameTechRenderer::RenderFrame()
@@ -220,6 +220,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::Begin("Title Screen", NULL, window_flags);
 		if (ImGui::Button("Single Player"))
 		{
+			prevState = UIState::MENU;
 			levelState = UIState::MODESELECT;
 		}
 		if (ImGui::Button("Multiplayer"))
@@ -284,13 +285,16 @@ void GameTechRenderer::RenderUI()
 		{
 			selectedLevel = 3;
 		}
-		if (ImGui::Button("Sandbox"))
-		{
-			selectedLevel = 4;
+		if (!nGame)
+		{		
+			if (ImGui::Button("Sandbox"))
+			{
+				selectedLevel = 4;
+			}
 		}
 		if (ImGui::Button("Back"))
 		{
-			levelState = UIState::MENU;
+			levelState = prevState;
 		}
 		ImGui::PopFont();
 		ImGui::End();
@@ -309,7 +313,8 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopStyleVar();
 		}
 		else if (ImGui::Button("Host Game")) {
-			levelState = selectedLevel == 1 ? UIState::HOSTLEVEL1 : selectedLevel == 2 ? UIState::HOSTLEVEL2 : UIState::HOSTLEVEL3;
+			prevState = UIState::MULTIPLAYERMENU;
+			levelState = UIState::MODESELECT;
 		}
 
 		if (!readyToJoin)
@@ -321,7 +326,7 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopStyleVar();
 		}
 		else if (ImGui::Button("Join Game")) {
-			levelState = selectedLevel == 1 ? UIState::JOINLEVEL1 : selectedLevel == 2 ? UIState::JOINLEVEL2 : UIState::JOINLEVEL3;
+			levelState = UIState::JOINLEVEL;
 		}
 
 		ImGui::Text("Player Name:");
@@ -411,9 +416,10 @@ void GameTechRenderer::RenderUI()
 		{
 			portString.clear();
 			ipString.clear();
+			//nameString.clear();
 			enterPort = false;
 			enterIP = false;
-			levelState = UIState::MODESELECT;
+			levelState = UIState::MENU;
 		}
 		ImGui::PopFont();
 		ImGui::End();
@@ -421,7 +427,7 @@ void GameTechRenderer::RenderUI()
 	case UIState::INGAME:
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::Begin("Game Info", &p_open, window_flags);
+		ImGui::Begin("Game Info", NULL, window_flags);
 		if (levelState == UIState::DEBUG)
 		{
 			if (gameWorld.GetShuffleObjects())
@@ -448,7 +454,7 @@ void GameTechRenderer::RenderUI()
 
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::Begin("Controls", &p_open, window_flags);
+		ImGui::Begin("Controls", NULL, window_flags);
 		ImGui::Text("Pause(ESC)");
 		ImGui::Text("Move(WASD)");
 		ImGui::Text("Sprint(LSHIFT)");
@@ -468,7 +474,7 @@ void GameTechRenderer::RenderUI()
 	case UIState::DEBUG:
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::Begin("Game Info", &p_open, window_flags);
+		ImGui::Begin("Game Info", NULL, window_flags);
 		if (gameWorld.GetShuffleObjects())
 			ImGui::Text("Shuffle Objects(F1):On");
 		else
@@ -481,7 +487,7 @@ void GameTechRenderer::RenderUI()
 
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + 20), ImGuiCond_Always);
-		ImGui::Begin("Controls", &p_open, window_flags);
+		ImGui::Begin("Controls", NULL, window_flags);
 		ImGui::Text("Pause(ESC)");
 
 		if (!selectionObject)
@@ -512,7 +518,7 @@ void GameTechRenderer::RenderUI()
 		{
 			ImGui::PushFont(textFont);
 			ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + (2.5 * main_viewport->Size.y / 3.5) - 20), ImGuiCond_Always);
-			ImGui::Begin("Debug Information", &p_open, window_flags);
+			ImGui::Begin("Debug Information", NULL, window_flags);
 			ImGui::Text("Selected Object:%s", selectionObject->GetName().c_str());
 			ImGui::Text("Position:%s", Vector3(selectionObject->GetTransform().GetPosition()).ToString().c_str());
 			ImGui::Text("Orientation:%s", Quaternion(selectionObject->GetTransform().GetOrientation()).ToEuler().ToString().c_str());
@@ -542,7 +548,7 @@ void GameTechRenderer::RenderUI()
 
 		ImGui::PushFont(textFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x - 250, main_viewport->WorkPos.y + (5 * main_viewport->Size.y / 6) - 20), ImGuiCond_Always);
-		ImGui::Begin("PhysX Information", &p_open, window_flags);
+		ImGui::Begin("PhysX Information", NULL, window_flags);
 		ImGui::Text("Static Physics Objects:%d", pXPhysics.GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_STATIC));
 		ImGui::Text("Dynamic Physics Objects:%d", pXPhysics.GetGScene()->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
 		ImGui::Text("Total Game Objects:%d", gameWorld.gameObjects.size());
@@ -586,7 +592,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + main_viewport->Size.x / 4, main_viewport->WorkPos.x + main_viewport->Size.y / 8), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 5.5), ImGuiCond_Always);
 		ImGui::Begin("FINISHED!", NULL, window_flags);
-		//ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
+		ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
 		ImGui::PopFont();
 		ImGui::End();
 	}

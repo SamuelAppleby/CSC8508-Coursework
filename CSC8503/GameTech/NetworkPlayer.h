@@ -12,9 +12,9 @@ namespace NCL
 		{
 		public:
 			NetworkPlayer(NetworkedGame* game, int num);
-			~NetworkPlayer();
+			~NetworkPlayer() {};
 
-			void Update(float dt) override;
+			//void Update(float dt) override;
 
 			void FixedUpdate(float dt)override;
 
@@ -64,6 +64,8 @@ namespace NCL
 			{
 				isHost = true;
 			}
+
+			Vector3 vel;
 
 		protected:
 			NetworkedGame* game;

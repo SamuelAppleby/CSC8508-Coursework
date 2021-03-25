@@ -17,7 +17,7 @@ namespace NCL {
 			void ResetWorld();
 
 			void StartAsServer(LevelState state, string playerName);
-			void StartAsClient(LevelState state, string playerName, string ip);
+			void StartAsClient(string playerName, string ip);
 
 			void Update(float dt) override;
 
@@ -58,7 +58,6 @@ namespace NCL {
 
 			// Client-side
 			std::vector<NetworkObject*> networkObjects;
-			LevelState clientState;
 
 			// Server-side
 			std::map<int, NetworkPlayer*> serverPlayers;

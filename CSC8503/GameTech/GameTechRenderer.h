@@ -31,7 +31,7 @@ namespace NCL {
 		class NetworkedGame;
 		class RenderObject;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU,
-			HOSTLEVEL1, JOINLEVEL1, HOSTLEVEL2, JOINLEVEL2, HOSTLEVEL3, JOINLEVEL3, INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH };
+			HOSTLEVEL1, HOSTLEVEL2, HOSTLEVEL3, JOINLEVEL, INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH };
 
 		class GameTechRenderer : public OGLRenderer
 		{
@@ -88,6 +88,11 @@ namespace NCL {
 				nGame = game;
 			}
 
+			UIState GetPreviousUIState() const
+			{
+				return prevState;
+			}
+
 		protected:
 			void RenderFrame()	override;
 
@@ -135,6 +140,7 @@ namespace NCL {
 			ImGuiWindowFlags window_flags;
 
 			UIState levelState;
+			UIState prevState;
 			GameObject* lockedObject;
 			GameObject* selectionObject;
 
