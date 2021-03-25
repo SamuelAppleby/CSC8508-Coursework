@@ -94,21 +94,31 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 {
 	Vector3 pos = transform.GetPosition();
 
-	if (state == LevelState::LEVEL2)
-	{
+	switch (state) {
+	case LevelState::LEVEL1:
+		if (pos.z < -275 && pos.y > 700 && pos.x > -200 && pos.x < 200)
+		{
+			finished = true;
+			finishTime = timeAlive;
+		}
+
+		break;
+	case LevelState::LEVEL2:
 		if (pos.z < -3601 && pos.y > -176 && pos.x > -20 && pos.x < 20)
 		{
 			finished = true;
 			finishTime = timeAlive;
 		}
-	}
-	else if (state == LevelState::LEVEL3)
-	{
+
+		break;
+	case LevelState::LEVEL3:
 		if (pos.z < -1950 && pos.y > 182 && pos.x > -101 && pos.x < 101)
 		{
 			finished = true;
 			finishTime = timeAlive;
 		}
+
+		break;
 	}
 
 	return finished;
