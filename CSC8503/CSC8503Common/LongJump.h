@@ -10,6 +10,7 @@ namespace NCL
 		{
 		public:
 			LongJump() {
+				Collectable::Collectable();
 				name = "LongJump";
 			}
 			void OnCollisionBegin(GameObject* otherObject) override {

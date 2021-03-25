@@ -889,9 +889,6 @@ void GameTechRenderer::RenderCamera()
 		//}
 		//}
 
-
-
-
 	}
 }
 

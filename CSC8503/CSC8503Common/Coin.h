@@ -9,6 +9,7 @@ namespace NCL
 		{
 		public:
 			Coin() {
+				Collectable::Collectable(); 
 				name = "Coin";
 			}
 			void OnCollisionBegin(GameObject* otherObject) override {

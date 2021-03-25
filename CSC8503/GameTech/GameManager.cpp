@@ -35,6 +35,8 @@ OGLTexture* GameManager::wallTex = nullptr;
 OGLTexture* GameManager::dogeTex = nullptr;
 OGLTexture* GameManager::redTex = nullptr;
 OGLTexture* GameManager::pBodyTex = nullptr;
+OGLTexture* GameManager::platformWallTex = nullptr;
+
 
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
@@ -92,6 +94,8 @@ void GameManager::LoadAssets()
 	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("wall.png");
 	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	pBodyTex = (OGLTexture*)TextureLoader::LoadAPITexture("pbody.png");
+	platformWallTex = (OGLTexture*)TextureLoader::LoadAPITexture("platformWall.png");
+
 
 	renderer->SetTextureRepeating(trampolineTex, false);
 
@@ -138,10 +142,14 @@ GameManager::~GameManager()
 	delete plainTex;
 	delete wallTex;
 	delete dogeTex;
+	delete pBodyTex;
+	delete platformWallTex;
 	delete redTex;
 
 	delete basicShader;
 	delete toonShader;
+
+	delete pBodyMat;
 }
 
 GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity)
@@ -245,6 +253,7 @@ GameObject* GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal rad
 	coin->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), bonusMesh, basicTex, toonShader));
 	coin->GetRenderObject()->SetColour(Debug::YELLOW);
+	coin->SetInitialPos(t.p);
 	world->AddGameObject(coin);
 	return coin;
 }
@@ -264,6 +273,7 @@ GameObject* GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius
 	jump->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, toonShader));
 	jump->GetRenderObject()->SetColour(Debug::RED);
+	jump->SetInitialPos(t.p);
 	world->AddGameObject(jump);
 	return jump;
 }
@@ -283,8 +293,8 @@ GameObject* GameManager::AddPxSpeedPower(const PxTransform& t, const PxReal radi
 	speed->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
 	speed->SetRenderObject(new RenderObject(&speed->GetTransform(), bonusMesh, basicTex, toonShader));
 	speed->GetRenderObject()->SetColour(Debug::GREEN);
+	speed->SetInitialPos(t.p);
 	world->AddGameObject(speed);
-
 	return speed;
 }
 
@@ -470,13 +480,17 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	floor->SetPhysicsObject(new PhysXObject(body, newMat));
-	pXPhysics->GetGScene()->addActor(*body);	
+	pXPhysics->GetGScene()->addActor(*body);
 	floor->GetTransform().SetScale(halfSizes * 2);
 	switch (state)
 	{
 	case TextureState::FLOOR:
 		floor->GetTransform().SetTextureScale(Vector3(10, 10, 10));
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
+		break;
+	case TextureState::WALL:
+		floor->GetTransform().SetTextureScale(Vector3(10, 10, 10));
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, platformWallTex, toonShader));
 		break;
 	case TextureState::ICE:
 		floor->SetName("Ice");

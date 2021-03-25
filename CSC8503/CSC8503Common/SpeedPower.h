@@ -10,6 +10,7 @@ namespace NCL
 		{
 		public:
 			SpeedPower() {
+				Collectable::Collectable();
 				name = "SpeedPower";
 			}
 			void OnCollisionBegin(GameObject* otherObject) override {
