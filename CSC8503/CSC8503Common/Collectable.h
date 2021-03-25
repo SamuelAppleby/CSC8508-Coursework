@@ -18,7 +18,7 @@ namespace NCL
 				if (otherObject->GetName() == "Player")
 				{
 					SetPosition(PxVec3(5000, 5000, 5000));
-					spawnTimer = 3.f;
+					spawnTimer = 10.f;
 				}
 			}
 
@@ -40,7 +40,6 @@ namespace NCL
 					if (spawnTimer <= 0.f)
 					{
 						SetPosition(initPos);
-						//SetOrientation(PhysxConversions::GetQuaternion(Quaternion::EulerAnglesToQuaternion(0, 0, 0)));
 						spawnTimer = 3.f;
 					}
 				}

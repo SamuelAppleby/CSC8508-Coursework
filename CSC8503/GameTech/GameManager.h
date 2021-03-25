@@ -25,9 +25,10 @@ using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3, SANDBOX };
-enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH, WALL,RED};
+enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH, WALL, RED, DOGE };
 
-class GameManager {
+class GameManager
+{
 public:
 	static void Create(PxPhysicsSystem* p, GameWorld* w, AudioManager* a);
 	static void LoadAssets();
@@ -41,7 +42,7 @@ public:
 	static GameObject* AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR);
-	
+
 	static void AddBounceSticks(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSizes, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -54,65 +55,77 @@ public:
 	static NetworkPlayer* AddPxNetworkPlayerToWorld(const PxTransform& t, const PxReal scale, NetworkedGame* game, int playerNum);
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
-	static void AddLightToWorld(Vector3 position,Vector3 color, float radius = 5);
-	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5,bool rotating = true);
+	static void AddLightToWorld(Vector3 position, Vector3 color, float radius = 5);
+	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5, bool rotating = true);
 	static GameObject* AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f);
 	static GameObject* AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft = true, float friction = 0.5f, float elasticity = 0.5f);
-	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000),int time = 10, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0,100,0));
+	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), int time = 10, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
+	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0, 100, 0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
 	static GameObject* AddPxFallingTileToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.f);
 	static Obstacles* GetObstacles()
 	{
 		return obstacles;
 	}
-	static PxPhysicsSystem* GetPhysicsSystem() {
+	static PxPhysicsSystem* GetPhysicsSystem()
+	{
 		return pXPhysics;
 	}
 
-	static GameWorld* GetWorld() {
+	static GameWorld* GetWorld()
+	{
 		return world;
 	}
 
-	static GameTechRenderer* GetRenderer() {
+	static GameTechRenderer* GetRenderer()
+	{
 		return renderer;
 	}
 
-	static AudioManager* GetAudioManager() {
+	static AudioManager* GetAudioManager()
+	{
 		return audioManager;
 	}
 
-	static GameObject* GetSelectionObject() {
+	static GameObject* GetSelectionObject()
+	{
 		return selectionObject;
 	}
 
-	static void SetSelectionObject(GameObject* val) {
+	static void SetSelectionObject(GameObject* val)
+	{
 		selectionObject = val;
 		renderer->SetSelectionObject(selectionObject);
 	}
 
-	static void SetLevelState(LevelState val) {
+	static void SetLevelState(LevelState val)
+	{
 		levelState = val;
 	}
 
-	static LevelState GetLevelState() {
+	static LevelState GetLevelState()
+	{
 		return levelState;
 	}
 
-	static void SetWindow(Win32Code::Win32Window* val) {
+	static void SetWindow(Win32Code::Win32Window* val)
+	{
 		window = val;
 	}
 
-	static Win32Code::Win32Window* GetWindow() {
+	static Win32Code::Win32Window* GetWindow()
+	{
 		return window;
 	}
 
-	static void SetPlayer(PlayerObject* val) {
+	static void SetPlayer(PlayerObject* val)
+	{
 		player = val;
 		renderer->SetPlayer(player);
 	}
 
-	static PlayerObject* GetPlayer() {
+	static PlayerObject* GetPlayer()
+	{
 		return player;
 	}
 
