@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.h"
 
-
 namespace NCL {
 	namespace CSC8503 {
 		class KillPlane :
@@ -34,12 +33,15 @@ namespace NCL {
 
 			void OnCollisionBegin(GameObject* otherObject) {
 				if (otherObject->GetName() == "Player") {
+					Music();
 					PxTransform t = PxTransform(getRespawnPoint());
 					otherObject->GetPhysicsObject()->GetPXActor()->setGlobalPose(t.transform(PxTransform(t.p)));
 					((PxRigidBody*)otherObject->GetPhysicsObject()->GetPXActor())->setLinearVelocity(PxVec3(0, 0, 0));
 				}
 
 			}
+			void Music();
+
 		protected:
 			PxVec3 respawnCentre;
 			Vector3 respawnSizeRange;

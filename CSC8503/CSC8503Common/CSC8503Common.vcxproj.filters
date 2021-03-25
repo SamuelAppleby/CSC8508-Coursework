@@ -210,5 +210,8 @@
     <ClCompile Include="Pendulum.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
+    <ClCompile Include="KillPlane.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

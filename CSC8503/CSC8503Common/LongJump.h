@@ -16,6 +16,7 @@ namespace NCL
 				Collectable::OnCollisionBegin(otherObject);
 				if (otherObject->GetName() == "Player") {
 					((PlayerObject*)otherObject)->LongJumpCollection();
+					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/long_jump.wav");
 				}
 			}
 		};

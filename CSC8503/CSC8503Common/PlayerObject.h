@@ -107,6 +107,31 @@ namespace NCL
 				state = PowerUpState::SPEEDPOWER;
 			}
 
+			void Music(string name, bool loop = false);
+
+			void OnCollisionBegin(GameObject* otherObject) override {
+				if (otherObject->GetName() == "BounceStick" ||
+					otherObject->GetName() == "Trampoline") {
+					Music("Bounce");
+				}
+				if (otherObject->GetName() == "Cube") {
+					Music("Cube");
+				}
+				if (otherObject->GetName() == "Cannonball" ||
+					otherObject->GetName() == "RotatingCube" ||
+					otherObject->GetName() == "RotatingCylinder" ||
+					otherObject->GetName() == "Pendulum") {
+					Music("Cannonball");
+				}
+				if (otherObject->GetName() == "Ice") {
+					Music("Ice", true);
+				}
+			}
+			void OnCollisionEnd(GameObject* otherObject) override {
+				if (otherObject->GetName() == "Ice") {
+					Music("Ice", false);
+				}
+			}
 		protected:
 			bool movingForward;
 			bool movingBackwards;

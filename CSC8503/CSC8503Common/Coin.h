@@ -15,6 +15,7 @@ namespace NCL
 				Collectable::OnCollisionBegin(otherObject);
 				if (otherObject->GetName() == "Player") {
 					((PlayerObject*)otherObject)->CollectCoin();
+					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/GetCoin.wav");
 				}
 			}
 		};

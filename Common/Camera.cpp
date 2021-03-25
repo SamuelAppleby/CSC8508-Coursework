@@ -136,7 +136,7 @@ void Camera::UpdateCameraWithObject(float dt, NCL::CSC8503::GameObject* o)
 		{
 			tween.step(1);
 		}
-		SetPosition(Quaternion(pose.q) * Vector3(0, 20, currentDist) + pose.p);
+		SetPosition(Quaternion(pose.q) * Vector3(0, 25, currentDist) + pose.p);
 	}
 }
 

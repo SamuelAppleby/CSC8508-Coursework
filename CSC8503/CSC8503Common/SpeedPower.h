@@ -16,6 +16,7 @@ namespace NCL
 				Collectable::OnCollisionBegin(otherObject);
 				if (otherObject->GetName() == "Player") {
 					((PlayerObject*)otherObject)->SpeedPowerCollection();
+					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/speed_boost.wav");
 				}
 			}
 		};

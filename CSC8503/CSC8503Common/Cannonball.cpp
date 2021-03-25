@@ -1,4 +1,6 @@
 #include "Cannonball.h"
+#include "../GameTech/GameManager.h"
+
 using namespace NCL;
 using namespace CSC8503;
 using namespace physx;
@@ -18,6 +20,7 @@ void Cannonball::ResetBall(const PxVec3& newPos, const PxVec3& force)
 	actor->setAngularVelocity(PxVec3(0, 0, 0));
 	actor->setGlobalPose(PxTransform(newPos));
 	actor->addForce(force, PxForceMode::eVELOCITY_CHANGE);
+	GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/CannonFire02.wav", actor->getGlobalPose(), false);
 }
 
 void Cannonball::Update(float dt)

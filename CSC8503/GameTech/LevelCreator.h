@@ -39,6 +39,7 @@ namespace NCL
 			float dTOffset;
 			int realFrames;
 			float fixedDeltaTime;
+			bool isSinglePlayer;
 			void InitCamera();
 
 			void InitFloors(LevelState state);

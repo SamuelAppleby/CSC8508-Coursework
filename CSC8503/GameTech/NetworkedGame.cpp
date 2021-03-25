@@ -25,6 +25,7 @@ NetworkedGame::NetworkedGame()
 	NetworkBase::Initialise();
 	timeToNextPacket = 0.0f;
 	packetsToSnapshot = 0;
+	isSinglePlayer = true;
 
 	GameManager::GetRenderer()->SetNetworkedGame(this);
 }
@@ -61,6 +62,7 @@ void NetworkedGame::ResetWorld()
 
 void NetworkedGame::StartAsServer(LevelState state, string playerName)
 {
+	isSinglePlayer = false;
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4, state);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
@@ -128,7 +130,7 @@ void NetworkedGame::Update(float dt)
 		UpdateTimeStep(dt);
 	}
 
-	GameManager::GetAudioManager()->UpdateAudio(dt);
+	GameManager::GetAudioManager()->UpdateAudio(GameManager::GetWorld()->GetMainCamera()->GetPosition());
 	GameManager::GetRenderer()->Update(dt);
 	GameManager::GetRenderer()->Render();
 	Debug::FlushRenderables(dt);

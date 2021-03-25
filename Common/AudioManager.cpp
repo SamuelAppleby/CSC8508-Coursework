@@ -6,7 +6,8 @@ AudioManager::AudioManager()
 {
 	volume = 25.0f;
 	engine = createIrrKlangDevice();
-	engine->setDefault3DSoundMinDistance(35);
+	engine->setDefault3DSoundMinDistance(20);
+	music = nullptr;
 }
 
 void AudioManager::PlayAudio(std::string dir, bool loop)
@@ -14,23 +15,6 @@ void AudioManager::PlayAudio(std::string dir, bool loop)
 	engine->play2D(dir.c_str(), loop);
 }
 
-void AudioManager::UpdateAudio(float dt)
-{
-	engine->setSoundVolume((float)volume / 100);
-}
-
-void AudioManager::StopSound()
-{
-	engine->stopAllSounds();
-}
-
-
-void AudioManager::SetPlayerPos(Vector3 PlayerPos)
-{
-	vec3df pos = vec3df(PlayerPos.x, PlayerPos.y, PlayerPos.z);
-	ListenerPos = pos;
-	engine->setListenerPosition(pos, vec3df(pos.X, pos.Y, pos.Z + 1));
-}
 //! Loads a sound source (if not loaded already) from a file and plays it as 3D sound.
 /** There is some example code on how to work with 3D sound at @ref sound3d.
 \param sourceFileName Filename of sound, like "sounds/test.wav" or "foobar.ogg".
@@ -42,3 +26,18 @@ void AudioManager::Play3DAudio(std::string dir, const PxTransform& t, bool loop)
 	vec3df objPos = vec3df(t.p.x, t.p.y, t.p.z);
 	music = engine->play3D(dir.c_str(), objPos, loop);
 }
+
+void AudioManager::UpdateAudio(Vector3 cameraPos)
+{
+	engine->setSoundVolume((float)volume / 100);
+	vec3df p = vec3df(cameraPos.x, cameraPos.y, cameraPos.z);
+	ListenerPos = p;
+	engine->setListenerPosition(p, vec3df(p.X, p.Y, p.Z + 1));
+}
+
+void AudioManager::StopAllSound()
+{
+	engine->stopAllSounds();
+}
+
+

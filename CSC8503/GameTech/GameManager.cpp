@@ -479,9 +479,11 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
 		break;
 	case TextureState::ICE:
+		floor->SetName("Ice");
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, iceTex, toonShader));
 		break;
 	case TextureState::TRAMPOLINE:
+		floor->SetName("Trampoline");
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, trampolineTex, toonShader));
 		break;
 	case TextureState::FINISH:

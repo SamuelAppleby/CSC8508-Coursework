@@ -194,6 +194,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameWorld.cpp" />
+    <ClCompile Include="KillPlane.cpp" />
     <ClCompile Include="NavigationGrid.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="NetworkBase.cpp" />

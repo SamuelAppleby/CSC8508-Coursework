@@ -55,7 +55,8 @@ void PlayerObject::Update(float dt)
 	movingRight = (Window::GetKeyboard()->KeyDown(KeyboardKeys::D));
 	isSprinting = (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT));
 	isJumping = (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && isGrounded);
-
+	if(isJumping)
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Jump.wav");
 	fwd = PhysxConversions::GetVector3(Quaternion(transform.GetOrientation()) * Vector3(0, 0, 1));
 	right = PhysxConversions::GetVector3(Vector3::Cross(Vector3(0, 1, 0), -fwd));
 }
@@ -93,35 +94,46 @@ void PlayerObject::FixedUpdate(float fixedDT) {
 bool PlayerObject::CheckHasFinished(LevelState state)
 {
 	Vector3 pos = transform.GetPosition();
-
 	switch (state) {
-	case LevelState::LEVEL3:
-		if (pos.z < -275 && pos.y > 700 && pos.x > -200 && pos.x < 200)
-		{
-			finished = true;
-			finishTime = timeAlive;
-		}
-
-		break;
-	case LevelState::LEVEL2:
-		if (pos.z < -3601 && pos.y > -176 && pos.x > -20 && pos.x < 20)
-		{
-			finished = true;
-			finishTime = timeAlive;
-		}
-
-		break;
 	case LevelState::LEVEL1:
 		if (pos.z < -1950 && pos.y > 182 && pos.x > -101 && pos.x < 101)
 		{
 			finished = true;
 			finishTime = timeAlive;
 		}
+		break;
+	case LevelState::LEVEL2:
+		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20) {
+			finished = true;
+			finishTime = timeAlive;
 
+		}		
+		break;
+	case LevelState::LEVEL3:
+		if (pos.z < -275 && pos.y > 700 && pos.x > -200 && pos.x < 200)
+		{
+			finished = true;
+			finishTime = timeAlive;
+		}
 		break;
 	}
-
 	return finished;
-
 }
 
+void PlayerObject::Music(string name, bool loop) {
+	if (name == "Bounce") {
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Bouncing01.wav");
+	}
+	if (name == "Cube") {
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Player_cube.wav");
+	}
+	if (name == "Cannonball") {
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/BallHit.wav");
+	}
+	if (name == "Ice") {
+		if (!GameManager::GetAudioManager()->GetAudioEngine()->isCurrentlyPlaying("../../Assets/Audio/Player_Ice.wav"))
+			GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Player_Ice.wav", loop);
+		else if(!loop)
+			GameManager::GetAudioManager()->GetAudioEngine()->removeSoundSource("../../Assets/Audio/Player_Ice.wav");
+	}
+}

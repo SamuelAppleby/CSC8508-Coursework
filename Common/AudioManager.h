@@ -14,14 +14,21 @@ class AudioManager
 {
 public:
 	AudioManager(); 
-	void SetPlayerPos(Vector3 PlayerPos);
 	void PlayAudio(std::string dir, bool loop = false);
-	void UpdateAudio(float dt);
-	void StopSound();
 	void Play3DAudio(std::string dir, const PxTransform& t, bool loop);
+	void UpdateAudio(Vector3 cameraPos);
+	void StopAllSound();
+
+	ISoundEngine* GetAudioEngine() const {
+		return engine;
+	}
 
 	static int& GetVolume() {
 		return volume;
+	}
+
+	void SetVolume(int val) {
+		volume = val;
 	}
 private:
 	ISoundEngine* engine;
