@@ -212,7 +212,7 @@ public:
 			*newState = new MultiplayerLevel();
 			playerName = GameManager::GetRenderer()->GetPlayerName();
 			IPAddress = GameManager::GetRenderer()->GetIP();
-			portNo = GameManager::GetRenderer()->GetPort();
+			//portNo = GameManager::GetRenderer()->GetPort();
 			levelCreator->StartAsClient(playerName, IPAddress);
 			return PushdownResult::Push;
 			break;
@@ -221,7 +221,7 @@ public:
 	}
 private:
 	string IPAddress;
-	string portNo;
+	//string portNo;
 	string playerName;
 	void  OnAwake() override
 	{
