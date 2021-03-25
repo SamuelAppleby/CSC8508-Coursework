@@ -92,7 +92,11 @@ void GameManager::LoadAssets()
 	dogeTex = (OGLTexture*)TextureLoader::LoadAPITexture("doge.png");
 	pBodyTex = (OGLTexture*)TextureLoader::LoadAPITexture("pbody.png");
 
+	renderer->SetTextureRepeating(trampolineTex, false);
+
 	pBodyMat = new MeshMaterial("pbody.mat");
+
+	//renderer->
 
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
@@ -165,7 +169,6 @@ GameObject* GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal 
 	PxRigidBodyExt::updateMassAndInertia(*body, density);
 	sphere->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
-
 	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, toonShader));
 	world->AddGameObject(sphere);
@@ -464,12 +467,12 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	PxMaterial* newMat = pXPhysics->GetGPhysics()->createMaterial(friction, friction, elasticity);
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(halfSizes.x, halfSizes.y, halfSizes.z), *newMat);
 	floor->SetPhysicsObject(new PhysXObject(body, newMat));
-	pXPhysics->GetGScene()->addActor(*body);
-
+	pXPhysics->GetGScene()->addActor(*body);	
 	floor->GetTransform().SetScale(halfSizes * 2);
 	switch (state)
 	{
 	case TextureState::FLOOR:
+		floor->GetTransform().SetTextureScale(Vector3(10, 10, 10));
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
 		break;
 	case TextureState::ICE:

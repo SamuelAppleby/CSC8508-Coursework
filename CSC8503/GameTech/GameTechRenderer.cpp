@@ -156,7 +156,8 @@ bool GameTechRenderer::TestValidHost()
 {
 	std::vector<string> vect;
 	std::stringstream ss(ipString);
-	while (ss.good()) {
+	while (ss.good())
+	{
 		string substr;
 		getline(ss, substr, '.');
 		if (substr.size() < 1)
@@ -292,7 +293,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 1", NULL, window_flags);
 		if (ImGui::ImageButton((void*)(intptr_t)levelImages[2]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+		{
 			selectedLevel = 1;
 		}
 		ImGui::End();
@@ -300,7 +302,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 2", NULL, window_flags);
 		if (ImGui::ImageButton((void*)(intptr_t)levelImages[1]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+		{
 			selectedLevel = 2;
 		}
 		ImGui::End();
@@ -316,7 +319,8 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Sandbox", NULL, window_flags);
-		if (prevState == UIState::MULTIPLAYERMENU) {
+		if (prevState == UIState::MULTIPLAYERMENU)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::ImageButton((void*)(intptr_t)levelImages[4]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
@@ -325,7 +329,8 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopStyleVar();
 		}
 		else if (ImGui::ImageButton((void*)(intptr_t)levelImages[3]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+		{
 			selectedLevel = 4;
 		}
 		ImGui::End();
@@ -344,14 +349,16 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Multiplayer Menu", NULL, window_flags);
 
-		if (!readyToHost) {
+		if (!readyToHost)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::Button("Host Game");
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else if (ImGui::Button("Host Game")) {
+		else if (ImGui::Button("Host Game"))
+		{
 			prevState = UIState::MULTIPLAYERMENU;
 			levelState = UIState::MODESELECT;
 		}
@@ -364,21 +371,24 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else if (ImGui::Button("Join Game")) {
+		else if (ImGui::Button("Join Game"))
+		{
 			levelState = UIState::JOINLEVEL;
 		}
 
 		ImGui::Text("Player Name:");
 		ImGui::SameLine();
 
-		if (enterName) {
+		if (enterName)
+		{
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::Button(nameString.c_str(), ImVec2(400, 50));
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else if (ImGui::Button(nameString.c_str(), ImVec2(400, 50))) {
+		else if (ImGui::Button(nameString.c_str(), ImVec2(400, 50)))
+		{
 			nameString.clear();
 			enterName = true;
 			//enterPort = false;
@@ -396,7 +406,8 @@ void GameTechRenderer::RenderUI()
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
-		else if (ImGui::Button(ipString.c_str(), ImVec2(400, 50))) {
+		else if (ImGui::Button(ipString.c_str(), ImVec2(400, 50)))
+		{
 			ipString.clear();
 			enterName = false;
 			//enterPort = false;
@@ -423,18 +434,24 @@ void GameTechRenderer::RenderUI()
 		}*/
 
 		/* Using hex to get keyboard inputs */
-		for (int i = 0x30; i <= 0x39; ++i) {
-			if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i) || Window::GetKeyboard()->KeyPressed((KeyboardKeys)(i + 48))) {
+		for (int i = 0x30; i <= 0x39; ++i)
+		{
+			if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i) || Window::GetKeyboard()->KeyPressed((KeyboardKeys)(i + 48)))
+			{
 				activeString->append(std::to_string(i - 0x30));
 			}
 		}
 
-		if (activeString == &nameString) {
-			for (int i = 0x41; i <= 0x5A; ++i) {
-				if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i)) {
+		if (activeString == &nameString)
+		{
+			for (int i = 0x41; i <= 0x5A; ++i)
+			{
+				if (Window::GetKeyboard()->KeyPressed((KeyboardKeys)i))
+				{
 					char letter = (char)(97 + i - 0x41);
 
-					if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::SHIFT)) {
+					if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::SHIFT))
+					{
 						letter -= 32;
 					}
 
@@ -442,7 +459,8 @@ void GameTechRenderer::RenderUI()
 				}
 			}
 		}
-		else if (activeString == &ipString && Window::GetKeyboard()->KeyPressed(KeyboardKeys::PERIOD)) {
+		else if (activeString == &ipString && Window::GetKeyboard()->KeyPressed(KeyboardKeys::PERIOD))
+		{
 			activeString->append(".");
 		}
 
@@ -475,7 +493,8 @@ void GameTechRenderer::RenderUI()
 			else
 				ImGui::Text("Shuffle Objects(F1):Off");
 		}
-		if (player) {
+		if (player)
+		{
 			ImGui::Text("Coins Collected %d", player->GetCoinsCollected());
 			switch (player->GetPowerUpState())
 			{
@@ -486,8 +505,8 @@ void GameTechRenderer::RenderUI()
 				ImGui::Text("Speed Boost Power-Up!");
 				break;
 			}
-			}
-		
+		}
+
 		ImGui::Text("FPS Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::PopFont();
 		ImGui::End();
@@ -602,20 +621,25 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("PLAYERS", NULL, box_flags);
 
-		if (nGame) {
+		if (nGame)
+		{
 			int levelNetworkObjectsCount = nGame->GetLevelNetworkObjectsCount();
 			std::vector<NetworkObject*> networkObjects = nGame->GetNetworkObjects();
 
-			for (int i = levelNetworkObjectsCount; i < networkObjects.size(); i++) {
+			for (int i = levelNetworkObjectsCount; i < networkObjects.size(); i++)
+			{
 				GameObject* g = networkObjects[i]->GetGameObject();
 
-				if (dynamic_cast<NetworkPlayer*>(g)) {
+				if (dynamic_cast<NetworkPlayer*>(g))
+				{
 					NetworkPlayer* n = (NetworkPlayer*)g;
 
-					if (n->IsConnected()) {
+					if (n->IsConnected())
+					{
 						ImGui::Text(n->GetPlayerName().c_str());
 
-						if (n->HasFinished()) {
+						if (n->HasFinished())
+						{
 							ImGui::SameLine(ImGui::GetWindowWidth() - 200);
 							ImGui::Text("%.2f", n->GetFinishTime());
 						}
@@ -740,6 +764,7 @@ void GameTechRenderer::RenderCamera()
 	float screenAspect = (float)currentWidth / (float)currentHeight;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
+	//Matrix4 tex
 
 	OGLShader* activeShader = nullptr;
 	int projLocation = 0;
@@ -749,6 +774,8 @@ void GameTechRenderer::RenderCamera()
 	int hasVColLocation = 0;
 	int hasTexLocation = 0;
 	int shadowLocation = 0;
+	int textureMatrixLocation = 0;
+	//int 
 
 	int lightPosLocation = 0;
 	int lightDirLocation = 0;
@@ -773,6 +800,7 @@ void GameTechRenderer::RenderCamera()
 			viewLocation = glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
 			modelLocation = glGetUniformLocation(shader->GetProgramID(), "modelMatrix");
 			shadowLocation = glGetUniformLocation(shader->GetProgramID(), "shadowMatrix");
+			textureMatrixLocation = glGetUniformLocation(shader->GetProgramID(), "textureMatrix");
 			colourLocation = glGetUniformLocation(shader->GetProgramID(), "objectColour");
 			hasVColLocation = glGetUniformLocation(shader->GetProgramID(), "hasVertexColours");
 			hasTexLocation = glGetUniformLocation(shader->GetProgramID(), "hasTexture");
@@ -785,6 +813,8 @@ void GameTechRenderer::RenderCamera()
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 			Vector3 pos = gameWorld.GetMainCamera()->GetPosition();
 			glUniform3fv(cameraLocation, 1, (float*)&pos);
+
+
 
 			glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
@@ -805,6 +835,10 @@ void GameTechRenderer::RenderCamera()
 
 		Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
 		glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
+
+		Matrix4 textureMatrix = (*i).GetTransform()->GetTextureMatrix();
+		glUniformMatrix4fv(textureMatrixLocation, 1, false, (float*)&textureMatrix);
+
 
 		Vector4 col = i->GetColour();
 		glUniform4fv(colourLocation, 1, (float*)&col);

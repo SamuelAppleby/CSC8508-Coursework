@@ -54,11 +54,20 @@ namespace NCL
 			{
 				return matrix;
 			}
+
+			void SetTextureScale(Vector3 scale);
+
+			Matrix4 GetTextureMatrix() const
+			{
+				return textureMatrix;
+			}
+
 			void UpdateMatrix();
 		protected:
 			//GameObject* go;
 			PxTransform* pxTransform; 
 			Matrix4	matrix;	
+			Matrix4 textureMatrix;
 			PxVec3 pxPos;
 			PxVec3 pxScale;
 			PxQuat pxOrientation;

@@ -66,6 +66,8 @@ namespace NCL {
 			virtual Matrix4 SetupDebugLineMatrix()	const;
 			virtual Matrix4 SetupDebugStringMatrix()const;
 
+			void SetTextureRepeating(const TextureBase* target, bool repeating);
+
 		protected:			
 			void BeginFrame()	override;
 			void RenderFrame()	override;
@@ -80,6 +82,7 @@ namespace NCL {
 			void BindTextureToShader(const TextureBase*t, const std::string& uniform, int texUnit) const;
 			void BindMesh(MeshGeometry*m);
 			void DrawBoundMesh(int subLayer = 0, int numInstances = 1,  bool hasMeshMaterial = false);
+			
 #ifdef _WIN32
 			void InitWithWin32(Window& w);
 			void DestroyWithWin32();

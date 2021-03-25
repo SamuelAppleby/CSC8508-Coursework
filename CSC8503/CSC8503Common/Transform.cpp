@@ -9,7 +9,8 @@ using namespace NCL::CSC8503;
 
 Transform::Transform()
 {
-
+	//textureMatrix = matrix;
+	textureMatrix = Matrix4::Scale(Vector3(1, 1, 1));
 }
 
 Transform::~Transform()
@@ -37,4 +38,8 @@ void Transform::SetOrientation(const PxQuat& newOr)
 {
 	pxOrientation = newOr;
 	//UpdateMatrix();
+}
+void Transform::SetTextureScale(Vector3 scale)
+{
+	textureMatrix = Matrix4::Scale(scale);
 }

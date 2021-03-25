@@ -271,6 +271,20 @@ void OGLRenderer::DrawBoundMesh(int subLayer, int numInstances, bool hasMeshMate
 	}
 }
 
+void OGLRenderer::SetTextureRepeating(const TextureBase* target, bool repeating)
+{
+	GLint texID = 0;
+
+	if (const OGLTexture* oglTexture = dynamic_cast<const OGLTexture*>(target))
+	{
+		texID = oglTexture->GetObjectID();
+
+		glBindTexture  (GL_TEXTURE_2D, texID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeating ? GL_REPEAT : GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeating ? GL_REPEAT : GL_CLAMP);
+	}
+}
+
 void OGLRenderer::BindTextureToShader(const TextureBase* t, const std::string& uniform, int texUnit) const
 {
 	GLint texID = 0;
@@ -419,6 +433,8 @@ void OGLRenderer::DrawDebugLines()
 	debugLines.clear();
 }
 
+
+
 #ifdef _WIN32
 void OGLRenderer::InitWithWin32(Window& w)
 {
@@ -544,6 +560,8 @@ void OGLRenderer::DestroyWithWin32()
 {
 	wglDeleteContext(renderContext);
 }
+
+
 
 bool OGLRenderer::SetVerticalSync(VerticalSyncState s)
 {
