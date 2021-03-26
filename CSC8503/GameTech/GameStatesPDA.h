@@ -96,7 +96,8 @@ class MultiplayerLevel : public PushdownState
 	{
 		GameTechRenderer* r = GameManager::GetRenderer();
 
-		if (GameManager::GetRenderer()->GetPreviousUIState() == UIState::INGAME)
+		if (GameManager::GetRenderer()->GetPreviousUIState() == UIState::INGAME || 
+			GameManager::GetRenderer()->GetUIState() == UIState::MENU)
 		{
 			GameManager::ResetMenu();
 			return PushdownResult::Pop;
