@@ -31,7 +31,7 @@ namespace NCL {
 		class NetworkedGame;
 		class RenderObject;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, JOINLEVEL, 
-			INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH };
+			INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH, LOADING };
 
 		class GameTechRenderer : public OGLRenderer
 		{
@@ -65,11 +65,6 @@ namespace NCL {
 			{
 				return ipString;
 			}
-
-			//string GetPort() const
-			//{
-			//	return portString;
-			//}
 
 			string GetPlayerName() const {
 				return nameString;
@@ -149,6 +144,7 @@ namespace NCL {
 			ImGuiWindowFlags box_flags;
 			OGLTexture* levelImages[5];
 			OGLTexture* backgroundImage;
+			OGLTexture* loadingImage;
 
 			UIState levelState;
 			UIState prevState;
@@ -160,12 +156,10 @@ namespace NCL {
 			bool readyToHost = false;
 
 			string ipString = "Enter IP";
-			//string portString = "Enter Port";
 			string nameString = "Enter Name";
 
 			bool enterName = false;
 			bool enterIP = false;
-			//bool enterPort = false;
 		};
 	}
 }

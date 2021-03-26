@@ -59,6 +59,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 
 	LoadSkybox();
 	levelState = UIState::MENU;
+	loadingImage = (OGLTexture*)TextureLoader::LoadAPITexture("loading_screen.png");
 	backgroundImage = (OGLTexture*)TextureLoader::LoadAPITexture("background.png");
 	levelImages[0] = (OGLTexture*)TextureLoader::LoadAPITexture("level_1.png");
 	levelImages[1] = (OGLTexture*)TextureLoader::LoadAPITexture("level_2.png");
@@ -228,12 +229,13 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	case UIState::MENU:
-		ImGui::SetNextWindowBgAlpha(1);
+		ImGui::SetNextWindowBgAlpha(0);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
 		ImGui::Begin("Background", NULL, window_flags);
 		ImGui::Image((void*)(intptr_t)backgroundImage->GetObjectID(), ImVec2(main_viewport->Size.x, main_viewport->Size.y));
 		ImGui::End();
+		ImGui::SetNextWindowBgAlpha(0);
 		ImGui::PushFont(titleFont);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
@@ -289,11 +291,14 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	case UIState::MODESELECT:
+		ImGui::SetNextWindowBgAlpha(1);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 1", NULL, window_flags);
 		if (ImGui::ImageButton((void*)(intptr_t)levelImages[0]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1))) {
+			main_viewport->Size.y / 2.1))) 
+		{
+			GameManager::GetRenderer()->SetUIState(UIState::LOADING);
 			selectedLevel = 1;
 		}
 		ImGui::End();
@@ -301,8 +306,9 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 2", NULL, window_flags);
 		if (ImGui::ImageButton((void*)(intptr_t)levelImages[1]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+			main_viewport->Size.y / 2.1)))
 		{
+			GameManager::GetRenderer()->SetUIState(UIState::LOADING);
 			selectedLevel = 2;
 		}
 		ImGui::End();
@@ -310,8 +316,9 @@ void GameTechRenderer::RenderUI()
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x / 2, main_viewport->Size.y / 2), ImGuiCond_Always);
 		ImGui::Begin("Level 3", NULL, window_flags);
 		if (ImGui::ImageButton((void*)(intptr_t)levelImages[2]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+			main_viewport->Size.y / 2.1)))
 		{
+			GameManager::GetRenderer()->SetUIState(UIState::LOADING);
 			selectedLevel = 3;
 		}
 		ImGui::End();
@@ -323,13 +330,14 @@ void GameTechRenderer::RenderUI()
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			ImGui::ImageButton((void*)(intptr_t)levelImages[4]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-				main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1));
+				main_viewport->Size.y / 2.1));
 			ImGui::PopItemFlag();
 			ImGui::PopStyleVar();
 		}
 		else if (ImGui::ImageButton((void*)(intptr_t)levelImages[3]->GetObjectID(), ImVec2(main_viewport->Size.x / 2.1,
-			main_viewport->Size.y / 2.1), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.3, 0.3, 0.3, 1)))
+			main_viewport->Size.y / 2.1)))
 		{
+			GameManager::GetRenderer()->SetUIState(UIState::LOADING);
 			selectedLevel = 4;
 		}
 		ImGui::End();
@@ -390,7 +398,6 @@ void GameTechRenderer::RenderUI()
 		{
 			nameString.clear();
 			enterName = true;
-			//enterPort = false;
 			enterIP = false;
 		}
 
@@ -409,28 +416,8 @@ void GameTechRenderer::RenderUI()
 		{
 			ipString.clear();
 			enterName = false;
-			//enterPort = false;
 			enterIP = true;
 		}
-
-		/*ImGui::SameLine();
-		ImGui::Text("Port No:");
-		ImGui::SameLine();
-
-		if (enterPort)
-		{
-			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			ImGui::Button(portString.c_str(), ImVec2(300, 50));
-			ImGui::PopItemFlag();
-			ImGui::PopStyleVar();
-		}
-		else if (ImGui::Button(portString.c_str(), ImVec2(300, 50))) {
-			portString.clear();
-			enterName = false;
-			enterIP = false;
-			enterPort = true;
-		}*/
 
 		/* Using hex to get keyboard inputs */
 		for (int i = 0x30; i <= 0x39; ++i)
@@ -470,10 +457,7 @@ void GameTechRenderer::RenderUI()
 
 		if (ImGui::Button("Back"))
 		{
-			//portString.clear();
 			ipString.clear();
-			//nameString.clear();
-			//enterPort = false;
 			enterIP = false;
 			enterName = false;
 			levelState = UIState::MENU;
@@ -646,7 +630,6 @@ void GameTechRenderer::RenderUI()
 				}
 			}
 		}
-
 		ImGui::PopFont();
 		ImGui::End();
 		break;
@@ -658,8 +641,16 @@ void GameTechRenderer::RenderUI()
 		ImGui::Text("Time: %.2f", GameManager::GetPlayer()->GetFinishTime());
 		ImGui::PopFont();
 		ImGui::End();
+		break;
 	}
-
+	if (selectedLevel && levelState == UIState::LOADING) {
+		ImGui::SetNextWindowBgAlpha(1);
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
+		ImGui::Begin("Background", NULL, window_flags);
+		ImGui::Image((void*)(intptr_t)loadingImage->GetObjectID(), ImVec2(main_viewport->Size.x, main_viewport->Size.y));
+		ImGui::End();
+	}
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

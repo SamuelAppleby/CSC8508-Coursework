@@ -202,6 +202,7 @@ void LevelCreator::InitWorld(LevelState state)
 	InitGameMusic(state);
 	InitGameExamples(state);
 	InitGameObstacles(state);
+	GameManager::GetRenderer()->SetUIState(UIState::INGAME);
 }
 
 void LevelCreator::InitGameMusic(LevelState state)
@@ -209,6 +210,8 @@ void LevelCreator::InitGameMusic(LevelState state)
 	switch (state)
 	{
 	case LevelState::LEVEL1:
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
+
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/pendulum.mp3", PxTransform(PxVec3(0, 177, -180) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/pendulum.mp3", PxTransform(PxVec3(0, 177, -200) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/pendulum.mp3", PxTransform(PxVec3(0, 177, -220) * 2), true);
@@ -220,13 +223,60 @@ void LevelCreator::InitGameMusic(LevelState state)
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-36.5, 152.5, -410) * 2), true);
 		break;
 	case LevelState::LEVEL2:
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
+
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-70, -98, -900) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, -98, -900) * 2), true);
 		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(70, -98, -900) * 2), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-60, -38, -1180) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, -38, -1180) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(60, -38, -1180) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-30, -23, -1235) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(30, -23, -1235) * 2), true);	
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-60, -3, -1290) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, -3, -1290) * 2), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(60, -3, -1290) * 2), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, -90, -1720) * 2), true);
 		break;
 	case LevelState::LEVEL3:
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level3Music.mp3", true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, 760, 30)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, 760, -40)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, 760, -110)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, 760, -180)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, 760, -250)), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-80, 760, -5)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-80, 760, -75)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-80, 760, -145)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-80, 760, -215)), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(80, 760, -5)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(80, 760, -75)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(80, 760, -145)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(80, 760, -215)), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(160, 760, 30)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(160, 760, -40)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(160, 760, -110)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(160, 760, -180)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(160, 760, -250)), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-160, 760, 30)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-160, 760, -40)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-160, 760, -110)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-160, 760, -180)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-160, 760, -250)), true);
+
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(0, -100, -75)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(-120, -100, -75)), true);
+		GameManager::GetAudioManager()->Play3DAudio("../../Assets/Audio/Rotation.mp3", PxTransform(PxVec3(120, -100, -75)), true);
 		break;
 	case LevelState::SANDBOX:
+		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/SandboxMusic.mp3", true);
 		break;
 	}
 }
@@ -253,39 +303,17 @@ void LevelCreator::InitFloors(LevelState state)
 	{
 	case LevelState::LEVEL3:
 		//Josh's second level
-
 				//Floor 1
-
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, 75)), PxVec3(200, 1, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -100, -275)), PxVec3(200, 1, 100));
-		//GameManager::AddPxFloorToWorld(PxTransform(200, 100, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(-200, 100, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 100, 125), PxVec3(200, 200, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 150, -275), PxVec3(200, 150, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(25, -50, -275), PxVec3(175, 50, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(-200, -80, -325), PxVec3(1, 20, 50));
-		//GameManager::AddPxFloorToWorld(PxTransform(200, -80, -325), PxVec3(1, 20, 50));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, -80, -375), PxVec3(200, 20, 1));
-
 		//Floor 2
 
 		GameManager::AddPxFloorToWorld(PxTransform(0, 300, 150), PxVec3(200, 1, 70));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 300, -255), PxVec3(200, 1, 20));
-		//GameManager::AddPxFloorToWorld(PxTransform(200, 500, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(-200, 500, -75), PxVec3(1, 200, 200));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, 125), PxVec3(200, 150, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 550, -275), PxVec3(200, 150, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(-200, 320, 170), PxVec3(1, 20, 50));
-		//GameManager::AddPxFloorToWorld(PxTransform(200, 320, 170), PxVec3(1, 20, 50));
-		//GameManager::AddPxFloorToWorld(PxTransform(0, 320, 220), PxVec3(200, 20, 1));
-		//GameManager::AddPxFloorToWorld(PxTransform(-25, 350, 125), PxVec3(175, 50, 1));
-
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, 400, 145), PxQuat(-0.5, PxVec3(0, 0, 1))), PxVec3(200, 1, 20));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(150, 525, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(240, 1, 20));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-30, 600, 145), PxQuat(-0.35, PxVec3(0, 0, 1))), PxVec3(170, 1, 20));
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(110, 665, 145), PxQuat(0.35, PxVec3(0, 0, 1))), PxVec3(130, 1, 20));
-
-
 
 		//Floor 3
 		GameManager::AddPxFloorToWorld(PxTransform(0, 700, 95), PxVec3(200, 1, 32.5));
@@ -298,8 +326,6 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(-200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(200, 720, -325), PxVec3(1, 20, 50));
 		GameManager::AddPxFloorToWorld(PxTransform(0, 720, -375), PxVec3(200, 20, 1), 0.5, 0.01000000000015f, TextureState::FINISH);
-
-
 		break;
 	case LevelState::LEVEL2:
 		//fyi, the buffer zones go between obstacles. This is to give the player time to think so it's not just all one muscle memory dash
@@ -347,8 +373,6 @@ void LevelCreator::InitFloors(LevelState state)
 		//and the stepping stones from takeshi's castle
 		//may need to add more if the jump isn't far enough
 		//honestly not sure on some of these values, there may not be enough stepping stones, so we should decide if more are needed after a little testing
-
-
 
 		//front row
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-60, -88, -470) * 2), PxVec3(30, 1, 30));
@@ -739,40 +763,20 @@ void LevelCreator::InitGameExamples(LevelState state)
 		InitPlayer(PxTransform(PxVec3(0, 10, 0)), 1);
 
 		//power ups
-		for (int i = 0; i < 20; ++i) {
-			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), 2, -50) * 2), 5);
+		for (int i = 0; i < 4; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-55 + (i * 40), 5, -50) * 2), 3);
 		}
 
-		for (int i = 0; i < 20; ++i) {
-			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -42, -200) * 2), 5);
-		}
-
-		for (int i = 0; i < 20; ++i) {
-			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -83, -340) * 2), 5);
-		}
-
-		GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 5);
-		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 5);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 5);
-		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 5);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 5);
-		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 5);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 5);
-		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 5);
-		GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 5);
-		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 5);
-
-		for (int i = 0; i < 8; ++i) {
-			GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -94, -845 - (i * 20)) * 2), 5);
-
-		}
-		for (int i = 0; i < 8; ++i) {
-			GameManager::AddPxLongJump(PxTransform(PxVec3(-70, -94, -845 - (i * 20)) * 2), 5);
-			GameManager::AddPxLongJump(PxTransform(PxVec3(70, -94, -845 - (i * 20)) * 2), 5);
-
-		}
-
-
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 3);
+		GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 3);
+		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 3);
 		break;
 	case LevelState::LEVEL1:
 		InitPlayer(PxTransform(PxVec3(0, 180, 150)), 1);
@@ -851,23 +855,18 @@ void LevelCreator::InitGameExamples(LevelState state)
 /* This method will initialise any other moveable obstacles we want */
 void LevelCreator::InitGameObstacles(LevelState state)
 {
-
 	PxVec3 translate = PxVec3(0, -59, -14) * 2;
 	PxVec3 translate2 = PxVec3(0, 50, 0) * 2;
 	PxQuat q;
 
-
 	switch (state)
 	{
 	case LevelState::LEVEL3:
-
 		//Killplane
 		GameManager::AddPxKillPlaneToWorld(PxTransform(PxVec3(0, -130, 0)), PxVec3(1000, 1, 1000), PxVec3(0, -50, 50), PxVec3(90, 1, 20), false);
 
 		//Floor 1
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(0, -100, -75)), PxVec3(20, 1, 80), PxVec3(0, 2, 0), 0.5, 0.5, false);
-
-
 
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 1, 60), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
 		GameManager::AddPxRotatingCubeToWorld(PxTransform(PxVec3(-120, -100, -75)), PxVec3(20, 60, 1), PxVec3(-0.25, 0, 0), 0.5, 0.5, false);
@@ -932,9 +931,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -180)), 10, 30, 5, true, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(0, 760, -250)), 10, 30, 5, true, 0.5f, 2);
 
-
-
-
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -5)), 10, 30, 5, false, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -75)), 10, 30, 5, false, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-80, 760, -145)), 10, 30, 5, false, 0.5f, 2);
@@ -956,8 +952,6 @@ void LevelCreator::InitGameObstacles(LevelState state)
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -110)), 10, 30, 5, true, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -180)), 10, 30, 5, true, 0.5f, 2);
 		GameManager::AddPxPendulumToWorld(PxTransform(PxVec3(-160, 760, -250)), 10, 30, 5, true, 0.5f, 2);
-
-
 		break;
 	case LevelState::LEVEL2:
 

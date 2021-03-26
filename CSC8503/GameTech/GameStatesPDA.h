@@ -30,7 +30,6 @@ class Pause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		GameManager::GetAudioManager()->SetVolume(10);
 		GameManager::GetWindow()->LockMouseToWindow(false);
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetRenderer()->SetUIState(UIState::PAUSED);
@@ -54,7 +53,6 @@ class MultiplayerPause : public PushdownState
 	}
 	void OnAwake() override
 	{
-		GameManager::GetAudioManager()->SetVolume(10);
 		GameManager::GetWindow()->LockMouseToWindow(false);
 		GameManager::GetWindow()->ShowOSPointer(true);
 		GameManager::GetRenderer()->SetUIState(UIState::PAUSED);
@@ -87,21 +85,6 @@ class Level : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-
-			if (GameManager::GetAudioManager()->GetVolume() != 10) {
-				switch (GameManager::GetLevelState()) {
-				case LevelState::LEVEL1:
-					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
-					break;
-				case LevelState::LEVEL2:
-					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
-					break;
-				case LevelState::LEVEL3:
-					GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
-					break;
-				}
-			}
-			GameManager::GetAudioManager()->SetVolume(25);
 			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
 		}
 	}
@@ -150,14 +133,9 @@ class MultiplayerLevel : public PushdownState
 		{
 			GameManager::GetWindow()->LockMouseToWindow(true);
 			GameManager::GetWindow()->ShowOSPointer(false);
-			if (GameManager::GetLevelState() == LevelState::LEVEL1)
-				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level1Music.mp3", true);
-			else
-				GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/Level2Music.mp3", true);
 			GameManager::GetRenderer()->SetUIState(UIState::INGAME);
 		}
 	}
-
 	UIState prevState;
 };
 
@@ -173,7 +151,6 @@ public:
 		if (GameManager::GetRenderer()->GetSelectedLevel())
 		{
 			GameManager::GetAudioManager()->StopAllSound();
-
 			LevelState level = (LevelState)(GameManager::GetRenderer()->GetSelectedLevel() - 1);
 			GameManager::SetLevelState(level);
 
@@ -210,7 +187,6 @@ public:
 	}
 private:
 	string IPAddress;
-	//string portNo;
 	string playerName;
 	void  OnAwake() override
 	{
@@ -222,7 +198,6 @@ private:
 			levelCreator->ResetWorld();
 		GameManager::GetAudioManager()->StopAllSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
-		GameManager::GetAudioManager()->SetVolume(25);
 	}
 };
 
