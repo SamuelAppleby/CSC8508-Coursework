@@ -52,7 +52,7 @@ vec4 directionalLight(vec4 color){
 		color = vec4(color.xyz * 0.1,1.0);
 
 	shadow = clamp(shadow, 0.2f, 1f);
-
+	color *= 2.0f;
 	return color * shadow;
 }
 

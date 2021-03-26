@@ -23,6 +23,7 @@ namespace NCL {
 	namespace CSC8503
 	{
 		class RenderObject;
+		class NetworkedGame;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, JOINLEVEL, 
 			INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH, LOADING };
 

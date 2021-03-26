@@ -60,11 +60,11 @@ GameTechRenderer::GameTechRenderer(GameWorld& world, PxPhysicsSystem& physics) :
 	lightDirection = Vector3(0.0f, -1, -1.f);
 
 	dirLight = new Light(Vector3(100.0f, 500.0f, -100.0f), Vector4(1, 1, 1, 1), 1000.0f, Vector3(0.0f, -1, -1));
-	spotLights[0] = new Light(Vector3(0, 50, 0), Vector4(1, 0, 1, 1), 5.0f);
-	spotLights[0]->SetDirection(Vector3(spotLights[0]->GetPosition().x, -(spotLights[0]->GetPosition().y * 5), 0) - spotLights[0]->GetPosition().Normalised());
+	spotLights[0] = new Light(Vector3(0, 50, 0), Vector4(1, 1, 1, 1), 5.0f);
+	spotLights[0]->SetDirection(Vector3(spotLights[0]->GetPosition().x, -(spotLights[0]->GetPosition().y), 0) - spotLights[0]->GetPosition().Normalised());
 
-	spotLights[1] = new Light(Vector3(50, 50, 10), Vector4(0, 1, 1, 1), 5.0f);
-	spotLights[1]->SetDirection(Vector3(spotLights[1]->GetPosition().x, -(spotLights[1]->GetPosition().y * 5), 0) - spotLights[1]->GetPosition().Normalised());
+	spotLights[1] = new Light(Vector3(0, 50, 0), Vector4(1, 1, 1, 1), 50.0f);
+	spotLights[1]->SetDirection(Vector3(spotLights[1]->GetPosition().x, -(spotLights[1]->GetPosition().y), 0) - spotLights[1]->GetPosition().Normalised());
 
 	//Skybox!
 	skyboxShader = new OGLShader("skyboxVertex.glsl", "skyboxFragment.glsl");
@@ -190,12 +190,18 @@ bool GameTechRenderer::TestValidHost()
 void GameTechRenderer::RenderFrame()
 {
 	switch (GameManager::GetLevelState()) {
+		case LevelState::LEVEL1:
+			spotLights[0]->SetPosition(Vector3(0, 50, 100));
+			break;
+
 		case LevelState::LEVEL2:
-			dirLight->SetPosition(Vector3(500,4000,-500));
+			dirLight->SetPosition(Vector3(500, 4000, -500));
+			spotLights[0]->SetPosition(Vector3(0, 200, 150));
 			break;
 
 		case LevelState::LEVEL3:
 			dirLight->SetPosition(Vector3(500, 5000, -500));
+			spotLights[0]->SetPosition(Vector3(0, -50, 100));
 			break;
 	}
 

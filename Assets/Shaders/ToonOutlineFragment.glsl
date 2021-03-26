@@ -53,6 +53,7 @@ vec4 directionalLight(vec4 color){
 
 
 	shadow = clamp(shadow, 0.2f, 1f);
+	color *= 2.0f;
 	return color * shadow;
 }
 
