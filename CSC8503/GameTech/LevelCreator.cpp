@@ -422,26 +422,26 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -750) * 2), PxVec3(200, 1, 100));
 		//side wall left													  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -58, -750) * 2), PxVec3(1, 60, 100));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -78, -750) * 2), PxVec3(1, 20, 100), .5f, .1f, TextureState::WALL2, Vector3(7.5, 1.5, 0));
 		//side wall right													  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -58, -750) * 2), PxVec3(1, 60, 100));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -78, -750) * 2), PxVec3(1, 20, 100), .5f, .1f, TextureState::WALL2, Vector3(7.5, 1.5, 0));
 
 		//gate for buffer zone 2 (prevents players jumping ahead on the spinning platforms)
 		//top of gate, may need to give this some height if there are problems getting onto platforms from jumping
 		//have made the front walls taller to accommodate this, so only the top piece (below) needs to be adjusted
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -800) * 2), PxVec3(200, 40, 1));
+		//GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -800) * 2), PxVec3(200, 40, 1));
 
 		//gate left														 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -78, -800) * 2), PxVec3(20, 20, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -78, -800) * 2), PxVec3(20, 20, 1), .5f, .1f, TextureState::WALL2, Vector3(1.5, 1.5, 0));
 
 		//gate left mid													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -78, -800) * 2), PxVec3(50, 20, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -78, -800) * 2), PxVec3(50, 20, 1), .5f, .1f, TextureState::WALL2, Vector3(2.5, 1.5, 0));
 
 		//gate right mid												 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -78, -800) * 2), PxVec3(50, 20, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -78, -800) * 2), PxVec3(50, 20, 1), .5f, .1f, TextureState::WALL2, Vector3(2.5, 1.5, 0));
 
 		//gate right													 
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -78, -800) * 2), PxVec3(20, 20, 1));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -78, -800) * 2), PxVec3(20, 20, 1), .5f, .1f, TextureState::WALL2, Vector3(1.5, 1.5, 0));
 
 		//OBSTACLE 3 - THE SPINNING COLUMNS (WITH CANNONS EITHER SIDE)
 		//I have no idea how to make these spin
@@ -459,26 +459,26 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -88, -1050) * 2), PxVec3(200, 1, 100));
 		//side wall left													   
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -58, -1050) * 2), PxVec3(1, 60, 100));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -68, -1050) * 2), PxVec3(1, 40, 100), .5f, .1f, TextureState::WALL2, Vector3(8, 3, 0));
 		//side wall right													   
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -58, -1050) * 2), PxVec3(1, 60, 100));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -68, -1050) * 2), PxVec3(1, 40, 100), .5f, .1f, TextureState::WALL2, Vector3(8, 3, 0));
 
 		//this time, the gate is to stop the bowling balls hitting players in the buffer zone. 
 		//could also act as a kill plane for the bowling balls
 		//top of gate
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1100) * 2), PxVec3(200, 20, 1));
-
-		//gate left														  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -68, -1100) * 2), PxVec3(20, 40, 1));
-
-		//gate left mid													  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -68, -1100) * 2), PxVec3(50, 40, 1));
-
-		//gate right mid												  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -68, -1100) * 2), PxVec3(50, 40, 1));
-
-		//gate right													  
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -68, -1100) * 2), PxVec3(20, 40, 1));
+		//ameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -38, -1100) * 2), PxVec3(200, 20, 1 ), .5f, .1f, TextureState::WALL2, Vector3(1.5, 1.5, 0));
+																								  
+		//gate left														  						
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-90, -68, -1100) * 2), PxVec3(20, 40, 1), .5f, .1f, TextureState::WALL2, Vector3(1.5, 3, 0));
+																								  
+		//gate left mid													  						  
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-35, -68, -1100) * 2), PxVec3(50, 40, 1), .5f, .1f, TextureState::WALL2, Vector3(3.2, 3, 0));
+																								 
+		//gate right mid												  						 
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(35, -68, -1100) * 2), PxVec3(50, 40, 1 ), .5f, .1f, TextureState::WALL2, Vector3(3.2, 3, 0));
+																								 
+		//gate right													  						 
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(90, -68, -1100) * 2), PxVec3(20, 40, 1 ), .5f, .1f, TextureState::WALL2, Vector3(1.5, 3, 0));
 
 		//OBSTACLE 4 - RAMPED BOWLING ALLEY
 		//so basically it's like that one bit of mario kart, but also indiana jones, takeshi's castle, and probably some other stuff
@@ -488,10 +488,10 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(0, -48, -1232) * 2, q), PxVec3(200, 1, 300), 0.1);
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(-100, -48, -1225) * 2, q), PxVec3(1, 12, 310), .5f, .1f, TextureState::WALL2, Vector3(17, 1, 0));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -48, -1225) * 2, q), PxVec3(1, 12, 310));
+		GameManager::AddPxFloorToWorld(PxTransform(PxVec3(100, -48, -1225) * 2, q), PxVec3(1, 12, 310), .5f, .1f, TextureState::WALL2, Vector3(17, 1, 0));
 
 
 		//buffer zone 4 (where contestants respawn on failing the fourth obstacle, this needs to be sorted on the individual kill plane)
@@ -503,48 +503,48 @@ void LevelCreator::InitFloors(LevelState state)
 
 		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 55, -1411) * 2) + translate), PxVec3(200, 1, 100));
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100), .5f, .1f, TextureState::WALL2, Vector3(2, 4, 0));
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 81, -1411) * 2) + translate), PxVec3(1, 52, 100), .5f, .1f, TextureState::WALL2, Vector3(2, 4, 0));
 
-		//blender floor
 		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1630.5) * 2) + translate + translate2), PxVec3(200, 1, 339));
+		//blender floor
 
-
+		
 		//diving boards can be used to give players an advantage in getting further into the blender
 		//(if they can stay on, it's not gated to encourage players barging into each other
 
 		//diving board left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2, TextureState::TRAMPOLINE, Vector3(1, 1, 0));
 
 		//diving board centre
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2, TextureState::TRAMPOLINE, Vector3(1, 1, 0));
 
 		//diving board right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2);
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(70, 45, -1495) * 2) + translate), PxVec3(20, 1, 70), 0.5, 2, TextureState::TRAMPOLINE, Vector3(1,1, 0));
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(15, 15, 0));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(100, 35, -1630.5) * 2) + translate), PxVec3(1, 146, 339), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(15, 15, 0));
 
 		//back wall
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 8.5, -1461) * 2) + translate), PxVec3(200, 93, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 8.5, -1461) * 2) + translate), PxVec3(200, 93, 1), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(15, 15, 0));
 
 		//should leave a gap of 20. Enough to get through, but tricky when there's a big old blender shoving everyone around
 		//inspired loosely by those windmills on crazy golf
 		//front wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(6, 2, 0));
 
 		//front wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(55, -73, -1800) * 2) + translate + translate2), PxVec3(90, 30, 1), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(6, 2, 0));
 
 		//front wall top
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 0, -1800) * 2) + translate + translate2), PxVec3(200, 116, 1));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 0, -1800) * 2) + translate + translate2), PxVec3(200, 116, 1), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(15, 10, 0));
 
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 107, -1581) * 2) + translate), PxVec3(200, 1, 439));
+		//GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, 107, -1581) * 2) + translate), PxVec3(200, 1, 439));
 
 		//VICTORY PODIUM
 		//the room you have to get in after the blender
@@ -556,15 +556,17 @@ void LevelCreator::InitFloors(LevelState state)
 		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -88, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 
 		//side wall left
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(-25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(8, 8, 0));
 
 		//side wall right
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50));
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(25, -63, -1825) * 2) + translate + translate2), PxVec3(1, 50, 50), 0.5, 0.0100000000015, TextureState::WALL2, PxVec3(5, 5, 0));
 
-		//end wall 
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -63, -1850) * 2) + translate + translate2), PxVec3(50, 50, 1), 0.5, 0.0100000000015, TextureState::FINISH);
+		//end wall
+		//GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -90, -1835) * 2) + translate), PxVec3(500, 90, 0), .5f, .1f, TextureState::WALL2);
+
+		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -63, -1850) * 2) + translate + translate2), PxVec3(50, 50, 1), 0.5, 0.0100000000015, TextureState::FINISH, PxVec3(2, 2, 0));
 		//roof
-		GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -38, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
+		//GameManager::AddPxFloorToWorld(PxTransform((PxVec3(0, -38, -1825) * 2) + translate + translate2), PxVec3(50, 1, 50));
 		break;
 
 	case LevelState::LEVEL1:

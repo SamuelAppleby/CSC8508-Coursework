@@ -103,7 +103,7 @@ bool PlayerObject::CheckHasFinished(LevelState state)
 		}
 		break;
 	case LevelState::LEVEL2:
-		if (pos.z < -3600 && pos.y > -177 && pos.x > -20 && pos.x < 20) {
+		if (pos.z < -3650 && pos.y > -195 && pos.x > -20 && pos.x < 20) {
 			finished = true;
 			finishTime = timeAlive;
 
