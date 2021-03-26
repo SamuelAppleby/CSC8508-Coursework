@@ -383,16 +383,8 @@ void NetworkedGame::InitGameExamples(LevelState state)
 		break;
 	case LevelState::LEVEL2:
 		//power ups
-		for (int i = 0; i < 20; ++i) {
-			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), 2, -50) * 2), 5));
-		}
-
-		for (int i = 0; i < 20; ++i) {
-			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -42, -200) * 2), 5));
-		}
-
-		for (int i = 0; i < 20; ++i) {
-			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-95 + (i * 10), -83, -340) * 2), 5));
+		for (int i = 0; i < 4; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-55 + (i * 40), 5, -50) * 2), 3));
 		}
 
 		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 5));
