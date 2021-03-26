@@ -834,19 +834,23 @@ void GameTechRenderer::RenderCamera()
 			Vector3 pos = gameWorld.GetMainCamera()->GetPosition();
 			glUniform3fv(cameraLocation, 1, (float*)&pos);
 
-			glUniform3fv(glGetUniformLocation(shader->GetProgramID(), "dirLight.lightPos"), 1, (float*)&dirLight->GetPosition());
-			glUniform4fv(glGetUniformLocation(shader->GetProgramID(), "dirLight.lightColour"), 1, (float*)&dirLight->GetColour());
+			Vector4 col = dirLight->GetColour();
+			glUniform3fv(glGetUniformLocation(shader->GetProgramID(), "dirLight.lightPos"), 1, (float*)&col);
+			glUniform4fv(glGetUniformLocation(shader->GetProgramID(), "dirLight.lightColour"), 1, (float*)&col);
 			glUniform1f(glGetUniformLocation(shader->GetProgramID(), "dirLight.lightRadius"), dirLight->GetRadius());
 
 			for (int i = 0; i < std::size(spotLights); i++) {
-				glUniform3fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights[" + std::to_string(i) + "].lightPos").c_str()), 1, (float*)&spotLights[i]->GetPosition());
-				glUniform4fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights["+std::to_string(i)+"].lightColour").c_str()), 1, (float*)&spotLights[i]->GetColour());
+				Vector4 c = spotLights[i]->GetColour();
+				Vector3 p = spotLights[i]->GetPosition();
+				Vector3 d = spotLights[i]->GetDirection();
+				glUniform3fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights[" + std::to_string(i) + "].lightPos").c_str()), 1, (float*)&p);
+				glUniform4fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights["+std::to_string(i)+"].lightColour").c_str()), 1, (float*)&c);
 				glUniform1f(glGetUniformLocation(shader->GetProgramID(), ("spotLights["+std::to_string(i)+"].lightRadius").c_str()), spotLights[i]->GetRadius());
-				glUniform3fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights[" + std::to_string(i) + "].spotDir").c_str()), 1, (float*)&spotLights[i]->GetDirection());
+				glUniform3fv(glGetUniformLocation(shader->GetProgramID(), ("spotLights[" + std::to_string(i) + "].spotDir").c_str()), 1, (float*)&d);
 			}
-
-			glUniform3fv(lightPosLocation, 1, (float*)&dirLight->GetPosition());
-			glUniform4fv(lightColourLocation, 1, (float*)&dirLight->GetColour());
+			Vector3 p1 = dirLight->GetPosition();
+			glUniform3fv(lightPosLocation, 1, (float*)&p1);
+			glUniform4fv(lightColourLocation, 1, (float*)&col);
 			glUniform1f(lightRadiusLocation, dirLight->GetRadius());
 
 			int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");

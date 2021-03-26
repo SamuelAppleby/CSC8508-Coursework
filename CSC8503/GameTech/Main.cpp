@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	//while (tween.progress() < 1.0f) tween.step(1);
 
 	
-	GameManager::SetWindow(new Win32Code::Win32Window("Dumb Guys!", 1280, 720, false, 100, 100));
+	GameManager::SetWindow(new Win32Code::Win32Window("Dumb Guys!", 1920, 1080, true, 100, 100));
 
 	if (!GameManager::GetWindow()->HasInitialised())
 		return -1;

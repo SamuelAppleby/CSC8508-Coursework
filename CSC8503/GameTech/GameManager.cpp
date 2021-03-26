@@ -355,7 +355,7 @@ NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, cons
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, outlineShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, basicTex, outlineShader));
 	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
 
