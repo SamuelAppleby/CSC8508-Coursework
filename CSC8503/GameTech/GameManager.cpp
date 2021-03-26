@@ -96,7 +96,7 @@ void GameManager::LoadAssets()
 	floorTex = (OGLTexture*)TextureLoader::LoadAPITexture("platform.png");
 	lavaTex = (OGLTexture*)TextureLoader::LoadAPITexture("lava.png");
 	trampolineTex = (OGLTexture*)TextureLoader::LoadAPITexture("trampoline.png");
-	iceTex = (OGLTexture*)TextureLoader::LoadAPITexture("ice.png");
+	iceTex = (OGLTexture*)TextureLoader::LoadAPITexture("ice2.png");
 	woodenTex = (OGLTexture*)TextureLoader::LoadAPITexture("woodTex.png");
 	finishTex = (OGLTexture*)TextureLoader::LoadAPITexture("finish.png");
 	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
@@ -462,7 +462,7 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	return cube;
 }
 
-GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity)
+GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction, float elasticity, TextureState state, Vector3 textureScale)
 {
 	GameObject* cylinder = new GameObject("RotatingCylinder");
 
@@ -478,7 +478,18 @@ GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, cons
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	if (state == TextureState::PINK)	{
+
+		cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, pinkTex, toonShader));
+	}
+	else if(state == TextureState::METAL)
+	{
+		cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, metalTex, toonShader));
+	}
+	else
+	{
+		cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	}
 	world->AddGameObject(cylinder);
 
 	return cylinder;
