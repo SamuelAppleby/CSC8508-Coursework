@@ -794,6 +794,10 @@ void LevelCreator::InitGameExamples(LevelState state)
 			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-55 + (i * 40), 5, -50) * 2), 3);
 		}
 
+		for (int i = 0; i < 3; ++i) {
+			GameManager::AddPxSpeedPower(PxTransform(PxVec3(-70 + (i * 70), -85, -800) * 2), 5);
+		}
+
 		GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 3);
 		GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 3);
 		GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 3);

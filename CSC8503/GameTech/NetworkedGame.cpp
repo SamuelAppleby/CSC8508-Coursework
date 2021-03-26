@@ -387,25 +387,19 @@ void NetworkedGame::InitGameExamples(LevelState state)
 			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-55 + (i * 40), 5, -50) * 2), 3));
 		}
 
-		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 5));
-		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 5));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-60, -85, -470) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(0, -85, -480) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(50, -85, -475) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-40, -85, -550) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(10, -85, -540) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(60, -85, -520) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-65, -85, -610) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(-20, -85, -620) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(20, -85, -640) * 2), 3));
+		AddLevelNetworkObject(GameManager::AddPxCoinToWorld(PxTransform(PxVec3(70, -85, -600) * 2), 3));
 
-		for (int i = 0; i < 8; ++i) {
-			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(0, -94, -845 - (i * 20)) * 2), 5));
-
-		}
-		for (int i = 0; i < 8; ++i) {
-			AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(-70, -94, -845 - (i * 20)) * 2), 5));
-			AddLevelNetworkObject(GameManager::AddPxLongJump(PxTransform(PxVec3(70, -94, -845 - (i * 20)) * 2), 5));
-
+		for (int i = 0; i < 3; ++i) {
+			AddLevelNetworkObject(GameManager::AddPxSpeedPower(PxTransform(PxVec3(-70 + (i * 70), -85, -800) * 2), 5));
 		}
 		break;
 	case LevelState::LEVEL1:
