@@ -176,6 +176,7 @@ public:
 			return PushdownResult::Pop;
 			break;
 		case UIState::JOINLEVEL:
+			GameManager::GetAudioManager()->StopAllSound();
 			*newState = new MultiplayerLevel();
 			playerName = GameManager::GetRenderer()->GetPlayerName();
 			IPAddress = GameManager::GetRenderer()->GetIP();
