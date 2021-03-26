@@ -16,22 +16,17 @@
 #include "../../Common/AudioManager.h"
 #include <sstream>
 #include "../CSC8503Common/PlayerObject.h"
-#include <string.h>
-#include "../../Common/Assets.h"
-#include "../../Common/MeshMaterial.h"
-
-
-
 
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503
 	{
-		class NetworkedGame;
 		class RenderObject;
 		enum class UIState { PAUSED, MENU, OPTIONS, MODESELECT, MULTIPLAYERMENU, JOINLEVEL, 
 			INGAME, INGAMEOPTIONS, QUIT, DEBUG, SCOREBOARD, FINISH, LOADING };
+
+		const int NUM_SPOTLIGHTS = 2;
 
 		class GameTechRenderer : public OGLRenderer
 		{
@@ -118,6 +113,9 @@ namespace NCL {
 			void RenderCamera();
 			void RenderSkybox();
 
+			//void RenderPostProcessing();
+			//void PresentScene();
+
 			void LoadSkybox();
 
 			vector<const RenderObject*> activeObjects;
@@ -130,6 +128,12 @@ namespace NCL {
 			OGLShader*  shadowShader;
 			GLuint		shadowTex;
 			GLuint		shadowFBO;
+
+			//Matrix things
+			Matrix4		projMatrix;		//Projection matrix
+			Matrix4		modelMatrix;	//Model matrix. NOT MODELVIEW
+			Matrix4		viewMatrix;		//View matrix
+			Matrix4		textureMatrix;	//Texture matrix
 			Matrix4     shadowMatrix;
 
 			Vector4		lightColour;
@@ -160,6 +164,19 @@ namespace NCL {
 
 			bool enterName = false;
 			bool enterIP = false;
+			bool enterPort = false;
+
+			Light* dirLight;
+			Light* spotLights[NUM_SPOTLIGHTS];
+
+			bool postProcessing;
+			bool blurEffect;
+			bool edgeEffect;
+
+			OGLShader* blurShader;
+			GLuint processFBO;
+			GLuint bufferColourTex[2];
+			GLuint bufferDepthTex;
 		};
 	}
 }

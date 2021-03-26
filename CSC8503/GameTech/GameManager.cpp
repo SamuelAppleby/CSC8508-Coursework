@@ -50,6 +50,7 @@ OGLTexture* GameManager::fallingTileTex = nullptr;
 
 OGLShader* GameManager::basicShader = nullptr;
 OGLShader* GameManager::toonShader = nullptr;
+OGLShader* GameManager::outlineShader = nullptr;
 
 CameraState GameManager::camState = CameraState::FREE;
 
@@ -122,6 +123,7 @@ void GameManager::LoadAssets()
 
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
+	outlineShader = new OGLShader("ToonShaderVertex.glsl", "ToonOutlineFragment.glsl");
 }
 
 void GameManager::ResetMenu()
@@ -172,8 +174,7 @@ GameManager::~GameManager()
 
 	delete basicShader;
 	delete toonShader;
-
-	delete pBodyMat;
+	delete outlineShader;
 }
 
 GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, float density, float friction, float elasticity)
@@ -188,7 +189,7 @@ GameObject* GameManager::AddPxCubeToWorld(const PxTransform& t, const PxVec3 hal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, redTex, toonShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, outlineShader));
 	world->AddGameObject(cube);
 
 	return cube;
@@ -205,7 +206,7 @@ GameObject* GameManager::AddPxSphereToWorld(const PxTransform& t, const  PxReal 
 	sphere->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 	sphere->GetTransform().SetScale(PxVec3(radius, radius, radius));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, toonShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, outlineShader));
 	world->AddGameObject(sphere);
 
 	return sphere;
@@ -223,7 +224,7 @@ GameObject* GameManager::AddPxCapsuleToWorld(const PxTransform& t, const  PxReal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, outlineShader));
 	world->AddGameObject(capsule);
 
 	return capsule;
@@ -241,7 +242,7 @@ GameObject* GameManager::AddPxCylinderToWorld(const PxTransform& t, const  PxRea
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, outlineShader));
 	world->AddGameObject(cylinder);
 
 	return cylinder;
@@ -258,8 +259,7 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 	pXPhysics->GetGScene()->addActor(*body);
 
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, pinkTex, toonShader));
-	//capsule->GetTransform()
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, outlineShader));
 	world->AddGameObject(capsule);
 }
 
@@ -276,7 +276,7 @@ GameObject* GameManager::AddPxCoinToWorld(const PxTransform& t, const PxReal rad
 	pXPhysics->GetGScene()->addActor(*body);
 
 	coin->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
-	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), bonusMesh, basicTex, toonShader));
+	coin->SetRenderObject(new RenderObject(&coin->GetTransform(), bonusMesh, basicTex, outlineShader));
 	coin->GetRenderObject()->SetColour(Debug::YELLOW);
 	coin->SetInitialPos(t.p);
 	world->AddGameObject(coin);
@@ -296,7 +296,7 @@ GameObject* GameManager::AddPxLongJump(const PxTransform& t, const PxReal radius
 	pXPhysics->GetGScene()->addActor(*body);
 
 	jump->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
-	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, toonShader));
+	jump->SetRenderObject(new RenderObject(&jump->GetTransform(), bonusMesh, basicTex, outlineShader));
 	jump->GetRenderObject()->SetColour(Debug::RED);
 	jump->SetInitialPos(t.p);
 	world->AddGameObject(jump);
@@ -316,7 +316,7 @@ GameObject* GameManager::AddPxSpeedPower(const PxTransform& t, const PxReal radi
 	pXPhysics->GetGScene()->addActor(*body);
 
 	speed->GetTransform().SetScale(PxVec3(radius / 4, radius / 4, radius / 4));
-	speed->SetRenderObject(new RenderObject(&speed->GetTransform(), bonusMesh, basicTex, toonShader));
+	speed->SetRenderObject(new RenderObject(&speed->GetTransform(), bonusMesh, basicTex, outlineShader));
 	speed->GetRenderObject()->SetColour(Debug::GREEN);
 	speed->SetInitialPos(t.p);
 	world->AddGameObject(speed);
@@ -336,7 +336,7 @@ PlayerObject* GameManager::AddPxPlayerToWorld(const PxTransform& t, const PxReal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, toonShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, outlineShader));
 	world->AddGameObject(p);
 
 	return p;
@@ -355,7 +355,8 @@ NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, cons
 	pXPhysics->GetGScene()->addActor(*body);
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, toonShader));
+	p->SetRenderObject(new RenderObject(&p->GetTransform(), charMeshA, basicTex, outlineShader));
+	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
 	world->AddGameObject(p);
 
 	return p;
@@ -374,7 +375,7 @@ void GameManager::AddPxEnemyToWorld(const PxTransform& t, const PxReal scale)
 	pXPhysics->GetGScene()->addActor(*body);
 
 	e->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
-	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, basicTex, toonShader));
+	e->SetRenderObject(new RenderObject(&e->GetTransform(), enemyMesh, basicTex, outlineShader));
 	e->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
 	world->AddGameObject(e);
 }
@@ -392,7 +393,7 @@ void GameManager::AddPxSeeSawToWorld(const PxTransform& t, const PxVec3 halfSize
 	PxRevoluteJoint* joint = PxRevoluteJointCreate(*pXPhysics->GetGPhysics(), body, PxTransform(PxVec3(0)), NULL, PxTransform(t.p * 2));
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, outlineShader));
 	world->AddGameObject(cube);
 }
 
@@ -410,7 +411,7 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	joint->setMotion(PxD6Axis::eSWING1, PxD6Motion::eFREE);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, outlineShader));
 	world->AddGameObject(cube);
 }
 
@@ -478,7 +479,7 @@ GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, cons
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, toonShader));
+	cylinder->SetRenderObject(new RenderObject(&cylinder->GetTransform(), cylinderMesh, basicTex, outlineShader));
 	world->AddGameObject(cylinder);
 
 	return cylinder;
@@ -560,7 +561,7 @@ Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxR
 	cannonBall->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 	cannonBall->GetTransform().SetScale(PxVec3(radius, radius, radius));
-	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, greyTex, toonShader));
+	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, basicTex, outlineShader));
 	world->AddGameObject(cannonBall);
 	return cannonBall;
 }

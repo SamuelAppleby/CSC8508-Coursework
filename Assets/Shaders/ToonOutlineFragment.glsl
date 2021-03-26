@@ -1,8 +1,8 @@
 #version 460
 
 uniform sampler2D mainTex;
-uniform sampler2DShadow shadowTex;
 uniform sampler2D diffuseTex;
+uniform sampler2DShadow shadowTex;
 uniform mat4 modelMatrix 	= mat4(1.0f);
 
 const int NUM_LIGHTS = 2;
@@ -35,9 +35,9 @@ vec4 directionalLight(vec4 color){
 	float shadow = 1.0; // New !
 	
 	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
+		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.8f;
 	}
-
+	
 	vec3 lightDir = normalize(dirLight.lightPos);
 
     float intensity = smoothstep(0.1, 0.6, dot(lightDir, IN.normal));
@@ -51,8 +51,8 @@ vec4 directionalLight(vec4 color){
 	else
 		color = vec4(color.xyz * 0.1,1.0);
 
-	shadow = clamp(shadow, 0.2f, 1f);
 
+	shadow = clamp(shadow, 0.2f, 1f);
 	return color * shadow;
 }
 
@@ -95,13 +95,25 @@ vec4 spotLightCalc(vec4 color){
 
 void main()
 {
+	vec3 viewDir = normalize(cameraPos - IN.worldPos);
+
+	float angle = abs(dot(viewDir, IN.normal));
+	float outline;
+
+	if(angle < 0.4){
+		outline = 0.0;
+	}
+	else{
+		outline = 1.0;
+	}
+
 	vec4 colour = IN.colour;
 
     if(hasTexture){
 		colour *= texture(mainTex, IN.texCoord);
     }
 
-	fragColor = directionalLight(colour);
-	fragColor += spotLightCalc(colour);
+	fragColor = vec4(directionalLight(colour).rgb * outline, 1.0);
+	fragColor += vec4(spotLightCalc(colour).rgb, 1.0);
 
 }

@@ -181,6 +181,7 @@ private:
 
 	static OGLShader* basicShader;
 	static OGLShader* toonShader;
+	static OGLShader* outlineShader;
 
 	static CameraState camState;
 
