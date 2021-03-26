@@ -51,7 +51,7 @@ vec4 directionalLight(vec4 color){
 	else
 		color = vec4(color.xyz * 0.1,1.0);
 
-	shadow = clamp(shadow, 0.2f, 1f);
+	shadow = clamp(shadow, 0.2f, 1.0f);
 	color *= 2.0f;
 	return color * shadow;
 }
@@ -86,7 +86,7 @@ vec4 spotLightCalc(vec4 color){
 			result += surface * 0.1f;
 			result *= 10.0f;
 
-			shadow = clamp(shadow, 0.2f, 1f);
+			shadow = clamp(shadow, 0.2f, 1.0f);
 			result *= shadow;
 			return vec4(result, 1.0f);
 		}
