@@ -83,6 +83,10 @@ namespace NCL {
 				nGame = game;
 			}
 
+			void SetPreviousState(UIState state) {
+				prevState = state;
+			}
+
 			UIState GetPreviousUIState() const
 			{
 				return prevState;

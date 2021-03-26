@@ -869,7 +869,7 @@ void NetworkedGame::ReceivePacket(float dt, int type, GamePacket* payload, int s
 	}
 	else if (type == Shutdown)
 	{
-		GameManager::GetRenderer()->SetUIState(UIState::MENU);
+		GameManager::GetRenderer()->SetUIState(UIState::JOINLEVEL);
 	}
 }
 
