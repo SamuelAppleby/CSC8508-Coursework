@@ -252,7 +252,8 @@ void GameTechRenderer::RenderUI()
 		}
 		if (ImGui::Button("Exit to Menu"))
 		{
-			levelState = UIState::MENU;
+			prevState = UIState::INGAME;
+			levelState = UIState::LOADING;
 		}
 		ImGui::PopFont();
 		ImGui::End();
