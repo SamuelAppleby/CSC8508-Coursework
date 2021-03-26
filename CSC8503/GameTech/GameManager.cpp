@@ -356,7 +356,25 @@ NetworkPlayer* GameManager::AddPxNetworkPlayerToWorld(const PxTransform& t, cons
 
 	p->GetTransform().SetScale(PxVec3(meshSize * 2, meshSize * 2, meshSize * 2));
 	p->SetRenderObject(new RenderObject(&p->GetTransform(), pbodyMesh, pBodyTex, outlineShader));
-	p->GetRenderObject()->SetColour(Vector4(0, 0.5, 1, 1));
+
+	switch (playerNum) {
+	case -1:
+		p->GetRenderObject()->SetColour(Debug::RED);
+		break;
+	case 0:
+		p->GetRenderObject()->SetColour(Debug::BLUE);
+		break;
+	case 1:
+		p->GetRenderObject()->SetColour(Debug::GREEN);
+		break;
+	case 2:
+		p->GetRenderObject()->SetColour(Debug::YELLOW);
+		break;
+	case 3:
+		p->GetRenderObject()->SetColour(Debug::MAGENTA);
+		break;
+	}
+
 	world->AddGameObject(p);
 
 	return p;
