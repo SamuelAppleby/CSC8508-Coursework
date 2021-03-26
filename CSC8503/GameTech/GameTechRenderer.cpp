@@ -679,7 +679,7 @@ void GameTechRenderer::RenderUI()
 		ImGui::End();
 		break;
 	}
-	if (selectedLevel && levelState == UIState::LOADING) {
+	if ((selectedLevel && levelState == UIState::LOADING) || levelState == UIState::JOINLEVEL) {
 		ImGui::SetNextWindowBgAlpha(1);
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(main_viewport->Size.x, main_viewport->Size.y), ImGuiCond_Always);
