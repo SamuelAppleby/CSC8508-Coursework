@@ -496,6 +496,7 @@ GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, cons
 	cylinder->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 
+	cylinder->GetTransform().SetTextureScale(textureScale);
 	cylinder->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
 	if (state == TextureState::PINK)	{
 
@@ -572,6 +573,9 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 		break;
 	case TextureState::DOGE:
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, dogeTex, toonShader));
+		break;
+	case TextureState::WALL2:
+		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, wallTex2, toonShader));
 		break;
 	case TextureState::INVISIBLE:
 		break;
