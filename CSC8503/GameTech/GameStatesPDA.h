@@ -21,7 +21,7 @@ class Pause : public PushdownState
 		GameManager::GetRenderer()->Render();
 		Debug::FlushRenderables(dt);
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) ||
-			GameManager::GetRenderer()->GetUIState() == UIState::MENU ||
+			GameManager::GetRenderer()->GetUIState() == UIState::LOADING ||
 			GameManager::GetRenderer()->GetUIState() == UIState::INGAME)
 		{
 			return PushdownResult::Pop;
@@ -41,7 +41,7 @@ class MultiplayerPause : public PushdownState
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::ESCAPE) ||
-			GameManager::GetRenderer()->GetUIState() == UIState::MENU ||
+			GameManager::GetRenderer()->GetUIState() == UIState::LOADING ||
 			GameManager::GetRenderer()->GetUIState() == UIState::INGAME)
 		{
 			return PushdownResult::Pop;
@@ -63,7 +63,7 @@ class Level : public PushdownState
 {
 	PushdownResult OnUpdate(float dt, PushdownState** newState) override
 	{
-		if (GameManager::GetRenderer()->GetUIState() == UIState::MENU)
+		if (GameManager::GetRenderer()->GetPreviousUIState() == UIState::INGAME)
 		{
 			GameManager::ResetMenu();
 			return PushdownResult::Pop;
@@ -96,7 +96,7 @@ class MultiplayerLevel : public PushdownState
 	{
 		GameTechRenderer* r = GameManager::GetRenderer();
 
-		if (GameManager::GetRenderer()->GetUIState() == UIState::MENU)
+		if (GameManager::GetRenderer()->GetPreviousUIState() == UIState::INGAME)
 		{
 			GameManager::ResetMenu();
 			return PushdownResult::Pop;
@@ -178,7 +178,6 @@ public:
 			*newState = new MultiplayerLevel();
 			playerName = GameManager::GetRenderer()->GetPlayerName();
 			IPAddress = GameManager::GetRenderer()->GetIP();
-			//portNo = GameManager::GetRenderer()->GetPort();
 			levelCreator->StartAsClient(playerName, IPAddress);
 			return PushdownResult::Push;
 			break;
@@ -196,6 +195,7 @@ private:
 			levelCreator = new NetworkedGame();
 		else
 			levelCreator->ResetWorld();
+		GameManager::GetRenderer()->SetUIState(UIState::MENU);
 		GameManager::GetAudioManager()->StopAllSound();
 		GameManager::GetAudioManager()->PlayAudio("../../Assets/Audio/MenuMusic.mp3", true);
 	}
