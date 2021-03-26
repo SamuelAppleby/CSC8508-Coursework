@@ -28,6 +28,7 @@ OGLTexture* GameManager::iceTex = nullptr;
 OGLTexture* GameManager::trampolineTex = nullptr;
 OGLTexture* GameManager::obstacleTex = nullptr;
 OGLTexture* GameManager::woodenTex = nullptr;
+OGLTexture* GameManager::wallTex2 = nullptr;
 OGLTexture* GameManager::finishTex = nullptr;
 OGLTexture* GameManager::menuTex = nullptr;
 OGLTexture* GameManager::plainTex = nullptr;
@@ -36,6 +37,15 @@ OGLTexture* GameManager::dogeTex = nullptr;
 OGLTexture* GameManager::redTex = nullptr;
 OGLTexture* GameManager::pBodyTex = nullptr;
 OGLTexture* GameManager::platformWallTex = nullptr;
+
+
+
+
+OGLTexture* GameManager::pinkTex = nullptr;
+OGLTexture* GameManager::metalTex = nullptr;
+OGLTexture* GameManager::greyTex = nullptr;
+OGLTexture* GameManager::blackTex = nullptr;
+OGLTexture* GameManager::fallingTileTex = nullptr;
 
 
 OGLShader* GameManager::basicShader = nullptr;
@@ -87,7 +97,7 @@ void GameManager::LoadAssets()
 	lavaTex = (OGLTexture*)TextureLoader::LoadAPITexture("lava.png");
 	trampolineTex = (OGLTexture*)TextureLoader::LoadAPITexture("trampoline.png");
 	iceTex = (OGLTexture*)TextureLoader::LoadAPITexture("ice.png");
-	woodenTex = (OGLTexture*)TextureLoader::LoadAPITexture("wood.png");
+	woodenTex = (OGLTexture*)TextureLoader::LoadAPITexture("woodTex.png");
 	finishTex = (OGLTexture*)TextureLoader::LoadAPITexture("finish.png");
 	menuTex = (OGLTexture*)TextureLoader::LoadAPITexture("menu.png");
 	plainTex = (OGLTexture*)TextureLoader::LoadAPITexture("plain.png");
@@ -96,13 +106,19 @@ void GameManager::LoadAssets()
 	pBodyTex = (OGLTexture*)TextureLoader::LoadAPITexture("pbody.png");
 	platformWallTex = (OGLTexture*)TextureLoader::LoadAPITexture("platformWall.png");
 
+	wallTex2 = (OGLTexture*)TextureLoader::LoadAPITexture("wall2.png");
 
-	renderer->SetTextureRepeating(trampolineTex, false);
+	pinkTex = (OGLTexture*)TextureLoader::LoadAPITexture("pink.png");
+	metalTex = (OGLTexture*)TextureLoader::LoadAPITexture("metal.png");
+	greyTex = (OGLTexture*)TextureLoader::LoadAPITexture("cannonBall.png");
+	blackTex = (OGLTexture*)TextureLoader::LoadAPITexture("black.png");
+	fallingTileTex = (OGLTexture*)TextureLoader::LoadAPITexture("crackedice.png");
+
 
 	redTex = (OGLTexture*)TextureLoader::LoadAPITexture("red.png");
 	pBodyMat = new MeshMaterial("pbody.mat");
 
-	//renderer->
+	//renderer->SetTextureRepeating(trampolineTex,false);
 
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	toonShader = new OGLShader("ToonShaderVertex.glsl", "ToonShaderFragment.glsl");
@@ -141,10 +157,18 @@ GameManager::~GameManager()
 	delete menuTex;
 	delete plainTex;
 	delete wallTex;
+	delete wallTex2;
 	delete dogeTex;
 	delete pBodyTex;
 	delete platformWallTex;
 	delete redTex;
+
+
+	delete pinkTex;
+	delete metalTex;
+	delete greyTex;
+	delete blackTex;
+	delete fallingTileTex;
 
 	delete basicShader;
 	delete toonShader;
@@ -234,7 +258,8 @@ void GameManager::AddBounceSticks(const PxTransform& t, const  PxReal radius, co
 	pXPhysics->GetGScene()->addActor(*body);
 
 	capsule->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, basicTex, toonShader));
+	capsule->SetRenderObject(new RenderObject(&capsule->GetTransform(), capsuleMesh, pinkTex, toonShader));
+	//capsule->GetTransform()
 	world->AddGameObject(capsule);
 }
 
@@ -389,7 +414,8 @@ void GameManager::AddPxRevolvingDoorToWorld(const PxTransform& t, const PxVec3 h
 	world->AddGameObject(cube);
 }
 
-GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction, float elasticity, bool rotatedRotation)
+GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation,
+	float friction, float elasticity, bool rotatedRotation, TextureState state, Vector3 textureScale)
 {
 	GameObject* cube = new GameObject("Rotating Cube");
 
@@ -423,7 +449,15 @@ GameObject* GameManager::AddPxRotatingCubeToWorld(const PxTransform& t, const Px
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	if (state == TextureState::WOOD)
+	{
+		cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, woodenTex, toonShader));
+	}
+	else
+	{
+		cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	}
+	cube->GetTransform().SetTextureScale(textureScale);
 	world->AddGameObject(cube);
 	return cube;
 }
@@ -450,7 +484,7 @@ GameObject* GameManager::AddPxRotatingCylinderToWorld(const PxTransform& t, cons
 	return cylinder;
 }
 
-GameObject* GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft, float friction, float elasticity)
+GameObject* GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft, float friction, float elasticity, Vector3 textureScale)
 {
 	Pendulum* pendulum = new Pendulum(timeToSwing, isSwingingLeft);
 
@@ -465,14 +499,15 @@ GameObject* GameManager::AddPxPendulumToWorld(const PxTransform& t, const PxReal
 	pXPhysics->GetGScene()->addActor(*body);
 
 	pendulum->GetTransform().SetScale(PxVec3(radius * 2, halfHeight * 2, radius * 2));
-	pendulum->SetRenderObject(new RenderObject(&pendulum->GetTransform(), cylinderMesh, basicTex, toonShader));
+	pendulum->SetRenderObject(new RenderObject(&pendulum->GetTransform(), cylinderMesh, metalTex, toonShader));
+	pendulum->GetTransform().SetTextureScale(textureScale);
 	world->AddGameObject(pendulum);
 	return pendulum;
 }
 
 
 
-void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state)
+void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction, float elasticity, TextureState state, Vector3 textureScale)
 {
 	GameObject* floor = new GameObject("Floor");
 
@@ -482,14 +517,13 @@ void GameManager::AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes
 	floor->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 	floor->GetTransform().SetScale(halfSizes * 2);
+	floor->GetTransform().SetTextureScale(textureScale);
 	switch (state)
 	{
 	case TextureState::FLOOR:
-		floor->GetTransform().SetTextureScale(Vector3(10, 10, 10));
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, floorTex, toonShader));
 		break;
 	case TextureState::WALL:
-		floor->GetTransform().SetTextureScale(Vector3(10, 10, 10));
 		floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, platformWallTex, toonShader));
 		break;
 	case TextureState::ICE:
@@ -526,7 +560,7 @@ Cannonball* GameManager::AddPxCannonBallToWorld(const PxTransform& t, const  PxR
 	cannonBall->SetPhysicsObject(new PhysXObject(body, newMat));
 	pXPhysics->GetGScene()->addActor(*body);
 	cannonBall->GetTransform().SetScale(PxVec3(radius, radius, radius));
-	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, basicTex, toonShader));
+	cannonBall->SetRenderObject(new RenderObject(&cannonBall->GetTransform(), sphereMesh, greyTex, toonShader));
 	world->AddGameObject(cannonBall);
 	return cannonBall;
 }
@@ -539,9 +573,8 @@ void GameManager::AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajecto
 	PxRigidActorExt::createExclusiveShape(*body, PxBoxGeometry(30, 15, 15), *pXPhysics->GetGMaterial());
 	cannon->SetPhysicsObject(new PhysXObject(body, pXPhysics->GetGMaterial()));
 	pXPhysics->GetGScene()->addActor(*body);
-
 	cannon->GetTransform().SetScale(PxVec3(30, 15, 15) * 2);
-	cannon->SetRenderObject(new RenderObject(&cannon->GetTransform(), cubeMesh, obstacleTex, toonShader));
+	cannon->SetRenderObject(new RenderObject(&cannon->GetTransform(), cubeMesh, blackTex, toonShader));
 	world->AddGameObject(cannon);
 }
 
@@ -558,6 +591,7 @@ void GameManager::AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfS
 	if (!hide)
 	{
 		cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, lavaTex, basicShader));
+		cube->GetTransform().SetTextureScale(Vector3(halfSizes.x, halfSizes.z, halfSizes.y) / 100.f);
 	}
 	world->AddGameObject(cube);
 }
@@ -578,7 +612,7 @@ GameObject* GameManager::AddPxFallingTileToWorld(const PxTransform& t, const PxV
 	pXPhysics->GetGScene()->addActor(*body);
 
 	cube->GetTransform().SetScale(halfSizes * 2);
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, toonShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, fallingTileTex, toonShader));
 	world->AddGameObject(cube);
 	return cube;
 }

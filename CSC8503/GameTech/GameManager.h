@@ -25,7 +25,11 @@ using namespace NCL;
 using namespace CSC8503;
 const float MESH_SIZE = 3.0f;
 enum class LevelState { LEVEL1, LEVEL2, LEVEL3, SANDBOX };
-enum class TextureState { FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH, WALL, RED, DOGE };
+enum class TextureState
+{
+	FLOOR, ICE, TRAMPOLINE, INVISIBLE, FINISH, WALL, RED, DOGE,
+	PINK, WALL2, METAL, CANNON, CANNONBALL, WOOD
+};
 
 class GameManager
 {
@@ -41,7 +45,7 @@ public:
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static GameObject* AddPxCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
-	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR);
+	static void AddPxFloorToWorld(const PxTransform& t, const PxVec3 halfSizes, float friction = 0.5f, float elasticity = 0.1f, TextureState state = TextureState::FLOOR, Vector3 textureScale = Vector3(10, 10, 10));
 
 	static void AddBounceSticks(const PxTransform& t, const PxReal radius, const PxReal halfHeight,
 		float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
@@ -56,9 +60,9 @@ public:
 	static void AddPxEnemyToWorld(const PxTransform& t, const PxReal scale);
 
 	static void AddLightToWorld(Vector3 position, Vector3 color, float radius = 5);
-	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5, bool rotating = true);
+	static GameObject* AddPxRotatingCubeToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5, bool rotating = true, TextureState state = TextureState::WOOD, Vector3 textureScale = Vector3(2, 2, 0));
 	static GameObject* AddPxRotatingCylinderToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const PxVec3 rotation, float friction = 0.5f, float elasticity = 0.5f);
-	static GameObject* AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft = true, float friction = 0.5f, float elasticity = 0.5f);
+	static GameObject* AddPxPendulumToWorld(const PxTransform& t, const PxReal radius, const PxReal halfHeight, const float timeToSwing, const bool isSwingingLeft = true, float friction = 0.5f, float elasticity = 0.5f, Vector3 textureScale = Vector3(1, 5, 0));
 	static Cannonball* AddPxCannonBallToWorld(const PxTransform& t, const PxReal radius = 5, const PxVec3* force = new PxVec3(0, 85000, 700000), int time = 10, float density = 10.0f, float friction = 0.5f, float elasticity = 0.1f);
 	static void AddPxCannonToWorld(const PxTransform& t, const PxVec3 trajectory, const int shotTime, const int shotSize, PxVec3 translate = PxVec3(0, 100, 0));
 	static void AddPxKillPlaneToWorld(const PxTransform& t, const PxVec3 halfSizes, const PxVec3 respawnCentre, Vector3 respawnSizeRange, bool hide = true);
@@ -155,14 +159,22 @@ private:
 	static OGLTexture* iceTex;
 	static OGLTexture* trampolineTex;
 	static OGLTexture* obstacleTex;
-	static OGLTexture* woodenTex;
+	static OGLTexture* woodenTex;    // windmill
 	static OGLTexture* finishTex;
 	static OGLTexture* menuTex;
 	static OGLTexture* plainTex;
 	static OGLTexture* wallTex;
+	static OGLTexture* wallTex2;
 	static OGLTexture* dogeTex;
 	static OGLTexture* pBodyTex;
 	static OGLTexture* redTex;
+
+	static OGLTexture* pinkTex; // bouncy
+	static OGLTexture* metalTex; // pendulum // ping pongs
+	static OGLTexture* greyTex; // cannonball
+	static OGLTexture* blackTex; // cannon
+	static OGLTexture* fallingTileTex; // falling tiles
+
 
 
 	static OGLTexture* platformWallTex;
